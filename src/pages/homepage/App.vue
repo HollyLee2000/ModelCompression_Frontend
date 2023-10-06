@@ -6,11 +6,11 @@
           <div class="row align-items-center">
             <div class="col-lg-6">
               <h2 class="title mt-5 mt-lg-0">
-                Meta-Rank
+                DepGraph
               </h2>
-              <p class="f-16 my-4 text-muted benchmark">A Unified Evaluation Framework for Attribution Methods</p>
-              <button @click="$router.push('/Algorithm')" class="btn btn-primary" style="margin-right: 10px">Tutorial</button>
-              <button @click="info()" class="btn btn-docs">Paper</button>
+              <p class="f-16 my-4 text-muted benchmark">Towards Any Structural Pruning</p>
+              <button @click="$router.push('/Algorithm')" class="btn btn-primary" style="margin-right: 10px">Start Compression</button>
+              <button class="btn btn-docs"><a href="https://openaccess.thecvf.com/content/CVPR2023/html/Fang_DepGraph_Towards_Any_Structural_Pruning_CVPR_2023_paper.html" target="_blank" style="color: white">Paper</a></button>
             </div>
           </div>
         </div>
@@ -22,8 +22,11 @@
 
   <div class="container">
     <div class="row justify-content-between" style="margin: 30px 0;">
-      <div class="col-lg-4 col-md-3 col-sm-8 text-center align-items-center info-title" style="position: relative;">Meta Rank</div>
-      <div class="col-lg-8 col-md-9 col-sm-8 info-content">Meta-rank provides a consistent evaluation of attribution methods on multiple datasets and different models. It ranks attribution methods according to their performance generated on each task, ensuring consistency and reliability.</div>
+      <div class="col-lg-4 col-md-3 col-sm-8 text-center align-items-center info-title" style="position: relative;">DepGraph</div>
+      <div class="col-lg-8 col-md-9 col-sm-8 info-content">Dependency Graph (DepGraph) explicitly
+        model the dependency between layers and comprehensively group coupled parameters for pruning, enabling
+        any structural pruning on a wide variety of neural networks, including CNNs, RNNs, GNNs, and Transformers.
+          </div>
     </div>
   </div>
 
@@ -36,11 +39,11 @@
         <div class="col-lg-7">
           <div class="heading text-center">
             <!-- <h6 class="text-muted f-16 fw-normal">Learning to Write as a Professional</h6> -->
-            <h2 class="mb-3">Evaluate <span class="text-primary fw-normal"> your attribution algorithm </span>
-              <br> with Meta-rank
+            <h2 class="mb-3">Compress <span class="text-primary fw-normal"> your model </span>
+              <br> with DepGraph
 
             </h2>
-            <p class="text-muted para-p mx-auto mb-0">Meta-rank can help researchers for efficiently evaluating attribution algorithms for fair comparison. </p>
+            <p class="text-muted para-p mx-auto mb-0">DepGraph can help researchers to efficiently Compress deep learning models on various tasks.</p>
           </div>
         </div>
       </div>
@@ -52,10 +55,11 @@
               <img src="./assets/img-1.png" alt="img-fluid">
             </div>
             <h5 class="fw-bold mt-4 mb-3">Our Motivation</h5>
-            <p><span class="text-gray">We demonstrates that attribution methods exhibit inconsistencies across different
-              tasks (i.e., different models, datasets, and masking orders). All previous evaluations
-              were conducted solely on specific tasks, neglecting these inconsistencies.</span></p>
-
+            <p><span class="text-gray">Structural pruning enables model acceleration by removing structurally-grouped
+              parameters from neural networks. However, the parameter-grouping patterns vary widely across different
+              models, making architecture-specific pruners, which rely on manually-designed grouping schemes,
+              non-generalizable to new architectures. Our motivation is to tackle general structural pruning of
+              arbitrary architecture like CNNs, RNNs, GNNs and Transformers.</span></p>
           </div>
         </div>
         <div class="col-lg-4 mt-4 pt-2">
@@ -63,11 +67,12 @@
             <div class="service-image">
               <img src="./assets/img-2.png" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Unified Evaluation Framework</h5>
-            <p><span class="text-gray">Meta-rank is an unified framework
-              for evaluating attribution methods. Specifically, according to the performance
-              of various attribution methods on different tasks, Meta-rank generates a standardized leaderboard that incorporates
-              historical information. Meta-rank is scalable to future algorithms.</span></p>
+            <h5 class="fw-bold mt-4 mb-3">Structural Coupling</h5>
+            <p><span class="text-gray">The most prominent obstacle towards any structural pruning lies in the
+              structural coupling, which not only forces different layers to be pruned simultaneously, but also
+              expects all removed parameters to be consistently unimportant, thereby avoiding structural issues and
+              significant performance degradation after pruning. To address this problem, DepGraph explicitly
+              model the dependency between layers and comprehensively group coupled parameters for pruning.</span></p>
           </div>
         </div>
         <div class="col-lg-4 mt-4 pt-2">
@@ -76,12 +81,13 @@
               <img src="./assets/img-3.png" alt="img-fluid">
             </div>
             <h5 class="fw-bold mt-4 mb-3">Experiments</h5>
-            <p><span class="text-gray">Meta-rank conducts experiments on four datasets (NWPU-RESISC45,
-              ImageNet-1k, Food-101, Place-365),
-              three models (ResNet-18, Inception-v4,
-              VGG-19), and two masking orders (MoRF,
-              LeRF). Specifically, the initial leaderboard of Meta-rank is obtained from
-              8 classic attribution methods, with each being trained for 22 different tasks.</span>
+            <p><span class="text-gray">DepGraph has been extensively evaluated
+        on several architectures and tasks, including
+        ResNe(X)t, DenseNet, MobileNet and Vision transformer
+        for images, GAT for graph, DGCNN for 3D point cloud,
+        alongside LSTM for language, and demonstrated that even
+        with a simple norm-based criterion, DepGraph
+        consistently yields gratifying performances.</span>
               </p>
           </div>
         </div>
@@ -97,7 +103,7 @@
         <div class="col-lg-7">
           <div class="sec-image position-relative " id="sec-image">
             <div class="bg-img overflow-hidden border-radius">
-              <img src="./assets/aold1-dekvy.gif" alt="" loop=infinite class="img-fluid" />
+              <img src="./assets/feature.png" alt="" loop=infinite class="img-fluid" />
             </div>
             <div id="imgcontainer-1">
               <div id="inner-2">
@@ -113,7 +119,7 @@
         <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">
           <h6 class="text-muted fw-normal">FEATURES</h6>
           <h1 class="fw-bold mt-2">Flexible Usage</h1>
-          <p class="mt-3">The users can design and evaluate their attribution algorithm by selecting the desired tasks and generating the script in tutorial. Run the script and the Meta-rank results can be easily obtained.</p>
+          <p class="mt-3">Users can compress their deep learning model by selecting the desired pruning configuration and generating the script in tutorial. Run the script and the pruned model can be easily obtained. Online pruning is partially available.</p>
           <!-- <p class="mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus qui, pariatur nulla,
                   sint
                   voluptatibus explicabo voluptates aliquid dolorem suscipit nostrum expedita itaque nesciunt
@@ -136,17 +142,17 @@
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>META-RANK TEAM</h2>
+              <h2>DepGraph TEAM</h2>
             </div>
           </div>
           <div class="row2">
             <div class="col footer-school">
-              Zhejiang University
+              National University of Singapore & Zhejiang University
             </div>
           </div>
           <div class="row2">
             <div class="col footer-name">
-              JiaRui Duan, Jie Song, Haoling Li, Mingli Song
+              Gongfan Fang, Xinyin Ma, Mingli Song, Michael Bi Mi, Xinchao Wang
             </div>
           </div>
 
@@ -614,7 +620,7 @@ async function startRecognize() {
 /*  transform: rotate(90deg);*/
 /*}*/
 .holly{
-  /*background-image: url('http://10.214.242.155:7668/img/background/algorithm2.jpg');*/
+  /*background-image: url('http://10.214.242.155:7996/img/background/algorithm2.jpg');*/
   display: flex;
   background-color: white;
   /*justify-content: space-around;*/

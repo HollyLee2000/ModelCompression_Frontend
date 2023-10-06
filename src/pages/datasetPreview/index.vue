@@ -1,6 +1,6 @@
 <template style="text-align: center">
-<!--  <el-tabs :style="{background: isShow1? 'url(\'http://10.214.242.155:7668/img/background/background_overallpreview.jpg\') no-repeat 0% 20%/ cover'-->
-<!--   : 'url(\'http://10.214.242.155:7668/img/background/background_preview.jpg\') no-repeat 0% 20%/ cover'}"-->
+<!--  <el-tabs :style="{background: isShow1? 'url(\'http://10.214.242.155:7996/img/background/background_overallpreview.jpg\') no-repeat 0% 20%/ cover'-->
+<!--   : 'url(\'http://10.214.242.155:7996/img/background/background_preview.jpg\') no-repeat 0% 20%/ cover'}"-->
 <!--           type="border-card" class="demo-tabs" @tab-click="handleClick" v-model="activeName" :stretch=true>-->
   <el-tabs type="border-card" class="demo-tabs" @tab-click="handleClick" v-model="activeName" :stretch=true>
     <el-tab-pane label="Meta-rank datasets" name="public">

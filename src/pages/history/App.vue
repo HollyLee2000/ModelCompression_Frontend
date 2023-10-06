@@ -26,12 +26,12 @@
 <!--        <template #default="props">-->
 <!--          <div m="4">-->
 <!--            <p m="t-0 b-2">Morf result download:-->
-<!--              <el-link :href="'http://10.214.242.155:7668/WorkSpace/data/user_upload/'+props.row.morfPath.split('/').slice(-1)[0]" :underline="false">-->
+<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.morfPath.split('/').slice(-1)[0]" :underline="false">-->
 <!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
 <!--              </el-link>-->
 <!--            </p>-->
 <!--            <p m="t-0 b-2">Lerf result download:-->
-<!--              <el-link :href="'http://10.214.242.155:7668/WorkSpace/data/user_upload/'+props.row.lerfPath.split('/').slice(-1)[0]" :underline="false">-->
+<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.lerfPath.split('/').slice(-1)[0]" :underline="false">-->
 <!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
 <!--              </el-link>-->
 <!--            </p>-->
@@ -39,7 +39,7 @@
 <!--              Algorithm file download: {{ props.row.pythonPath.split("/").slice(-1)[0] }}-->
 <!--            </p>-->
 <!--            <p v-else>Algorithm file download:-->
-<!--              <el-link :href="'http://10.214.242.155:7668/WorkSpace/data/user_upload/'+props.row.pythonPath.split('/').slice(-1)[0]" :underline="false">-->
+<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.pythonPath.split('/').slice(-1)[0]" :underline="false">-->
 <!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
 <!--              </el-link>-->
 <!--            </p>-->
@@ -48,7 +48,7 @@
 <!--          </div>-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <!--      "'http://10.214.242.155:7668/WorkSpace/data/user_upload/'"-->
+      <!--      "'http://10.214.242.155:7996/WorkSpace/data/user_upload/'"-->
 
       <!--      {{ props.row.morfPath.split("/")[props.row.morfPath.split("/").length-1] }}-->
 

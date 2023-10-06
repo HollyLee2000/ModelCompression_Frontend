@@ -274,7 +274,7 @@ async function createDataset() {
   text-align: center;
 }
 .demo-image{
-  /*background: url("http://10.214.242.155:7668/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
+  /*background: url("http://10.214.242.155:7996/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
   background: linear-gradient(transparent, #E7E7E7 100%);
 }
 .forSearch {

@@ -8,7 +8,7 @@ module.exports = defineConfig({
   devServer:{
     proxy:{
       '/api': {
-        target: 'http://10.214.242.155:7668',  //部署的时候, 记得更改服务器上的后端端口
+        target: 'http://10.214.242.155:7996',  //部署的时候, 记得更改服务器上的后端端口
         //target: 'http://localhost:8888',
         changeOrigin:true,
         pathRewrite:{'^/api':''},

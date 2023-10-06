@@ -195,7 +195,7 @@
       </el-dialog>
 
 
-      <!--      background: url('http://10.214.242.155:7668/img/background/background_overallpreview.jpg') no-repeat 0% 20%/ cover;-->
+      <!--      background: url('http://10.214.242.155:7996/img/background/background_overallpreview.jpg') no-repeat 0% 20%/ cover;-->
       <el-dialog class="scrollable" v-model="dialogVisible" style="width:30%; height:50%; text-align: center; overflow: auto;"
                  :draggable="true" @close="dialogVisible = false" :append-to-body="true" title="Introduction for CIFAR"  >
         <div class="dialog-container">
@@ -209,8 +209,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/hinton.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/hinton.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/hinton.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/hinton.jpg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;CIFAR-10一共包含10 个类别的RGB 彩色图片：飞机（airplane）、汽车（automobile）、鸟类（bird）、猫（cat）、鹿（deer）、狗（dog）、蛙类（frog）、马（horse）、船（ship）和卡车（truck）。每个图片的尺寸为32 × 32 ，每个类别有6000个图像，数据集中一共有50000 张训练图片和10000 张测试图片。
@@ -219,8 +219,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cifar-10.png']"
-                    :src="`http://10.214.242.155:7668/img/background/cifar-10.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cifar-10.png']"
+                    :src="`http://10.214.242.155:7996/img/background/cifar-10.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;CIFAR-100则包含了100个类。每个类有600张大小为32×32的彩色图像，其中500张作为训练集，100张作为测试集。对于每一张图像，它有fine_labels和coarse_labels两个标签，分别代表图像的细粒度和粗粒度标签，对应下图中的classes和superclass。也就是说，CIFAR-100数据集是分层次的、多粒度的。
@@ -229,8 +229,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cifar-100.png']"
-                    :src="`http://10.214.242.155:7668/img/background/cifar-100.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cifar-100.png']"
+                    :src="`http://10.214.242.155:7996/img/background/cifar-100.png`"
                 />
                 <div style="text-align: left">CIFAR数据集官网: <el-link href="https://www.cs.toronto.edu/~kriz/cifar.html" target="_blank" type="primary">https://www.cs.toronto.edu/~kriz/cifar.html</el-link></div>
 
@@ -243,8 +243,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/hinton-10.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/hinton.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/hinton-10.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/hinton.jpg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;CIFAR-10 consists of RGB color images of 10 classes: airplanes, automobiles, birds, cats, deer, dogs, frogs, horses, ships, and trucks. Each image is 32x32 in size, and there are 6000 images per class, making a total of 50000 training images and 10000 test images in the dataset.
@@ -253,8 +253,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cifar-10.png']"
-                    :src="`http://10.214.242.155:7668/img/background/cifar-10.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cifar-10.png']"
+                    :src="`http://10.214.242.155:7996/img/background/cifar-10.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;CIFAR-100, on the other hand, contains 100 classes, with 600 images per class. Each image is a colored 32×32 picture, with 500 images used for training and 100 images used for testing. Each image has two labels: fine_labels and coarse_labels, representing the fine-grained and coarse-grained labels of the image, respectively, corresponding to the "classes" and "superclass" shown in the figure below. In other words, the CIFAR-100 dataset is hierarchical and multi-granular.
@@ -263,8 +263,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cifar-100.png']"
-                    :src="`http://10.214.242.155:7668/img/background/cifar-100.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cifar-100.png']"
+                    :src="`http://10.214.242.155:7996/img/background/cifar-100.png`"
                 />
                 <div style="text-align: left">The official website of CIFAR dataset: <el-link href="https://www.cs.toronto.edu/~kriz/cifar.html" target="_blank" type="primary">https://www.cs.toronto.edu/~kriz/cifar.html</el-link></div>
 
@@ -287,8 +287,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/feifei2.jpeg']"
-                    :src="`http://10.214.242.155:7668/img/background/feifei2.jpeg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/feifei2.jpeg']"
+                    :src="`http://10.214.242.155:7996/img/background/feifei2.jpeg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;ILSVRC（<b>L</b>arge <b>S</b>cale <b>V</b>isual <b>R</b>ecognition <b>C</b>hallenge）是曾经每年开展的基于ImageNet数据集的比赛（即从ImageNet数据集中抽取部分样本作为比赛的数据集），其中最常用的是2012年的数据集，记为ILSVRC2012。该数据集拥有1000个分类，每个分类约有1000张图片，用于训练的图片总数约为120万张，并含有5万张图片作为验证集，10万张图片作为测试集。因此，ILSVRC这个词既可以用来指代比赛，也可以用来特指数据集。ILSVRC比赛包括图像分类、目标定位、目标检测、视频目标检测和场景分类等多个方面。ILSVRC竞赛中诞生了许多成功的图像识别方法，其中很多是深度学习方法，例如AlexNet、VGG、GoogLeNet和ResNet等耳熟能详的深度学习网络模型。
@@ -297,8 +297,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/ISVRC.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/ISVRC.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/ISVRC.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/ISVRC.jpg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;可以说， ImageNet数据集和ILSVRC竞赛大大促进了计算机视觉技术和深度学习的发展，在深度学习的浪潮中占有举足轻重的地位。因此，每年的ILSVRC比赛都备受关注，其结果也受到广泛关注和讨论。直到2017年完成了最后一届ILSVRC竞赛。当人类肉眼分类错误率为5.1%时，网络的图像识别错误率已经达到约 2.9%。此时在算法层面已经刷得过拟合，将竞赛继续下去的意义不大（本身imagenet的图片就存在噪声，网络已经基本把训练集的噪声都拟合了）。图像感知的时代开始落幕，图像认知和理解的时代缓缓开始。
@@ -307,8 +307,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/imgnet_end.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/imgnet_end.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/imgnet_end.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/imgnet_end.jpg`"
                 />
                 <div style="text-align: left">ImageNet数据集和ILSVRC竞赛官网: <el-link href="https://www.image-net.org/" target="_blank" type="primary">https://www.image-net.org/</el-link></div>
 
@@ -321,8 +321,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/feifei2.jpeg']"
-                    :src="`http://10.214.242.155:7668/img/background/feifei2.jpeg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/feifei2.jpeg']"
+                    :src="`http://10.214.242.155:7996/img/background/feifei2.jpeg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;ILSVRC（<b>L</b>arge <b>S</b>cale <b>V</b>isual <b>R</b>ecognition <b>C</b>hallenge） is an annual competition based on the ImageNet dataset, where a subset of the dataset is selected for the competition. The most commonly used subset is the 2012 dataset, known as ILSVRC2012, which contains 1,000 categories, each with approximately 1,000 images. The total number of images used for training is about 1.2 million, with 50,000 images as the validation set and 100,000 images as the test set. Therefore, the term ILSVRC refers to both the competition and the dataset itself. The ILSVRC competition includes various aspects, such as image classification, object localization, object detection, video object detection, and scene classification. Many successful image recognition methods have been developed through the ILSVRC competition, including many deep learning methods such as AlexNet, VGG, GoogLeNet, and ResNet.
@@ -331,8 +331,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/ISVRC.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/ISVRC.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/ISVRC.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/ISVRC.jpg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;It can be said that the ImageNet dataset and ILSVRC competition have greatly promoted the development of computer vision technology and deep learning and have played a crucial role in the wave of deep learning. Therefore, the results of the annual ILSVRC competition are widely watched and discussed. The last ILSVRC competition was completed in 2017, where the error rate of the network's image recognition had reached approximately 2.9% when the human error rate was 5.1%. Continuing the competition would not have been meaningful, as the algorithms were already overfitting, and the noise in the ImageNet images had already been largely incorporated into the training set. The era of image perception is coming to an end, and the era of image cognition and understanding is slowly beginning.
@@ -341,8 +341,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/imgnet_end.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/imgnet_end.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/imgnet_end.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/imgnet_end.jpg`"
                 />
                 <div style="text-align: left">The official website for ImageNet dataset and ILSVRC competition: <el-link href="https://www.image-net.org/" target="_blank" type="primary">https://www.image-net.org/</el-link></div>
 
@@ -367,22 +367,22 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc1.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc1.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc1.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc1.png`"
                 />
                 <el-image
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc2.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc2.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc2.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc2.png`"
                 />
                 <el-image
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc3.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc3.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc3.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc3.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;我们知道在 ImageNet挑战赛上涌现了一大批优秀的分类模型，而PASCAL挑战赛上则是涌现了一大批优秀的目标检测和分割模型，这项挑战赛已于2012年停止举办了，但是研究者仍然可以在其服务器上提交预测结果以评估模型的性能。虽然近期的目标检测或分割模型更倾向于使用MS COCO数据集，但是这丝毫不影响 PASCAL VOC数据集的重要性，毕竟PASCAL对于目标检测或分割类型来说属于先驱者的地位。对于现在的研究者来说比较重要的两个年份的数据集是 PASCAL VOC 2007 与 PASCAL VOC 2012，这两个数据集频频在现在的一些检测或分割类的论文当中出现。
@@ -402,8 +402,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc4.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc4.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc4.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc4.png`"
                 />
                 <ul style="text-align: left">
                   <li>
@@ -428,8 +428,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc5.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc5.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc5.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc5.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;分割任务的数据集变化略有不同：
@@ -449,8 +449,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc6.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc6.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc6.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc6.png`"
                 />
 
 
@@ -464,22 +464,22 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc1.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc1.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc1.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc1.png`"
                 />
                 <el-image
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc2.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc2.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc2.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc2.png`"
                 />
                 <el-image
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc3.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc3.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc3.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc3.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;We know that a large number of excellent classification models emerged in the ImageNet Challenge, while a large number of excellent object detection and segmentation models emerged in the PASCAL Challenge, which was discontinued in 2012, but researchers can still submit prediction results on its server to evaluate model performance. Although recent object detection or segmentation models tend to use the MS COCO dataset, this does not diminish the importance of the PASCAL VOC dataset, as PASCAL has a pioneering status for object detection or segmentation. The two important years of datasets for current researchers are PASCAL VOC 2007 and PASCAL VOC 2012, which frequently appear in papers on detection or segmentation.
@@ -499,8 +499,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc4.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc4.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc4.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc4.png`"
                 />
                 <ul style="text-align: left">
                   <li>
@@ -525,8 +525,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc5.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc5.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc5.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc5.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;The changes to the dataset for segmentation tasks are slightly different:
@@ -546,8 +546,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/voc6.png']"
-                    :src="`http://10.214.242.155:7668/img/background/voc6.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/voc6.png']"
+                    :src="`http://10.214.242.155:7996/img/background/voc6.png`"
                 />
               </el-tab-pane>
             </el-tabs>
@@ -569,8 +569,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/coco1.png']"
-                    :src="`http://10.214.242.155:7668/img/background/coco1.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/coco1.png']"
+                    :src="`http://10.214.242.155:7996/img/background/coco1.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;当ImageNet竞赛停办后，COCO竞赛就成为是目标识别、检测等领域的一个最权威、最重要的标杆，也是目前该领域在国际上唯一能汇集Google、微软、Facebook以及国内外众多顶尖院校和优秀创新企业共同参与的大赛。
@@ -588,8 +588,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco2.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco2.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco2.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco2.png`"
                     />
                   </li>
                   <li>
@@ -600,8 +600,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco3.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco3.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco3.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco3.png`"
                     />
                   </li>
                   <li>
@@ -612,8 +612,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco4.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco4.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco4.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco4.png`"
                     />
                   </li>
                   <li>
@@ -624,8 +624,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco5.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco5.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco5.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco5.png`"
                     />
                   </li>
                   <li>
@@ -636,8 +636,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco6.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco6.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco6.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco6.png`"
                     />
                   </li>
                   <li>
@@ -648,8 +648,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco7.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco7.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco7.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco7.png`"
                     />
                   </li>
                 </ul>
@@ -664,8 +664,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/coco1.png']"
-                    :src="`http://10.214.242.155:7668/img/background/coco1.png`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/coco1.png']"
+                    :src="`http://10.214.242.155:7996/img/background/coco1.png`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;After the ImageNet competition was discontinued, the COCO competition became the most authoritative and important benchmark in the field of target recognition, detection, and other related areas. It is currently the only international competition that brings together Google, Microsoft, Facebook, many top universities and excellent innovative companies from home and abroad. The dataset mainly addresses three problems: target detection, context between targets, and precise 2D localization of targets. The COCO dataset has 91 categories, although fewer than ImageNet and SUN, each category has more images, which is advantageous for obtaining more abilities for each category in a specific scene. Compared to PASCAL VOC, COCO has more categories and images.
@@ -682,8 +682,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco2.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco2.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco2.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco2.png`"
                     />
                   </li>
                   <li>
@@ -694,8 +694,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco3.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco3.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco3.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco3.png`"
                     />
                   </li>
                   <li>
@@ -706,8 +706,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco4.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco4.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco4.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco4.png`"
                     />
                   </li>
                   <li>
@@ -718,8 +718,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco5.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco5.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco5.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco5.png`"
                     />
                   </li>
                   <li>
@@ -730,8 +730,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco6.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco6.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco6.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco6.png`"
                     />
                   </li>
                   <li>
@@ -742,8 +742,8 @@
                         style="width: 100%; height: 100%"
                         :fit="'scale-down'"
                         class="image"
-                        :preview-src-list="['http://10.214.242.155:7668/img/background/coco7.png']"
-                        :src="`http://10.214.242.155:7668/img/background/coco7.png`"
+                        :preview-src-list="['http://10.214.242.155:7996/img/background/coco7.png']"
+                        :src="`http://10.214.242.155:7996/img/background/coco7.png`"
                     />
                   </li>
                 </ul>
@@ -768,8 +768,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cub1.jpeg']"
-                    :src="`http://10.214.242.155:7668/img/background/cub1.jpeg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cub1.jpeg']"
+                    :src="`http://10.214.242.155:7996/img/background/cub1.jpeg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;每个图像都有对应的标注信息，包括鸟类名称、图像ID、物种ID、辅助信息（如地理位置、相机设置等）等。数据集中的图像来自于在线鸟类图片库和一些个人的收集。文本信息来自Reed等人。他们通过收集细致的自然语言描述来扩展CUB-200-2011数据集。每张图像收集了十个单句描述。自然语言描述通过亚马逊机械土耳其（AMT）平台收集，要求至少包含10个单词，不包含子类别和动作的任何信息。除了基本的分类任务外，该数据集还可用于学习鸟类特征的表示，以及探索多样性和视角变化等方面的问题。
@@ -791,8 +791,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cub1.jpeg']"
-                    :src="`http://10.214.242.155:7668/img/background/cub1.jpeg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cub1.jpeg']"
+                    :src="`http://10.214.242.155:7996/img/background/cub1.jpeg`"
                 />
                 <div style="text-align: left; margin: 10px 0;">
                   &emsp;&emsp;Each image in the dataset is accompanied by corresponding annotation information, including the bird species name, image ID, species ID, and auxiliary information such as geographic location and camera settings. The images in the dataset come from online bird image libraries and some personal collections. The textual information comes from Reed et al.. They expand the CUB-200-2011 dataset by collecting fine-grained natural language descriptions. Ten single-sentence descriptions are collected for each image. The natural language descriptions are collected through the Amazon Mechanical Turk (AMT) platform, and are required at least 10 words, without any information of subcategories and actions. In addition to basic classification tasks, this dataset can also be used for learning representations of bird features and exploring issues such as diversity and changes in perspective.
@@ -819,8 +819,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cars.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/cars.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cars.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/cars.jpg`"
                 />
                 <div style="text-align: left">CARS数据集主页: <el-link href="https://ai.stanford.edu/~jkrause/cars/car_dataset.html" target="_blank" type="primary">https://ai.stanford.edu/~jkrause/cars/car_dataset.html</el-link></div>
 
@@ -839,8 +839,8 @@
                     style="width: 100%; height: 100%"
                     :fit="'scale-down'"
                     class="image"
-                    :preview-src-list="['http://10.214.242.155:7668/img/background/cars.jpg']"
-                    :src="`http://10.214.242.155:7668/img/background/cars.jpg`"
+                    :preview-src-list="['http://10.214.242.155:7996/img/background/cars.jpg']"
+                    :src="`http://10.214.242.155:7996/img/background/cars.jpg`"
                 />
                 <div style="text-align: left">CARS dataset homepage: <el-link href="https://ai.stanford.edu/~jkrause/cars/car_dataset.html" target="_blank" type="primary">https://ai.stanford.edu/~jkrause/cars/car_dataset.html</el-link></div>
 
@@ -954,16 +954,16 @@ const nowPage = ref(1), datasetNumber = ref(3);
 const showList = ref([]), showList2 = ref([]), pictureShowList=ref([]), listPreview = ref([]);
 const CifarList = ref([]), ImageNetList = ref([]), vocList = ref([]), cocoList = ref([]);
 const NWPU = ref([]), Food101 = ref([]), Place365=ref([])
-const fileList = ref(['10.214.242.155:7668/Cifar/0_1740.jpg','10.214.242.155:7668/Cifar/3_10557.jpg','10.214.242.155:7668/Cifar/7_18534.jpg',
-  '10.214.242.155:7668/originalImgNet/n01798484/n01798484_14557.JPEG','10.214.242.155:7668/originalImgNet/n01491361/n01491361_3683.JPEG',
-  '10.214.242.155:7668/originalImgNet/n01440764/n01440764_6628.JPEG','10.214.242.155:7668/originalVOC/2007_000648.jpg',
-  '10.214.242.155:7668/originalVOC/2007_005086.jpg','10.214.242.155:7668/originalVOC/2007_000836.jpg','10.214.242.155:7668/cocoimg/000000165012.jpg',
-  '10.214.242.155:7668/cocoimg/000000189617.jpg','10.214.242.155:7668/cocoimg/000000308175.jpg','10.214.242.155:7668/CUB/014_Indigo_Bunting/Indigo_Bunting_0004_13195.jpg'
-  ,'10.214.242.155:7668/CUB/038_Great_Crested_Flycatcher/Great_Crested_Flycatcher_0024_29516.jpg','10.214.242.155:7668/CUB/028_Brown_Creeper/Brown_Creeper_0075_24947.jpg',
-  '10.214.242.155:7668/CARS/00009.jpg','10.214.242.155:7668/CARS/00082.jpg','10.214.242.155:7668/CARS/00246.jpg','10.214.242.155:7668/NWPU/cloud/cloud_048.jpg',
-  '10.214.242.155:7668/NWPU/river/river_036.jpg','10.214.242.155:7668/NWPU/snowberg/snowberg_125.jpg','10.214.242.155:7668/Food101/beef_carpaccio/65324.jpg',
-  '10.214.242.155:7668/Food101/ceviche/25779.jpg','10.214.242.155:7668/Food101/frozen_yogurt/196013.jpg','10.214.242.155:7668/Place365/arcade/00000008.jpg',
-  '10.214.242.155:7668/Place365/beach_house/00000002.jpg', '10.214.242.155:7668/Place365/childs_room/00000111.jpg']);
+const fileList = ref(['10.214.242.155:7996/Cifar/0_1740.jpg','10.214.242.155:7996/Cifar/3_10557.jpg','10.214.242.155:7996/Cifar/7_18534.jpg',
+  '10.214.242.155:7996/originalImgNet/n01798484/n01798484_14557.JPEG','10.214.242.155:7996/originalImgNet/n01491361/n01491361_3683.JPEG',
+  '10.214.242.155:7996/originalImgNet/n01440764/n01440764_6628.JPEG','10.214.242.155:7996/originalVOC/2007_000648.jpg',
+  '10.214.242.155:7996/originalVOC/2007_005086.jpg','10.214.242.155:7996/originalVOC/2007_000836.jpg','10.214.242.155:7996/cocoimg/000000165012.jpg',
+  '10.214.242.155:7996/cocoimg/000000189617.jpg','10.214.242.155:7996/cocoimg/000000308175.jpg','10.214.242.155:7996/CUB/014_Indigo_Bunting/Indigo_Bunting_0004_13195.jpg'
+  ,'10.214.242.155:7996/CUB/038_Great_Crested_Flycatcher/Great_Crested_Flycatcher_0024_29516.jpg','10.214.242.155:7996/CUB/028_Brown_Creeper/Brown_Creeper_0075_24947.jpg',
+  '10.214.242.155:7996/CARS/00009.jpg','10.214.242.155:7996/CARS/00082.jpg','10.214.242.155:7996/CARS/00246.jpg','10.214.242.155:7996/NWPU/cloud/cloud_048.jpg',
+  '10.214.242.155:7996/NWPU/river/river_036.jpg','10.214.242.155:7996/NWPU/snowberg/snowberg_125.jpg','10.214.242.155:7996/Food101/beef_carpaccio/65324.jpg',
+  '10.214.242.155:7996/Food101/ceviche/25779.jpg','10.214.242.155:7996/Food101/frozen_yogurt/196013.jpg','10.214.242.155:7996/Place365/arcade/00000008.jpg',
+  '10.214.242.155:7996/Place365/beach_house/00000002.jpg', '10.214.242.155:7996/Place365/childs_room/00000111.jpg']);
 
 
 // /nfs3-p2/duanjr/places365_standard/train/arcade/00000008.jpg
@@ -1230,7 +1230,7 @@ li{
   margin-bottom: 100px;
 }
 .demo-image{
-  /*background: url("http://10.214.242.155:7668/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
+  /*background: url("http://10.214.242.155:7996/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
   background: linear-gradient(transparent, #E7E7E7 100%);
 }
 .demo-image .blockpublic {
@@ -1288,7 +1288,7 @@ li{
   text-align: center;
 }
 /*.el-main{*/
-/*  background-image: linear-gradient(transparent,#fff 100%),url("http://10.214.242.155:7668/img/background/background_purple.jpg");*/
+/*  background-image: linear-gradient(transparent,#fff 100%),url("http://10.214.242.155:7996/img/background/background_purple.jpg");*/
 /*}*/
 .forSearch {
   margin: 10px;

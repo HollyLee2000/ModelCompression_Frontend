@@ -292,10 +292,10 @@
 
         <div class="holly-data">
           <el-link target="_blank"
-                   :href="`http://10.214.242.155:7668/Prototype/test_${chosenModel}_pooled/pruned_and_projected/treevis.pdf`" :underline="false">
+                   :href="`http://10.214.242.155:7996/Prototype/test_${chosenModel}_pooled/pruned_and_projected/treevis.pdf`" :underline="false">
             <el-button style="border-color: #000000;" size="large" type="primary" plain>查看高清矢量图</el-button>
           </el-link>
-          <el-link target="_blank"  :href="'http://10.214.242.155:7668/Prototype/test_'+chosenModel+'_pooled/pruned_and_projected/node_vis.zip'" :underline="false">
+          <el-link target="_blank"  :href="'http://10.214.242.155:7996/Prototype/test_'+chosenModel+'_pooled/pruned_and_projected/node_vis.zip'" :underline="false">
             <el-button style="border-color: #000000;" size="large" type="warning" plain>下载节点原型</el-button>
           </el-link>
           <el-button style="border-color: #000000;" size="large" type="success" plain @click="jumpToTree">更改节点原型</el-button>
@@ -822,8 +822,8 @@ async function startRecognize() {
   // for(let i=0; i<now_rank_pic.value.length; i++){
   //   user_rank.value[i] = 1
   // }
-  showList.value[0] = "10.214.242.155:7668/Prototype/test_" + chosenModel.value + "_full/pruned_and_projected/treevis.png";
-  showList2.value[0] = "10.214.242.155:7668/Prototype/test_" + chosenModel.value + "_pooled/pruned_and_projected/treevis.png";
+  showList.value[0] = "10.214.242.155:7996/Prototype/test_" + chosenModel.value + "_full/pruned_and_projected/treevis.png";
+  showList2.value[0] = "10.214.242.155:7996/Prototype/test_" + chosenModel.value + "_pooled/pruned_and_projected/treevis.png";
 
 
   console.log("node_idx.value: ", node_idx.value)
@@ -1567,7 +1567,7 @@ const MyMounted = () => {
   //     .attr("width", "25")
   //     .attr("height", "25")
   //     .append("image")
-  //     .attr("xlink:href", "http://10.214.242.155:7668/img/background/tool2.jpg")
+  //     .attr("xlink:href", "http://10.214.242.155:7996/img/background/tool2.jpg")
   //     .attr("x", -10)
   //     .attr("y", -14)
   //     .attr("width", 60)
@@ -1869,7 +1869,7 @@ const MyMounted = () => {
   /*height: 10%;*/
 }
 .holly{
-  /*background-image: url('http://10.214.242.155:7668/img/background/algorithm2.jpg');*/
+  /*background-image: url('http://10.214.242.155:7996/img/background/algorithm2.jpg');*/
   /*background-repeat: no-repeat;*/
   /*background-size: contain;*/
   background-color: white;

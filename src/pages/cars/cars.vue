@@ -1,6 +1,6 @@
 <template>
   <el-container>
-<!--    <el-aside style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('http://10.214.242.155:7668/img/background/ImageNet_aside.png') no-repeat 0% 20%/ cover; width: 750px; padding: 20px">-->
+<!--    <el-aside style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('http://10.214.242.155:7996/img/background/ImageNet_aside.png') no-repeat 0% 20%/ cover; width: 750px; padding: 20px">-->
     <el-aside style="background-color: white; width: 50%; padding: 20px">
     <div style="margin: 20px 0 40px 0; text-align: center; ">
         <label style="font-size:35px; color: black; border: 0;">1. Choose a Car</label>
@@ -115,10 +115,10 @@
 
           <div class="holly-data">
             <el-link target="_blank"
-                     :href="`http://10.214.242.155:7668/Prototype/test_${chosenModel}_full/pruned_and_projected/treevis.pdf`" :underline="false">
+                     :href="`http://10.214.242.155:7996/Prototype/test_${chosenModel}_full/pruned_and_projected/treevis.pdf`" :underline="false">
               <el-button style="border-color: #000000;" size="large" type="primary" plain>查看高清矢量图</el-button>
             </el-link>
-            <el-link  :href="'http://10.214.242.155:7668/Prototype/test_'+chosenModel+'_full/pruned_and_projected/node_vis.zip'" :underline="false">
+            <el-link  :href="'http://10.214.242.155:7996/Prototype/test_'+chosenModel+'_full/pruned_and_projected/node_vis.zip'" :underline="false">
               <el-button style="border-color: #000000; " size="large" type="warning" plain>下载节点原型</el-button>
             </el-link>
           </div>
@@ -152,10 +152,10 @@
 
           <div class="holly-data">
             <el-link target="_blank"
-                     :href="`http://10.214.242.155:7668/Prototype/test_${chosenModel}_pruned/pruned_and_projected/treevis.pdf`" :underline="false">
+                     :href="`http://10.214.242.155:7996/Prototype/test_${chosenModel}_pruned/pruned_and_projected/treevis.pdf`" :underline="false">
               <el-button style="border-color: #000000;" size="large" type="primary" plain>查看高清矢量图</el-button>
             </el-link>
-            <el-link target="_blank"  :href="'http://10.214.242.155:7668/Prototype/test_'+chosenModel+'_pruned/pruned_and_projected/node_vis.zip'" :underline="false">
+            <el-link target="_blank"  :href="'http://10.214.242.155:7996/Prototype/test_'+chosenModel+'_pruned/pruned_and_projected/node_vis.zip'" :underline="false">
               <el-button style="border-color: #000000;" size="large" type="warning" plain>下载节点原型</el-button>
             </el-link>
           </div>
@@ -303,7 +303,7 @@ const chosen = ref([])
 //       });
 //
 //   // axios({
-//   //   url: 'http://10.214.242.155:7668/home/OIPDL_codes/CUB_CARS/tests/test_cub1_full/pruned_and_projected/treevis.pdf',
+//   //   url: 'http://10.214.242.155:7996/home/OIPDL_codes/CUB_CARS/tests/test_cub1_full/pruned_and_projected/treevis.pdf',
 //   //   method: 'GET',
 //   //   responseType: 'blob',
 //   // }).then((response) => {
@@ -330,7 +330,7 @@ const chosen = ref([])
 //       });
 //
 //   // axios({
-//   //   url: 'http://10.214.242.155:7668/home/OIPDL_codes/CUB_CARS/tests/test_cub1_full/pruned_and_projected/node_vis.zip',
+//   //   url: 'http://10.214.242.155:7996/home/OIPDL_codes/CUB_CARS/tests/test_cub1_full/pruned_and_projected/node_vis.zip',
 //   //   method: 'GET',
 //   //   responseType: 'blob',
 //   // }).then((response) => {
@@ -503,8 +503,8 @@ async function startRecognize() {
       .catch((error)=>{
         console.error(error)
       })
-  showList.value[0] = "10.214.242.155:7668/Prototype/test_" + chosenModel.value + "_full/pruned_and_projected/treevis.png";
-  showList2.value[0] = "10.214.242.155:7668/Prototype/test_" + chosenModel.value + "_pruned/pruned_and_projected/treevis.png";
+  showList.value[0] = "10.214.242.155:7996/Prototype/test_" + chosenModel.value + "_full/pruned_and_projected/treevis.png";
+  showList2.value[0] = "10.214.242.155:7996/Prototype/test_" + chosenModel.value + "_pruned/pruned_and_projected/treevis.png";
 
 
   await request.post('/algorithm/reportGpu',{

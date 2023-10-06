@@ -132,27 +132,27 @@ torchvision==<span class="hljs-number">0.14.1</span></code></pre>
 
 
       <div class="unit-text" style="font-style: italic">Download the checkpoints place them in the <strong>'ckpt'</strong> directory of the MetaScore project:</div>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsnwpu_resisc45_resnet18/00000/best.pth" type="primary">NWPU-RESISC45-resnet18</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsnwpu_resisc45_resnet18/00000/best.pth" type="primary">NWPU-RESISC45-resnet18</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsnwpu_resisc45_inceptionv4/00000/best.pth" type="primary">NWPU-RESISC45-inceptionv4</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsnwpu_resisc45_inceptionv4/00000/best.pth" type="primary">NWPU-RESISC45-inceptionv4</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsnwpu_resisc45_vgg19/00000/best.pth" type="primary">NWPU-RESISC45-vgg19</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsnwpu_resisc45_vgg19/00000/best.pth" type="primary">NWPU-RESISC45-vgg19</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsfood_resnet18/00000/best.pth" type="primary">Food101-resnet18</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsfood_resnet18/00000/best.pth" type="primary">Food101-resnet18</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsfood_inceptionv4/00000/best.pth" type="primary">Food101-inceptionv4</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsfood_inceptionv4/00000/best.pth" type="primary">Food101-inceptionv4</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsfood_vgg19/00000/best.pth" type="primary">Food-101-vgg19</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsfood_vgg19/00000/best.pth" type="primary">Food-101-vgg19</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsimagenet_resnet18/00000/best.pth" type="primary">Imagenet-1K-resnet18</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsimagenet_resnet18/00000/best.pth" type="primary">Imagenet-1K-resnet18</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsimagenet_inceptionv4/00000/best.pth" type="primary">Imagenet-1K-inceptionv4</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsimagenet_inceptionv4/00000/best.pth" type="primary">Imagenet-1K-inceptionv4</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/train/dsimagenet_vgg19/00000/best.pth" type="primary">Imagenet-1K-vgg19</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/train/dsimagenet_vgg19/00000/best.pth" type="primary">Imagenet-1K-vgg19</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/resnet18_places365.pth.tar" type="primary">Place365-resnet18</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/resnet18_places365.pth.tar" type="primary">Place365-resnet18</el-link>
       <br>
-      <el-link href="http://10.214.242.155:7668/Checkpoints/resnet50_places365.pth.tar" type="primary">Place365-resnet50</el-link>
+      <el-link href="http://10.214.242.155:7996/Checkpoints/resnet50_places365.pth.tar" type="primary">Place365-resnet50</el-link>
 
       <div class="unit-text" style="font-style: italic">Follow these steps to <strong>import your attribution algorithm</strong>:</div>
       <ul>
@@ -529,7 +529,7 @@ function showMyScript(){
 /*  transform: rotate(90deg);*/
 /*}*/
 .holly{
-  /*background-image: url('http://10.214.242.155:7668/img/background/algorithm2.jpg');*/
+  /*background-image: url('http://10.214.242.155:7996/img/background/algorithm2.jpg');*/
   /*background-repeat: no-repeat;*/
   /*background-size: contain;*/
   background-color: white;

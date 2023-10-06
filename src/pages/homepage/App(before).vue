@@ -292,7 +292,7 @@ async function startRecognize() {
 }
 .el-container {
   position: relative;
-  /*background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url("http://10.214.242.155:7668/img/background/background_purple.jpg") no-repeat 0% 20%/ cover;*/
+  /*background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url("http://10.214.242.155:7996/img/background/background_purple.jpg") no-repeat 0% 20%/ cover;*/
   /*background-size: cover;*/
   /*opacity: 0.6;*/
   height: 100%;
