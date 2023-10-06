@@ -1,0 +1,54 @@
+body{
+  background:black;
+}
+.not-scaling {
+  touch-action: none;  /* 禁止移动端的双指缩放 */
+  pointer-events: none;  /* 禁止鼠标事件 */
+}
+
+.not-scaling * {
+  pointer-events: all;  /* 除根元素外，其他元素恢复鼠标事件 */
+}
+.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      /*background-color:black;*/
+  }
+   
+  .node circle {
+    fill: #fff;
+    stroke: white;
+    stroke-width: 1.5px;
+  }
+   
+  .node text {
+    font-size:10px; 
+    font-family:sans-serif;
+    fill:black;
+    letter-spacing:.3em;
+    
+  }
+
+
+   
+  .link {
+    fill: none;
+    stroke: #7950AD;
+    stroke-width: 1.5px;
+  }
+
+  .templink {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }

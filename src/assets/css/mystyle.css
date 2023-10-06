@@ -1,0 +1,298 @@
+#nav-total{
+    padding-left: 30%;
+}
+
+.lab-project-name{
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.btn-docs{
+    background: #7371ec;
+    border-color: #7371ec !important;
+    color: white;
+}
+
+
+#service{
+    height: 100%;
+    width: 100%;
+}
+
+.dgld-info{
+    height: 20%;
+    width: 100%;
+}
+.dgld-info-content{
+    float: right;
+    width: 70%;
+    height: 100%;
+}
+.info-content{
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 21px;
+}
+.info-title{
+    font-size: 65px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+.title-context-split{
+    float: left;
+    height: 100%;
+    width: 5%;
+}
+
+.title-context-split .line{
+    height: 80%;
+    width: 1%;
+    border: 1px solid #d0d0d0;
+    margin-top: 30%;
+}
+
+.features{
+    height: 100%;
+    width: 100%;
+}
+
+.text-blue{
+    font-weight:500 ;
+    
+    color: rgb(28, 28, 221);
+}
+
+.text-gray{
+    font-weight:500 ;
+
+    color: #3F3A62;
+}
+
+
+.video-introduce{
+    height: 100%;
+    width: 100%;
+}
+
+.video-introduce .container{
+
+    margin-top: 10%;
+}
+
+.paper-introduce{
+    height: 70%;
+    width: 100%;
+    background-color: #f5f7fa;
+}
+
+.paper-introduce .short-introduce{
+    float: left;
+    height: 100%;
+    width: 30%;
+
+}
+
+.paper-introduce .paper-images{
+    float: left;
+    height: 100%;
+    width: 40%;
+
+}
+
+.paper-introduce .download-link{
+    float: right;
+    height: 100%;
+    width: 30%;
+
+}
+
+.short-introduce-all{
+    width: 80%;
+    margin:0 auto;
+    margin-top: 20%;
+    /* border: 1px solid red; */
+}
+
+.short-introduce-all-title{
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 50px;
+    color: black;
+}
+.short-introduce-all-content{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    color: black;
+    font-weight: 600;
+}
+
+.paper-images{
+    /* background-image: url(../image/paper-img.png); */
+    background-size: 100% 100%;
+    
+     /* background-size: cover; */
+}
+
+.download-link-icon{
+    float: left;
+    width: 5vw;
+    height: 5vw;
+    margin-top: 25%;
+    margin-left: 5%;
+    /*background-image: url(../image/download-icon.png);*/
+    background-size: 100% 100%;
+}
+.download-link-text{
+    float: left;
+    font-size: 45px;
+    color: black;
+    margin-top: 27%;
+    margin-left: 5%;
+
+
+}
+
+.text-muted{
+    font-size: 20px;
+    /*margin-top: 5%;*/
+}
+
+.footer{
+    background-color: #f5f7fa !important;
+    color: black;
+}
+
+.model-result{
+    height: 100%;
+    width: 100%;
+    /* border: 1px solid red; */
+}
+
+.result-table{
+    width: 100%;
+    height: 70%;
+    margin-top: 8%;
+}
+.table-text{
+    text-align: center;
+    display:table-cell; vertical-align:middle;
+}
+
+.table-title{
+    text-align: center;
+    cursor: pointer;
+}
+
+#navbar{
+    background-color: white;
+}
+
+.dgld-external-div{
+    height: 100%;
+    width: 70%;
+    margin: 0 auto;
+}
+
+
+.biggest-div{
+    width: 70%;
+    margin: 0 auto;
+    /* border: 1px solid red; */
+    margin-top: 7%;
+}
+
+.bigtitle{
+    font-size: 50px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+.unit{
+    border-top:1px solid rgb(107, 104, 104);
+    margin-top: 2%;
+    width: 100%;
+    color: black;
+}
+
+
+.unit-title{
+    /* margin-top: 1%; */
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: black;
+}
+
+.unit-text{
+    font-family: 'Times New Roman', Times, serif;
+    margin-top: 1%;
+    font-size: 20px;
+}
+.unit-code{
+    margin-top: 1%;
+    border-radius: 5%;
+    font-size: 18px;
+}
+
+.unit-code-smaller{
+    margin-top: 1%;
+    border-radius: 5%;
+    font-size: 18px;
+}
+
+.unit-code-smaller pre{
+    border-radius: 15px;
+}
+
+.unit-code pre{
+    border-radius: 15px;
+}
+
+.unit-img-box{
+    width: 100%;
+}
+
+.unit-img-box-holly{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.unit-img{
+    width: 100%;
+}
+
+.unit-img-holly{
+    width: 50%;
+}
+
+.hlword{
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border-radius: 5px;
+}
+
+
+.benchmark{
+    color: #f9f2f4 !important;
+}
+
+.footer-team{
+    margin-top: 30px;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.footer-school{
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top: 10px;
+}
+
+.footer-name{
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top: 10px;
+}

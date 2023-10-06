@@ -1,0 +1,112 @@
+
+
+.holly-data{
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+.holly-data-center{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+/*.holly-detect::before{*/
+/*    content: '';*/
+/*    width: 10%;*/
+/*}*/
+/*.holly-detect::after{*/
+/*    content: '';*/
+/*    width: 10%;*/
+/*}*/
+.holly-detect{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px;
+    /*padding: 20px;*/
+}
+.holly-detect .el-select{
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.holly-detect-3{
+    display: flex;
+    justify-content: space-evenly;
+    /*padding: 20px;*/
+}
+.holly-detect-3 .el-select{
+    border: 1px solid;
+    border-radius: 5px;
+}
+.holly-detect-3-answer{
+    display: flex;
+    justify-content: space-evenly;
+}
+.holly-detect-3-answer .el-input{
+    border: 1px solid;
+    border-radius: 5px;
+}
+.block2 {
+    padding: 0;
+    text-align: center;
+    width: 98%;
+    aspect-ratio: 1 / 1;
+    border: 2px solid white;
+    cursor:pointer;
+}
+
+.demo-image__error{
+    width: 100%;
+    height: 100%;
+}
+.demo-image__error .block {
+    /*padding: 30px 0;*/
+    text-align: center;
+    /*border-right: solid 1px var(--el-border-color);*/
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    /*box-sizing: border-box;*/
+    /*vertical-align: top;*/
+}
+.demo-image__error .block .el-image {
+    width: 100%;
+    height: 100%;
+    max-width: 10000px;
+    max-height: 10000px;
+}
+.demo-image__error .demonstration {
+    display: block;
+    color: var(--el-text-color-secondary);
+    font-size: 14px;
+    /*margin-bottom: 20px;*/
+}
+.demo-image__error .el-image {
+    padding: 0 5px;
+    max-width: 300px;
+    max-height: 200px;
+    width: 100%;
+    height: 200px;
+}
+
+.demo-image__error .image-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: var(--el-fill-color-light);
+    color: var(--el-text-color-secondary);
+    font-size: 16px;
+}
+.demo-image__error .image-slot .el-icon {
+    font-size: 30px;
+}
+
+
+.forSearch {
+    margin: 10px;
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 5px;
+}
