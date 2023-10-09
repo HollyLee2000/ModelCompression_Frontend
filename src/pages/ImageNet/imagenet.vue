@@ -469,7 +469,7 @@ async function submitUpload(){
   param.append("datasetId", store.state.datasetId);
   let config = {
     baseURL: "/api",
-    //baseURL: "http://localhost:7667",
+    //baseURL: "http://localhost:7996",
     timeout: 30000,
     headers: {
       "Content-Type": "multipart/form-data" //设置headers

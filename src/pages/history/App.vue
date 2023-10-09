@@ -11,9 +11,9 @@
     >
       <!--      <el-table-column min-width="20" prop="algorithmId" type="index" label="ID"/>-->
       <el-table-column min-width="120" fixed prop="username" label="user name" />
-      <el-table-column min-width="180" prop="institute" label="institute" />
-      <el-table-column min-width="180" prop="name" label="algorithm name" />
-      <el-table-column min-width="140" prop="score" label="metascore" sortable="sortable" />
+      <el-table-column min-width="180" prop="institute" label="task type" />
+      <el-table-column min-width="180" prop="name" label="status" />
+      <el-table-column min-width="140" prop="score" label="checkpoint path" sortable="sortable" />
       <el-table-column min-width="100" prop="ranking" label="ranking" sortable="sortable" />
 
       <!--      <el-table-column width="830" prop="morfPath" label="morf" />-->

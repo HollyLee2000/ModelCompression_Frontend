@@ -12,10 +12,10 @@
         >
           <el-menu-item index="homepage" @click="$router.push('/homepage')">HOME</el-menu-item>
 <!--          <el-menu-item index="imagenet"  @click="$router.push('/imagenet')">ATTRIBUTION</el-menu-item>-->
-          <el-menu-item index="Algorithm"  @click="$router.push('/Algorithm')">TUTORIAL</el-menu-item>
+          <el-menu-item index="cifar"  @click="$router.push('/cifar')">COMPRESSION</el-menu-item>
+<!--          <el-menu-item index="Algorithm"  @click="$router.push('/Algorithm')">FINETUNE</el-menu-item>-->
 <!--          <el-menu-item index="task"  @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>-->
 <!--          <el-menu-item index="datasetPreview"  @click="$router.push('/datasetPreview')">DATASETS</el-menu-item>-->
-          <el-menu-item index="cifar"  @click="$router.push('/cifar')">SUBMISSION</el-menu-item>
           <el-menu-item index="history"  @click="$router.push('/history')">HISTORY</el-menu-item>
           <el-menu-item v-show="store.state.access==1" style="color: #AB140C;" index="coco"  @click="$router.push('/coco')">APPROVAL</el-menu-item>
 <!--          <el-menu-item index="Algorithm" @click="$router.push('/Algorithm')">HISTORY</el-menu-item>-->

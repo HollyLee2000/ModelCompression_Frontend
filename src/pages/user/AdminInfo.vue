@@ -118,7 +118,7 @@ import { ElMessage } from 'element-plus'
 import axios from 'axios'
 const store = useStore();
 axios.defaults.baseURL='/api';
-//axios.defaults.baseURL='http://localhost:7667';
+//axios.defaults.baseURL='http://localhost:7996';
 axios.defaults.timeout='3000';
 import request from "../../api";
 export default {
