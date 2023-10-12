@@ -1659,6 +1659,24 @@ onMounted(async () => {
           return d._children ? "lightsteelblue" : "#fff";
         });
 
+    nodeEnter.append("circle")
+        .attr('class', 'nodeCircleBorder')
+        .attr("r", 0)
+        .style("stroke", "rgba(121, 80, 173, 0.5)")
+        .style("stroke-width", function(d) {
+          return d.model_name=="CIFAR100_ResNet18_Pretrained" ? "6px" : "0";
+        })
+        .style("fill", "none")
+
+        // .style("pointer-events", "none");
+
+    // nodeEnter.append("circle")
+    //     .attr('class', 'nodeCircleOuter') // 为外圆添加一个类名
+    //     .attr("r", 0)
+    //     .style("stroke", "#7950AD") // 外圆颜色为#7950AD
+    //     .style("stroke-width", "2px") // 设置外圆线宽为2px
+    //     .style("fill", "none"); // 外圆不填充颜色
+
     nodeEnter.append("text")
         .attr("x", function(d) {
           return d.children || d._children ? -10 : 10;
@@ -1715,6 +1733,9 @@ onMounted(async () => {
         .text(function(d) {
           return d.name;
         });
+
+    console.log("!!!", node.select("circle.nodeCircleBorder"))
+    node.select("circle.nodeCircleBorder").attr("r", 24)
 
     // Change the circle fill depending on whether it has children and is collapsed
     node.select("circle.nodeCircle")
