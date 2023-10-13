@@ -1659,12 +1659,31 @@ onMounted(async () => {
           return d._children ? "lightsteelblue" : "#fff";
         });
 
-    nodeEnter.append("circle")
+        nodeEnter.append("circle")
         .attr('class', 'nodeCircleBorder')
         .attr("r", 0)
         .style("stroke", "rgba(121, 80, 173, 0.5)")
         .style("stroke-width", function(d) {
-          return d.model_name=="CIFAR100_ResNet18_Pretrained" ? "6px" : "0";
+
+        if (d.model_name === "CIFAR100_ResNet56_Pretrained" 
+        || d.model_name === "CIFAR100_ResNet18_Pretrained" 
+        ||d.model_name === "CIFAR100_VGG19_Pretrained"
+        ||d.model_name==="CIFAR100_DenseNet121_Pretrained"
+        ||d.model_name==="CIFAR100_GoogleNet_Pretrained"
+        ||d.model_name==="CIFAR100_SE-ResNet_Pretrained"
+        ||d.model_name==="CIFAR100_Xception_Pretrained"
+        ||d.model_name==="CIFAR100_InceptionV4_Pretrained"
+        ||d.model_name === "CIFAR10_ResNet56_Pretrained" 
+        || d.model_name === "CIFAR10_ResNet18_Pretrained" 
+        ||d.model_name === "CIFAR10_VGG19_Pretrained"
+        ||d.model_name==="CIFAR10_DenseNet121_Pretrained"
+        ||d.model_name==="CIFAR10_GoogleNet_Pretrained"
+        ||d.model_name==="CIFAR10_SE-ResNet_Pretrained"
+        ||d.model_name==="CIFAR10_Xception_Pretrained"
+        ||d.model_name==="CIFAR10_InceptionV4_Pretrained" )
+          return "6px";
+        else 
+          return "0";
         })
         .style("fill", "none")
 

@@ -7,7 +7,7 @@
             style="width: 100%; height: 100%"
             :fit="'fill'"
             class="image"
-            :src="`http://${item.pictureUrl}`"
+            :src="`http://${item.pictureUrl}`" 
         />
         </div>
       </div>
