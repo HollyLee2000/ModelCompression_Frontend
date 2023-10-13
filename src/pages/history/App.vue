@@ -10,18 +10,19 @@
         :border="false"
     >
       <!--      <el-table-column min-width="20" prop="algorithmId" type="index" label="ID"/>-->
-      <el-table-column min-width="120" fixed prop="username" label="user name" />
-      <el-table-column min-width="180" prop="institute" label="task type" />
-      <el-table-column min-width="180" prop="name" label="status" />
-      <el-table-column min-width="140" prop="score" label="checkpoint path" sortable="sortable" />
-      <el-table-column min-width="100" prop="ranking" label="ranking" sortable="sortable" />
+      <el-table-column min-width="120" fixed prop="userName" label="user name" />
+      <el-table-column min-width="180" prop="taskType" label="task type" />
+      <el-table-column min-width="180" prop="status" label="status" />
+      <el-table-column min-width="140" prop="checkpointPath" label="checkpoint path" sortable="sortable" />
+      <el-table-column min-width="130" prop="SubmitTime" label="Submit Time" sortable="sortable"  />
+<!--      <el-table-column min-width="100" prop="ranking" label="ranking" sortable="sortable" />-->
 
       <!--      <el-table-column width="830" prop="morfPath" label="morf" />-->
       <!--      <el-table-column width="830" prop="lerfPath" label="lerf" />-->
       <!--      <el-table-column width="830" prop="pythonPath" label="algorithm file" />-->
       <!--      <el-table-column width="830" prop="email" label="email" />-->
       <!--      <el-table-column width="830" prop="info" label="info" />-->
-      <el-table-column min-width="130" prop="dateTime" label="Submit Time" sortable="sortable"  />
+
 <!--      <el-table-column min-width="60" label="Details" type="expand">-->
 <!--        <template #default="props">-->
 <!--          <div m="4">-->

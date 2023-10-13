@@ -17,7 +17,7 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: 'src/main.ts',
-      title: 'Meta Rank | Unified Evaluation Framework for Attribution Methods'
+      title: 'DepGraph | Towards Any Structural Pruning'
     }
   },
   //以下都是和bootstrap以及bootstrap vue相关的配置

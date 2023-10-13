@@ -12,7 +12,7 @@ import './assets/css/mystyle.css'
 import './assets/css/style.css'
 import './assets/css/swiper.min.css'
 import './assets/css/tiny-slider.css'
-// import 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css'
+// import 'https://cdn.jsdelivr.Metanet/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css'
 
 import { BootstrapVue3  } from 'bootstrap-vue-3'
 import 'bootstrap/dist/css/bootstrap.css'
