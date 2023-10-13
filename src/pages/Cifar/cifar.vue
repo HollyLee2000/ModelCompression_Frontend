@@ -1659,7 +1659,7 @@ onMounted(async () => {
           return d._children ? "lightsteelblue" : "#fff";
         });
 
-    nodeEnter.append("circle")
+        nodeEnter.append("circle")
         .attr('class', 'nodeCircleBorder')
         .attr("r", 0)
         .style("stroke", "rgba(121, 80, 173, 0.5)")
