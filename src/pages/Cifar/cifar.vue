@@ -1664,6 +1664,7 @@ onMounted(async () => {
         .attr("r", 0)
         .style("stroke", "rgba(121, 80, 173, 0.5)")
         .style("stroke-width", function(d) {
+
         if (d.model_name === "CIFAR100_ResNet56_Pretrained" 
         || d.model_name === "CIFAR100_ResNet18_Pretrained" 
         ||d.model_name === "CIFAR100_VGG19_Pretrained"
@@ -1683,8 +1684,6 @@ onMounted(async () => {
           return "6px";
         else 
           return "0";
-         
-          // ||"CIFAR100_ResNet56_Pretrained"||"CIFAR100_VGG19_Pretrained")
         })
         .style("fill", "none")
 
