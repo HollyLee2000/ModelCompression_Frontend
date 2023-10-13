@@ -21,6 +21,7 @@ module.exports = defineConfig({
     }
   },
   //lch测试
+  //hl测试
   //以下都是和bootstrap以及bootstrap vue相关的配置
   // configureWebpack: {
   //   plugins: [
