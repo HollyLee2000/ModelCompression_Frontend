@@ -12,12 +12,15 @@
         >
           <el-menu-item index="homepage" @click="$router.push('/homepage')">HOME</el-menu-item>
 <!--          <el-menu-item index="imagenet"  @click="$router.push('/imagenet')">ATTRIBUTION</el-menu-item>-->
-          <el-menu-item index="cifar"  @click="$router.push('/cifar')">COMPRESSION</el-menu-item>
-<!--          <el-menu-item index="Algorithm"  @click="$router.push('/Algorithm')">FINETUNE</el-menu-item>-->
+<!--          <el-menu-item index="cifar" v-if="store.state.isAut" @click="$router.push('/cifar')">COMPRESSION</el-menu-item>-->
+
+          <el-menu-item index="cifar" v-if="store.state.isAut"  @click="$router.push('/coco')">COMPRESSION</el-menu-item>
+          <el-menu-item index="task"  v-if="store.state.isAut" @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>
+<!--          <el-menu-item index="Algorithm" v-if="store.state.isAut"  @click="$router.push('/Algorithm')">FINETUNE</el-menu-item>-->
 <!--          <el-menu-item index="task"  @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>-->
 <!--          <el-menu-item index="datasetPreview"  @click="$router.push('/datasetPreview')">DATASETS</el-menu-item>-->
-          <el-menu-item index="history"  @click="$router.push('/history')">HISTORY</el-menu-item>
-          <el-menu-item v-show="store.state.access==1" style="color: #AB140C;" index="coco"  @click="$router.push('/coco')">APPROVAL</el-menu-item>
+          <el-menu-item index="history" v-if="store.state.isAut"  @click="$router.push('/history')">HISTORY</el-menu-item>
+<!--          <el-menu-item v-show="store.state.access==1" style="color: #AB140C;" index="coco"  @click="$router.push('/coco')">APPROVAL</el-menu-item>-->
 <!--          <el-menu-item index="Algorithm" @click="$router.push('/Algorithm')">HISTORY</el-menu-item>-->
 <!--          <el-menu-item index="Admin" style="font-size: 15px" @click="$router.push('/Admin')">算力机管理</el-menu-item>-->
 <!--          <el-menu-item index="document" style="font-size: 15px" @click="$router.push('/document')">历史提交记录</el-menu-item>-->
@@ -74,20 +77,27 @@ function login_out(){
   // try
   // router.push('/')
   // router.go(0)
-  request.get("user/logout").then(
-      res => {
-        console.log(res);
-        //console.log(res.data.data.code);
-        if (res.status === 200) {
-          console.log("退出成功了");
-        } else
-          console.log("退出时出现了错误");
-      }
-  ).catch(err => {
-    console.log(err);
-    console.log("logout error");
-  });
-  location.reload()  //刷新当前页面
+
+
+
+  // request.get("user/logout").then(
+  //     res => {
+  //       console.log(res);
+  //       //console.log(res.data.data.code);
+  //       if (res.status === 200) {
+  //         console.log("退出成功了");
+  //       } else
+  //         console.log("退出时出现了错误");
+  //     }
+  // ).catch(err => {
+  //   console.log(err);
+  //   console.log("logout error");
+  // });
+
+
+
+  router.push('/homepage')  //返回主页
+  // location.reload()  //刷新当前页面
 }
 function login_init(){
   const _username = localStorage.getItem("username")

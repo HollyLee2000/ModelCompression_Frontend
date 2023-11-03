@@ -24,7 +24,7 @@ body{
   .node text {
     font-size:10px; 
     font-family:sans-serif;
-    fill:white;
+    fill:black;
     letter-spacing:.3em;
     
   }

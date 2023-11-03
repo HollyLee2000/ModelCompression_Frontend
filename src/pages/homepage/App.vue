@@ -9,8 +9,44 @@
                 DepGraph
               </h2>
               <p class="f-16 my-4 text-muted benchmark">Towards Any Structural Pruning</p>
-              <button @click="$router.push('/Algorithm')" class="btn btn-primary" style="margin-right: 10px">Start Compression</button>
+              <button @click="startCompression" class="btn btn-primary" style="margin-right: 10px">Start Compression</button>
               <button class="btn btn-docs"><a href="https://openaccess.thecvf.com/content/CVPR2023/html/Fang_DepGraph_Towards_Any_Structural_Pruning_CVPR_2023_paper.html" target="_blank" style="color: white">Paper</a></button>
+
+
+
+<!--              <div>-->
+<!--                <a id="btn-toggle" href="#" class="sidebar-toggler break-point-sm">-->
+<!--                  <i class="ri-menu-line ri-xl"></i>-->
+<!--                </a>-->
+<!--                <h1 style="margin-bottom: 0">Pro Sidebar</h1>-->
+<!--                <span style="display: inline-block">-->
+<!--              Responsive layout with advanced sidebar menu built with SCSS and vanilla Javascript-->
+<!--            </span>-->
+<!--                <br />-->
+<!--                <span>-->
+<!--              Full Code and documentation available on-->
+<!--              <a href="https://github.com/azouaoui-med/pro-sidebar-template" target="_blank"-->
+<!--              >Github</a-->
+<!--              >-->
+<!--            </span>-->
+<!--                <div style="margin-top: 10px">-->
+<!--                  <a href="https://github.com/azouaoui-med/pro-sidebar-template" target="_blank">-->
+<!--                    <img-->
+<!--                        alt="GitHub stars"-->
+<!--                        src="https://img.shields.io/github/stars/azouaoui-med/pro-sidebar-template?style=social"-->
+<!--                    />-->
+<!--                  </a>-->
+<!--                  <a href="https://github.com/azouaoui-med/pro-sidebar-template" target="_blank">-->
+<!--                    <img-->
+<!--                        alt="GitHub forks"-->
+<!--                        src="https://img.shields.io/github/forks/azouaoui-med/pro-sidebar-template?style=social"-->
+<!--                    />-->
+<!--                  </a>-->
+<!--                </div>-->
+<!--              </div>-->
+
+
+
             </div>
           </div>
         </div>
@@ -345,6 +381,15 @@ const fileList = ref([]), datasetInformation = ref({}), fileList2 = ref([]);
 let selectList = Array(imageNumber.value).fill(0);
 let deleteShow = ref(false);
 const showList = ref([]), listPreview = ref([]), showListPool = ref([]), listPreview2 = ref([]);
+
+const startCompression = () => {
+  if(store.state.isAut){
+    router.push('/coco')
+  }else{
+    router.push('/signin')
+  }
+
+}
 
 async function refreshImages(option) { //推理之后才提交的, 刷新右边的结果
                                        // console.log(option);

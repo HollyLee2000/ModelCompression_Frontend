@@ -32,6 +32,10 @@ import Task from '@/pages/task/index.vue'
 import CreateTask from '@/pages/task/create_task/index.vue'
 import MyTasks from '@/pages/task/my_tasks/index.vue'
 
+import store from '../store'
+import request from "@/api";
+import {ElMessage} from "element-plus";
+
 const TaskDetail = () => import('@/pages/task_detail/index.vue')
 const BasicTaskInfo = () => import(/* webpackChunkName: "task" */ '@/pages/task_detail/basic_task_info/index.vue')
 const VisScalars = () => import(/* webpackChunkName: "task" */ '@/pages/task_detail/vis_scalars/index.vue')
@@ -224,15 +228,62 @@ const router1 = createRouter({
 
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
+
+// 以下守卫判断未登录后就跳转到登陆界面
+// router1.beforeEach(
+//     (to, from, next) => {
+//         if (to.path === '/signin') {
+//             next();
+//         } else {
+//             const token = Cookies.get('userTicket')
+//             console.log("-> token", token);
+//             if (token === undefined || token === '' || token === null) {
+//                 next('/signin');
+//             } else {
+//                 next();
+//             }
+//         }
+//     });
+
+
+// function login_out(){
+//     console.log("login out")
+//     store.commit("loginOut")
+//     Cookies.remove("userTicket")
+//     // try
+//     // router.push('/')
+//     // router.go(0)
+//     request.get("user/logout").then(
+//         res => {
+//             console.log(res);
+//             //console.log(res.data.data.code);
+//             if (res.status === 200) {
+//                 console.log("退出成功了");
+//             } else
+//                 console.log("退出时出现了错误");
+//         }
+//     ).catch(err => {
+//         console.log(err);
+//         console.log("logout error");
+//     });
+//     // router.push('/homepage')  //返回主页
+//     // location.reload()  //刷新当前页面
+// }
+
+// 以下守卫判断未登录后执行loginOut, 修改store.state.isAut的状态
 router1.beforeEach(
     (to, from, next) => {
-        if (to.path === '/signin') {
+        if (to.path === '/signin' || to.path === '/homepage') {
             next();
         } else {
             const token = Cookies.get('userTicket')
             console.log("-> token", token);
             if (token === undefined || token === '' || token === null) {
-                next('/signin');
+                // login_out();
+                ElMessage.warning("Your login has expired, please log in again.")
+                store.commit("loginOut")
+                Cookies.remove("userTicket")
+                next('/homepage');
             } else {
                 next();
             }

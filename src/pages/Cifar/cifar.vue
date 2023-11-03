@@ -3,37 +3,160 @@
     <div id="tree-container"></div>
   </div>
 
-  <el-dialog class="scrollable" v-model="dialogVisible" style="width:50%; height:55%; overflow: auto;"
-             :draggable="true" @close="dialogVisible = false" :append-to-body="true" title="Online Pruning Result" >
+  <el-dialog class="scrollable"  v-model="UploadVisible" style="width:50%; height:60%; text-align: center; overflow: auto; font-family: Arial;"
+             :draggable="true" @close="UploadVisible = false" :append-to-body="true" title="Add your model to the unpruned model zoo" >
+
+    <div v-loading="resultLoading">
     <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-      {{paramsChange}}</label>
+      <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #000096">
+        Provide {{modelName}} trained on {{modelDatasetSimple}}
+      </label>
     </div>
+<!--    <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">-->
+<!--        Upload your model or provide the path of your model on the server.</label>-->
+<!--    </div>-->
     <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-        {{FLOPsChange}}</label>
+      <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="uploadType">
+        <el-radio label="upload" size="large" border>Upload a model</el-radio>
+        <el-radio label="definePath" size="large" border>Provide model path on the server</el-radio>
+      </el-radio-group>
     </div>
-    <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-        {{AccChange}}</label>
+      <el-upload
+          v-if="uploadType==='upload'"
+          ref="uploadRef"
+          method="post"
+          class="upload-demo"
+          drag
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          :before-upload="checkFile"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove"
+          :on-change="handleChange1"
+          :limit="1"
+          :file-list="uploadFileList"
+          style="margin: 10px 50px 10px 50px;"
+      >
+        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">
+          Drop file here or <em>click to upload</em>
+        </div>
+        <template #tip>
+          <div class="el-upload__tip">
+            checkpoint file with a size less than 500MB
+          </div>
+        </template>
+      </el-upload>
+    <div v-else-if="uploadType==='definePath'" style="margin: 20px 0 20px 0; text-align: left;">
+      <el-input
+          v-model="ckpt"
+          placeholder="Provide the model path"
+          style="margin-left: 50px; border: 0; color: black; width: 30%"
+      />
     </div>
-    <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-        {{LossChange}}</label>
+    <div v-show="uploadType!=''" style="margin: 20px 0 20px 0; text-align: left;">
+      <el-input
+          v-model="usrModelName"
+          placeholder="Give your model a name"
+          style="margin-left: 50px; border: 0; color: black; width: 30%"
+      />
     </div>
-    <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-        {{PrunedPath}}</label>
-    </div>
-    <div style="margin: 0 0 20px 0; text-align: left;">
-      <label style="margin-left: 44px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-        This pruning has been added to the history record.</label>
+    <div v-show="uploadType!=''" style="margin: 20px 0 20px 0; text-align: center">
+      <el-button size="large" type="success" plain @click="updateTree">Confirm</el-button>
     </div>
 
-    <div style="margin: 0 0 20px 0; text-align: center">
-      <el-button size="large" type="success" plain @click="dialogVisible = false">OK</el-button>
+
     </div>
   </el-dialog>
+
+
+
+
+
+
+  <el-dialog class="scrollable" v-model="dialogVisible2" style="width:40%; height:20%; overflow: auto; text-align: center"
+             :draggable="true" @close="dialogVisible2 = false" :append-to-body="true" title="Analyze model and pruning test" >
+    <div v-if="!isTest"  style="text-align: left;">
+      <label style="margin-left: 50px; font-size:18px; border: 0; color: #800E25; word-wrap: break-word; white-space: pre-wrap;">
+        Testing......</label>
+    </div>
+    <div v-else  style="text-align: left;">
+      <label style="margin-left: 50px; font-size:18px; border: 0; color: #20BD1C; word-wrap: break-word; white-space: pre-wrap;">
+        Success!</label>
+    </div>
+
+    <el-progress :text-inside="true"  class="m-2" :stroke-width="26" :percentage="percentage2" :color="colors"  />
+  </el-dialog>
+
+
+
+
+
+
+
+  <el-dialog class="scrollable" v-model="dialogVisible" style="width:50%; height:55%; overflow: auto; text-align: center"
+             :draggable="true" @close="dialogVisible = false" :append-to-body="true" title="Online Pruning Result" >
+    <div v-if="!isPruned"  style="text-align: left;">
+      <label style="margin-left: 50px; font-size:18px; border: 0; color: #800E25; word-wrap: break-word; white-space: pre-wrap;">
+        Pruning......</label>
+    </div>
+    <div v-else  style="text-align: left;">
+      <label style="margin-left: 50px; font-size:18px; border: 0; color: #20BD1C; word-wrap: break-word; white-space: pre-wrap;">
+        Pruned!</label>
+    </div>
+
+    <el-progress :text-inside="true"  class="m-2" :stroke-width="26" :percentage="percentage" :color="colors"  />
+
+    <div v-loading="resultLoading4" :style="{visibility:resultShow_tree_result?'visible':'hidden'}">
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+        {{paramsChange}}</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+          {{FLOPsChange}}</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+          {{AccChange}}</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+          {{LossChange}}</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+          Checkpoint(pruned): <el-link v-if="PrunedPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+PrunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="success" plain>Download</el-button></el-link>
+          <text v-else>
+            N/A
+          </text>
+        </label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+        Model structure(pruned): <el-link v-if="structureAfterPruned!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+        <el-button size="small" type="primary" plain>View</el-button></el-link>
+          <text v-else>
+            N/A
+          </text>
+        </label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
+          Log file: <el-link v-if="logPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="primary" plain>View</el-button></el-link>
+          <text v-else>
+            N/A
+          </text>
+        </label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: center">
+        <el-button size="large" type="success" plain @click="dialogVisible = false">OK</el-button>
+      </div>
+    </div>
+  </el-dialog>
+
 
   <el-dialog class="scrollable" v-model="PrunedialogVisible" style="width:95%; height:95%; text-align: center; overflow: auto; font-family: Arial;"
              :draggable="true" @close="PrunedialogVisible = false" :append-to-body="true" title="CIFAR Model Pruning" >
@@ -55,9 +178,13 @@
           Acc: {{modelAcc}}<br>
           Params: {{modelParams}}<br>
           Flops: {{modelFlops}}<br>
-          Path: {{modelPath}}
+          Checkpoint: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace'+modelPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="success" plain>Download</el-button></el-link><br>
+          Model structure: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="primary" plain>View</el-button></el-link>
         </label>
       </div>
+<!--      click(-->
 
 
 
@@ -155,174 +282,130 @@
     </div>
   </el-dialog>
 
-<!--  <div class="holly-section" v-loading="resultLoading">-->
-<!--    <h2 style="font-size: 25px;">Input the name of your attribution algorithm</h2>-->
-<!--    <el-input v-model="userQuery" style="width:300px; margin: 10px 0 20px 0;" :rows="1" type="textarea"/>-->
-
-<!--    <div style="display: flex; justify-content: space-between;">-->
-
-<!--      <div style="width: 48%">-->
-<!--        <h2 style="font-size: 25px;">Upload the morf result</h2>-->
-<!--        <el-upload-->
-<!--            ref="uploadRef"-->
-<!--            method="post"-->
-<!--            class="upload-demo"-->
-<!--            drag-->
-<!--            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
-<!--            :before-upload="checkFile"-->
-<!--            :on-preview="handlePictureCardPreview"-->
-<!--            :on-remove="handleRemove"-->
-<!--            :on-change="handleChange1"-->
-<!--            :limit="1"-->
-<!--            :file-list="uploadFileList"-->
-<!--            style="margin: 10px 0 10px 0;"-->
-<!--        >-->
-<!--          <el-icon class="el-icon&#45;&#45;upload"><upload-filled /></el-icon>-->
-<!--          <div class="el-upload__text">-->
-<!--            Drop file here or <em>click to upload</em>-->
-<!--          </div>-->
-<!--          <template #tip>-->
-<!--            <div class="el-upload__tip">-->
-<!--              csv file with a size less than 500kb-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </el-upload>-->
-<!--&lt;!&ndash;        <el-button size="large" style="margin: 0 0 10px 0;" type="warning" @click="uploadCsv('morf')" plain>Upload</el-button>&ndash;&gt;-->
-<!--      </div>-->
-
-<!--      <div style="width: 48%">-->
-<!--        <h2 style="font-size: 25px;">Upload the lerf result</h2>-->
-<!--        <el-upload-->
-<!--            ref="uploadRef2"-->
-<!--            method="post"-->
-<!--            class="upload-demo"-->
-<!--            drag-->
-<!--            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
-<!--            :before-upload="checkFile2"-->
-<!--            :on-preview="handlePictureCardPreview"-->
-<!--            :on-remove="handleRemove"-->
-<!--            :on-change="handleChange2"-->
-<!--            :limit="1"-->
-<!--            :file-list="uploadFileList2"-->
-<!--            style="margin: 10px 0 10px 0;"-->
-<!--        >-->
-<!--          <el-icon class="el-icon&#45;&#45;upload"><upload-filled /></el-icon>-->
-<!--          <div class="el-upload__text">-->
-<!--            Drop file here or <em>click to upload</em>-->
-<!--          </div>-->
-<!--          <template #tip>-->
-<!--            <div class="el-upload__tip">-->
-<!--              csv file with a size less than 500kb-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </el-upload>-->
-<!--&lt;!&ndash;        <el-button size="large" style="margin: 0 0 10px 0;" type="warning" @click="uploadCsv('lerf')" plain>Upload</el-button>&ndash;&gt;-->
-<!--      </div>-->
-
-
-<!--    </div>-->
 
 
 
+  <!--      imagenet-vgg19_bn-->
+  <el-dialog class="scrollable" v-model="ImageNetPrunedialogVisible" style="width:95%; height:95%; text-align: center; overflow: auto; font-family: Arial;"
+             :draggable="true" @close="ImageNetPrunedialogVisible = false" :append-to-body="true" title="ImageNet Model Pruning" >
+    <div v-loading="resultLoading2">
 
-<!--    <div style="display: flex; justify-content: center">-->
-<!--      <el-button size="large" style="margin: 50px 0 10px 0;" type="success" @click="getUsrRank" plain>Get your current scores and meta-rank</el-button>-->
-<!--    </div>-->
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #000096">ImageNet Tips: Complete the
+          following information and generate the script. If you don't require sparse Learning and fine-tuning,
+          click "online pruning" to obtain pruning results immediately. If you need sparse Learning or fine-tuning, you'll need
+          to submit a task and wait for training, which is not yet implemented on this server. All models trained on the ImageNet dataset
+          adopt a learning rate of 0.01 during sparse Learning and fine-tuning phases.</label>
+      </div>
 
-<!--&lt;!&ndash;    :style="{visibility:resultShow?'visible':'hidden'}"&ndash;&gt;-->
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #800E25">
+          Name: {{modelName}}<br>
+          Task: {{modelDataset}}<br>
+          Type: {{modelType}}<br>
+          Acc: {{modelAcc}}<br>
+          Params: {{modelParams}}<br>
+          Flops: {{modelFlops}}<br>
+          Checkpoint: <el-link target="_blank" :href="'http://10.214.242.155:7996/ckpt'+modelPath.split('checkpoints').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="success" plain>Download</el-button></el-link><br>
+          Model structure: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+          <el-button size="small" type="primary" plain>View</el-button></el-link>
+        </label>
+      </div>
+      <!--      click(-->
 
-<!--  <div v-show="resultShow">-->
-<!--    <h2 style="font-size: 25px; margin: 20px 0 20px 0;">The original Meta-Rank</h2>-->
-<!--    <b-table-->
-<!--        striped-->
-<!--        hover-->
-<!--        responsive-->
-<!--        :items="servers"-->
-<!--        :fields="fields"-->
-<!--        :current-page="currentPage"-->
-<!--        :per-page="perPage"-->
-<!--        outlined-->
-<!--    >-->
-<!--    </b-table>-->
-<!--    <div style="display: flex; justify-content: center;">-->
-<!--      <b-pagination-->
-<!--          v-model="currentPage"-->
-<!--          :total-rows="servers.length"-->
-<!--          :per-page="perPage"-->
-<!--          align="right"-->
-<!--          :style="style.pagination"-->
-<!--      ></b-pagination>-->
-<!--    </div>-->
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.
+          Without sparse learning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
+          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
+        </el-radio-group>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
+          the choice of whether to employ sparse learning will determine the available pruner.</label>
+      </div>
+      <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
+<!--          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>-->
+          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
+          <el-radio label="group_greg" size="large" border>GrowingReg Pruner</el-radio>
 
+        </el-radio-group>
+      </div>
 
+      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
+          <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
+          <el-radio label="lamp" size="large" border>BNScale Pruner</el-radio>
+          <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
 
-<!--    <h2 style="font-size: 25px; margin: 20px 0 20px 0;">Current Meta-Rank</h2>-->
-<!--    <b-table-->
-<!--        striped-->
-<!--        hover-->
-<!--        responsive-->
-<!--        :items="servers2"-->
-<!--        :fields="fields"-->
-<!--        :current-page="currentPage2"-->
-<!--        :per-page="perPage"-->
-<!--        outlined-->
-<!--    >-->
-<!--    </b-table>-->
-<!--    <div style="display: flex; justify-content: center;">-->
-<!--      <b-pagination-->
-<!--          v-model="currentPage2"-->
-<!--          :total-rows="servers2.length"-->
-<!--          :per-page="perPage"-->
-<!--          align="right"-->
-<!--          :style="style.pagination"-->
-<!--      ></b-pagination>-->
-<!--    </div>-->
+        </el-radio-group>
+      </div>
 
+      <div v-show="radio1!='wosl' && radio1!='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap; color: #800E25">Complete Step1 first.</label>
+      </div>
 
-<!--    <h2 style="font-size: 25px;">Upload your attribution algorithm (python file, optional)</h2>-->
-<!--    <el-upload-->
-<!--        ref="uploadRef3"-->
-<!--        method="post"-->
-<!--        class="upload-demo"-->
-<!--        drag-->
-<!--        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
-<!--        :before-upload="checkFilePython"-->
-<!--        :on-preview="handlePictureCardPreview"-->
-<!--        :on-remove="handleRemove"-->
-<!--        :on-change="handleChange3"-->
-<!--        :limit="1"-->
-<!--        :file-list="uploadFileList3"-->
-<!--        style="margin: 10px 0 10px 0;"-->
-<!--    >-->
-<!--      <el-icon class="el-icon&#45;&#45;upload"><upload-filled /></el-icon>-->
-<!--      <div class="el-upload__text">-->
-<!--        Drop file here or <em>click to upload</em>-->
-<!--      </div>-->
-<!--      <template #tip>-->
-<!--        <div class="el-upload__tip">-->
-<!--          python file with a size less than 500kb-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </el-upload>-->
-
-<!--    <h2 style="font-size: 25px; margin: 20px 0 0 0;">Provide your email address for future contact.</h2>-->
-<!--    <el-input v-model="Email" style="width:300px; margin: 10px 0 20px 0;" :rows="1" type="textarea"/>-->
-
-<!--    <h2 style="font-size: 25px; margin: 20px 0 10px 0;"  >Provide detailed information</h2>-->
-<!--    Please furnish further details about your attribution algorithm for its inclusion in the rankings. This information might encompass relevant research papers and open-source code associated with your algorithm. We also welcome you to contact us via email using your institutional email at jerryduan@zju.edu.cn.-->
-<!--    <br>-->
-<!--    <el-input v-model="Infos" style="margin: 10px 0 0 0;" :rows="3" type="textarea"/>-->
-<!--        &lt;!&ndash;        <el-button size="large" style="margin: 0 0 10px 0;" type="warning" @click="uploadCsv('morf')" plain>Upload</el-button>&ndash;&gt;-->
-
-<!--    <div style="display: flex; justify-content: left">-->
-<!--      <el-button size="large" style="margin: 50px 0 10px 0;" type="warning" @click="SubmitAlgorithm" plain>Submit your algorithm</el-button>-->
-<!--    </div>-->
-
-<!--  </div>-->
-<!--  </div>-->
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step3: Choose batch size for
+          sparse learning, evaluation and finetuning. It is recommended to choose 128, but if the task fails, you could choose a smaller one.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">
+          <el-radio label=32 size="large" border>32</el-radio>
+          <el-radio label=64 size="large" border>64</el-radio>
+          <el-radio label=128 size="large" border>128</el-radio>
+        </el-radio-group>
+      </div>
 
 
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step4: Enter the minimum desired
+          speedup for the pruned model in terms of FLOPs. This must be a number greater than 1 but not exceeding 10.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="speedup"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
 
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
+          Online fine-tuning is currently not supported on this server.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
+          <el-radio label="True" size="large" border>fine-tune</el-radio>
+          <el-radio label="False" size="large" border>not fine-tune</el-radio>
+        </el-radio-group>
+      </div>
+
+      <div style="margin: 0 0 20px 0; text-align: center">
+        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
+        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
+        <el-button v-else size="large" type="success" plain @click="Info()">Submit Task</el-button>
+      </div>
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="script"
+            v-show="scriptVisible"
+            autosize
+            type="textarea"
+            placeholder="Please input"
+            style="margin-left: 50px;  border: 0; width: 95%"
+        />
+      </div>
+    </div>
+  </el-dialog>
 
 
 </template>
@@ -342,9 +425,34 @@ import { reactive, onMounted} from "vue";
 import '@fortawesome/fontawesome-free/css/all.css'
 import request2 from "@/api";
 
+const resultLoading4 = ref(false)
+const flag_prune_done = ref(false)  //是否剪枝完成
+const resultShow_tree_result = ref(false)
+
+const percentage = ref(0)
+const percentage2 = ref(0)
+const colors = [
+  { color: '#FDACBE', percentage: 20 },
+  { color: '#f56c6c', percentage: 40 },
+  { color: '#e6a23c', percentage: 60 },
+  { color: '#5cb87a', percentage: 80 },
+  { color: '#20BD1C', percentage: 100 },
+]
+
 // 使用ref创建一个变量，用于记录已上传的文件
 
+const structureBeforePruned = ref('')
+const structureAfterPruned = ref('')
+const logPath = ref('')
+const uploadType = ref('')
+
+const isPruned = ref(false)
+
+const isTest = ref(false)
+
+
 const modelType = ref('')
+const modelTypeSimple = ref('')
 const modelPath = ref('')
 const modelAcc = ref(0)
 const modelParams = ref('')
@@ -352,13 +460,17 @@ const modelFlops = ref('')
 const modelName = ref('')
 const modelDataset = ref('')
 
+const modelDatasetSimple = ref('')
+
 const paramsChange = ref('')
 const FLOPsChange = ref('')
 const AccChange = ref('')
 const LossChange = ref('')
 
 const PrunedPath = ref('')
+const ckpt = ref('')
 
+const usrModelName = ref('')
 const script = ref('')
 const speedup = ref()
 const batchsize = ref(0)
@@ -366,6 +478,7 @@ const finetune = ref('')
 const criterion = ref('')
 const radio1 = ref('sl')
 const PrunedialogVisible = ref(false);
+const ImageNetPrunedialogVisible = ref(false);
 const uploadRef = ref<UploadInstance>();
 const uploadRef2 = ref<UploadInstance>();
 const uploadRef3 = ref<UploadInstance>();
@@ -392,6 +505,7 @@ let resultShow = ref(false)
 const morfUploaded = ref(false)
 const lerfUploaded = ref(false)
 const pythonUploaded = ref(false)
+const lr = ref(0)
 // const lerfUploaded = ref(false)
 let checkCsv = ref(false)
 let checkCsv2 = ref(false)
@@ -442,8 +556,12 @@ const fields = ref([
 var nodes;
 var dragStarted;
 var domNode;
+
+const jumpOut = ref(false);
+const UploadVisible = ref(false);
 const scriptVisible = ref(false);
 const dialogVisible = ref(false);
+const dialogVisible2 = ref(false);
 const dialogVisible_interp = ref(false);
 const dialogVisible_atenhoc = ref(false);
 const dialogVisible_posthoc = ref(false);
@@ -454,6 +572,7 @@ const dialogVisible_tree = ref(false);
 const dialogVisible_intro_concept = ref(false);
 const dialogVisible_intro_constituent = ref(false);
 const resultLoading2 = ref(false)
+const ckptUploaded = ref(false)
 const modelzoo = ref();
 // dialogVisible_global
 
@@ -523,8 +642,192 @@ const Info = () => {
   ElMessage.error("Online sparse learning and fine-tune has not been implemented on this server!")
 }
 
-const OnlinePruning = async () => {
+const updateTree =  () => {
+  // resultLoading.value = true
+  jumpOut.value = false
+  isTest.value = false
+    let modelname = ''
+    if (modelName.value === "ResNet56(tiny)") {
+      modelname = "resnet56"
+    } else if (modelName.value === "SE-ResNet20") {
+      modelname = "se_resnet20"
+    } else {
+      modelname = modelName.value
+    }
+    modelname = modelname.toLowerCase()
+    let dataroot
+    let dataset
+    if (modelDataset.value === 'CIFAR10 (Classification)') {
+      dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
+      dataset = 'cifar10'
+    } else if (modelDataset.value === 'CIFAR100 (Classification)') {
+      dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
+      dataset = 'cifar100'
+    }else if(modelDataset.value==='ImageNet (Classification)'){
+      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+      dataset = 'imagenet'
+    }
+    let tempScript
+  if(dataset == 'imagenet'){
+    if(modelname=='resnet50'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --global-pruning --print-freq 100 --workers 8 --finetune False"
+    }else if(modelname=='densenet121'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method group_norm --soft-keeping-ratio 0.25 --target-flops 2.1 --global-pruning --print-freq 100 --workers 16 --amp --finetune False"
+    }else if(modelname=='mobilenetv2'){
+      modelname = 'mobilenet_v2'
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --finetune False"
+    }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  ---method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --finetune False"
+    }
+
+  }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+    tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode test_prune --model " + modelname + " --batch-size " + 128 + " --restore " + ckpt.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method group_norm --speed-up 2.1 --global-pruning --reg 5e-4 --sl False --finetune False"
+  }
+
+
+  console.log("uploadTree: ", tempScript)
+
+
+
+
+
+  if(ckpt.value === ''){
+    console.log("modelName.value", modelName.value)
+    console.log("modelDatasetSimple.value", modelDatasetSimple.value)
+    ElMessage.error('Please upload a model or provide the model path on the server')
+  }else if(usrModelName.value===''){
+    ElMessage.error('Please give your model a name')
+  }else{
+    let temp1 = {
+      username: store.state.username,
+      name: modelName.value,
+      score: "",
+      institute: modelDatasetSimple.value,
+      ranking: "",
+      morfPath: ckpt.value,
+      lerfPath: usrModelName.value,
+      pythonPath: tempScript,
+      email: "",
+      info: "",
+    };
+    console.log("temp1: ", temp1)
+    resultLoading.value = true
+    // ElMessage.warning('We are analyzing the model you\'ve submitted and conducting pruning test.')
+
+    ElMessage({
+      showClose: true,
+      message: 'We are analyzing the model you\'ve submitted and conducting pruning test.',
+      type: 'warning',
+      duration: 10000
+    })
+    request.post(`/user/updateJsonTree`, temp1)
+        .then((response) => {
+          jumpOut.value = true
+          // console.log("temp1: ", temp1)
+          console.log("updateJsonTree response:", response)
+          resultLoading.value = false
+          if (response.status === 200){
+            if(response.data.data.succeed===true){
+              isTest.value = true
+              ElMessage({
+                showClose: true,
+                message: 'Test passed, and model added successfully! You can reload the window to see your model.',
+                type: 'success',
+                duration: 10000
+              })
+              // ElMessage.success('Test passed, and model added successfully!')
+              UploadVisible.value = false
+              // dialogVisible2.value = false
+              // window.location.reload();
+            }else{
+              ElMessage({
+                showClose: true,
+                message: 'Test failed. Please ensure the model format is correct and provide the correct path.',
+                type: 'error',
+                duration: 10000
+              })
+
+              // ElMessage.error('Test failed. Please ensure the model format is correct and provide the correct path.')
+            }
+          }else{
+            ElMessage({
+              showClose: true,
+              message: 'Test failed. Please ensure the model format is correct and provide the correct path.',
+              type: 'error',
+              duration: 10000
+            })
+            // ElMessage.error('Test failed. Please ensure the model format is correct and provide the correct path.')
+          }
+        })
+        .catch((errors) => {
+          // console.log("temp1: ", temp1)
+          ElMessage.error('Model added failed!')
+          //加转圈？？
+          console.log('error', errors)
+        })
+
+
+
+
+
+
+    //获取进度条
+    let processTimeout = 0;
+    const intervalId = setInterval(() => {
+      if(jumpOut.value){
+        clearInterval(intervalId)
+      }
+      request.post('/user/getProcess', {
+        batchSize: 10086,
+        dataset: dataset
+      })
+          .then((response) => {
+            let process, total, prunnerGot;
+            process = parseInt(response.data.data.process);
+            total = parseInt(response.data.data.total);
+            prunnerGot = response.data.data.prunner
+            if (process > 0) {
+              resultLoading.value = false
+              dialogVisible2.value = true
+              // resultLoading2.value = false
+              // resultLoading4.value = true
+              // dialogVisible_adjust_result.value = true
+              // resultLoading3.value = false
+              // resultLoading4.value = true
+            }
+            // detectSettingLoading.value=false;
+            // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
+            percentage2.value = (1.0 * process / total * 100).toFixed(1)
+            console.log("prunnerGot:", prunnerGot)
+            console.log("process:", process)
+            console.log("total:", total)
+            console.log("percentage2.value:", percentage2.value)
+            if (process == total)
+              clearInterval(intervalId)
+          })
+          .catch((error) => {
+            processTimeout += 1;
+            if (processTimeout > 10) {
+              ElMessage.error('服务器出错，请稍后再试');
+              clearInterval(intervalId)
+            }
+            console.error(error)
+          })
+    }, 2000)
+
+
+
+    // resultShow.value = true
+
+  }
+
+}
+
+//不需要判断sl和finetune
+const OnlinePruning = () => {
+  isPruned.value = false
   console.log("speedup.value:", speedup.value)
+  let flag = false
   if(radio1.value!='sl'&&radio1.value!='wosl'){
     ElMessage.error("Choose whether to employ sparse learning!")
   }else if(criterion.value===''){
@@ -535,63 +838,268 @@ const OnlinePruning = async () => {
     ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
   }else if(finetune.value===''){
     ElMessage.error("Choose whether to fine-tune!")
-  }else{
+  }else {
     let modelname = ''
-    if(modelName.value==="ResNet56(tiny)"){
+    if (modelName.value === "ResNet56(tiny)") {
       modelname = "resnet56"
-    }else if(modelName.value==="SE-ResNet"){
+    } else if (modelName.value === "SE-ResNet20") {
       modelname = "se_resnet20"
-    }else{
+    } else {
       modelname = modelName.value
     }
     modelname = modelname.toLowerCase()
     let dataroot
     let dataset
     let sl
-    if(modelDataset.value==='CIFAR10 (Classification)'){
+    if (modelDataset.value === 'CIFAR10 (Classification)') {
       dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
       dataset = 'cifar10'
-    }else if(modelDataset.value==='CIFAR100 (Classification)'){
+    } else if (modelDataset.value === 'CIFAR100 (Classification)') {
       dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
       dataset = 'cifar100'
+    }else if(modelDataset.value==='ImageNet (Classification)'){
+      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+      dataset = 'imagenet'
     }
     if(radio1.value==="sl"){
       sl = 'True'
     }else if(radio1.value==="wosl"){
       sl = 'False'
     }
-    let tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+    let tempScript
+    if(dataset == 'imagenet'){
+      if(modelname=='resnet50'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
+      }else if(modelname=='densenet121'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
+      }else if(modelname=='mobilenetv2'){
+        modelname = 'mobilenet_v2'
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+      }
+
+    }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+    }
+    // console.log("script.value: ", script.value)
+    // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
+
+
     console.log("tempScript: ", tempScript)
     resultLoading2.value = true
-    await request.post('/algorithm/callPruneAlgorithm',{
-      algorithmName:'CUB-200-2011',
-      datasetId: 666,
-      datasetName: "CUB_CARS",
+    let success = ''
+    resultShow_tree_result.value = false
+    flag_prune_done.value = false
+    request.post('/algorithm/callPruneAlgorithm', {
+      algorithmName: 'cifarAlgorithm',
+      datasetId: batchsize.value,
+      datasetName: dataset,
       modelName: tempScript,
       userName: tempScript,
-    }).then(async (response) => {
+    }).then((response) => {
       console.log("prune response.data", response.data)
       let arr = response.data.data.result
+      flag = true
+      isPruned.value = true
+      logPath.value = arr[0]
+      console.log("logPath:", logPath.value)
+      // percentage.value = 100
       // 取出最后四行
-      let lastFourRows = arr.slice(-4);
-      paramsChange.value = lastFourRows[0]
-      FLOPsChange.value = lastFourRows[1]
-      AccChange.value = lastFourRows[2]
-      LossChange.value = lastFourRows[3]
-      PrunedPath.value = lastFourRows[4]
+      let lastFourRows = arr.slice(-7);
+
+      success = lastFourRows[6]
+
+
+      if (success === 'Success') {
+        paramsChange.value = lastFourRows[0]
+        FLOPsChange.value = lastFourRows[1]
+        AccChange.value = lastFourRows[2]
+        LossChange.value = lastFourRows[3]
+        PrunedPath.value = lastFourRows[4]
+        structureAfterPruned.value = lastFourRows[5]
+        // logPath.value = lastFourRows[6]
+        // ElMessage.success('Task completed successfully!')
+      } else {
+        paramsChange.value = 'Params: N/A'
+        FLOPsChange.value = 'FLOPs: N/A'
+        AccChange.value = 'Acc: N/A'
+        LossChange.value = 'Val Loss: N/A'
+        PrunedPath.value = 'N/A'
+        structureAfterPruned.value = 'N/A'
+        // logPath.value = 'N/A'
+        // ElMessage.error('Task failed!')
+      }
       console.log("paramsChange.value", paramsChange.value)
       console.log("FLOPsChange.value", FLOPsChange.value)
       console.log("AccChange.value", AccChange.value)
       console.log("LossChange.value", LossChange.value)
-      dialogVisible.value = true
+      console.log("PrunedPath.value", PrunedPath.value)
+      console.log("success:", success)
+      resultShow_tree_result.value = true
+      resultLoading4.value = false
+      flag_prune_done.value = true
+      // dialogVisible.value = true
     })
-    .catch((error)=>{
-      console.error(error)
-    })
-    resultLoading2.value = false
+        .catch((error) => {
+          console.error(error)
+        })
+
+
+    //获取进度条
+    let processTimeout = 0;
+    const intervalId = setInterval(() => {
+      request.post('/algorithm/getProcess', {
+        batchSize: batchsize.value,
+        dataset: dataset
+      })
+          .then((response) => {
+            let process, total, prunnerGot;
+            process = parseInt(response.data.data.process);
+            total = parseInt(response.data.data.total);
+            prunnerGot = response.data.data.prunner
+            if (process > 0 && !flag_prune_done.value) {
+              dialogVisible.value = true
+              resultLoading2.value = false
+              resultLoading4.value = true
+              // dialogVisible_adjust_result.value = true
+              // resultLoading3.value = false
+              // resultLoading4.value = true
+            }
+            // detectSettingLoading.value=false;
+            // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
+            percentage.value = (1.0 * process / total * 100).toFixed(1)
+            console.log("prunnerGot:", prunnerGot)
+            console.log("process:", process)
+            console.log("total:", total)
+            console.log("percentage.value:", percentage.value)
+            if (process == total)
+              clearInterval(intervalId)
+          })
+          .catch((error) => {
+            processTimeout += 1;
+            if (processTimeout > 10) {
+              ElMessage.error('服务器出错，请稍后再试');
+              clearInterval(intervalId)
+            }
+            console.error(error)
+          })
+    }, 2000)
+
+    const intervalHistory = setInterval(() => {
+      if (flag) {
+        console.log("flag:", flag)
+        let taskType = ''
+        if (radio1.value === 'wosl' && finetune.value === 'False') {
+          taskType = 'Directly Pruned'
+        } else if (radio1.value === 'sl' && finetune.value === 'False') {
+          taskType = 'Sparse learning --> Pruned'
+        } else if (radio1.value === 'wosl' && finetune.value === 'True') {
+          taskType = 'Pruned --> Fine-tuned'
+        } else if (radio1.value === 'sl' && finetune.value === 'True') {
+          taskType = 'Sparse learning --> Pruned --> Fine-tuned'
+        }
+
+        if (success === 'Success') {
+          success = 'Pruned(completed)'
+        } else {
+          success = 'Failed'
+        }
+
+        // paramsChange.value = lastFourRows[0]
+        // FLOPsChange.value = lastFourRows[1]
+        // AccChange.value = lastFourRows[2]
+        // LossChange.value = lastFourRows[3]
+        // PrunedPath.value = lastFourRows[4]
+        let temp1
+        if (success === 'Pruned(completed)') {
+          temp1 = {
+            username: store.state.username,
+            modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+            tasktype: taskType,
+            checkpointpath: modelPath.value,
+            status: success,
+            paramschange: paramsChange.value,
+            flopschange: FLOPsChange.value,
+            accchange: AccChange.value,
+            losschange: LossChange.value,
+            prunedpath: PrunedPath.value,
+            structurebeforepruned: structureBeforePruned.value,
+            structureafterpruned: structureAfterPruned.value,
+            logpath: logPath.value
+          };
+        } else {
+          temp1 = {
+            username: store.state.username,
+            modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+            tasktype: taskType,
+            checkpointpath: modelPath.value,
+            status: success,
+            paramschange: 'Params: N/A',
+            flopschange: 'FLOPs: N/A',
+            accchange: 'Acc: N/A',
+            losschange: 'Val Loss: N/A',
+            prunedpath: 'N/A',
+            structurebeforepruned: structureBeforePruned.value,
+            structureafterpruned: 'N/A',
+            logpath: logPath.value
+          };
+        }
+
+        // paramsChange.value = 'Params: N/A'
+        // FLOPsChange.value = 'FLOPs: N/A'
+        // AccChange.value = 'Acc: N/A'
+        // LossChange.value = 'Val Loss: N/A'
+        // PrunedPath.value = 'N/A'
+        // structureAfterPruned.value = 'N/A'
+
+
+        console.log("history record:", temp1)
+
+        axios.post(`/user/SubmitHistory`, temp1)
+            .then((response) => {
+              // console.log("temp1: ", temp1)
+              if (response.status === 200) {
+                if (success === 'Pruned(completed)') {
+                  ElMessage({
+                    showClose: true,
+                    message: 'Pruning task has been completed and recorded in history. You can find more information from the log.',
+                    type: 'success',
+                    duration: 6000
+                  })
+                } else {
+                  ElMessage({
+                    showClose: true,
+                    message: 'Sorry, pruning task failed and has been recorded in history. You can find more information from the log.',
+                    type: 'error',
+                    duration: 6000
+                  })
+                }
+              }
+            })
+            .catch((errors) => {
+              if (success === 'Pruned(completed)') {
+                ElMessage({
+                  showClose: true,
+                  message: 'Sorry, pruning task failed and has not been recorded in history. You can find more information from the log.',
+                  type: 'error',
+                  duration: 6000
+                })
+              } else {
+                ElMessage({
+                  showClose: true,
+                  message: 'Pruning task has been completed, but something went worng with the server so that it has not been recorded in history. You can find more information from the log.',
+                  type: 'error',
+                  duration: 6000
+                })
+              }
+              console.log('error', errors)
+            })
+        flag = false
+        // resultLoading2.value = false
+      }
+    }, 2000)
   }
-
-
 }
 
 const GenerateScript = () => {
@@ -625,13 +1133,30 @@ const GenerateScript = () => {
     }else if(modelDataset.value==='CIFAR100 (Classification)'){
       dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
       dataset = 'cifar100'
+    }else if(modelDataset.value==='ImageNet (Classification)'){
+      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+      dataset = 'imagenet'
     }
     if(radio1.value==="sl"){
       sl = 'True'
     }else if(radio1.value==="wosl"){
       sl = 'False'
     }
-    script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+    if(dataset == 'imagenet'){
+      if(modelname=='resnet50'){
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
+      }else if(modelname=='densenet121'){
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
+      }else if(modelname=='mobilenetv2'){
+        modelname = 'mobilenet_v2'
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+      }
+
+    }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+      script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+    }
     console.log("script.value: ", script.value)
     scriptVisible.value = true;
   }
@@ -1210,7 +1735,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/classification.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/classification.jpg")
       .attr("x", 0)
       .attr("y", -10)
       .attr("width", 60)
@@ -1222,7 +1747,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/upload.png")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/upload.png")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", 40)
@@ -1234,8 +1759,20 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/pretrain.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/pre.png")
       .attr("x", 2)
+      .attr("y", 0)
+      .attr("width", 40)
+      .attr("height",40);
+
+  baseSvg.append('defs').append("pattern")
+      .attr("id", "usr")
+      .attr("patternUnits", "objectBoundingBox")
+      .attr("width", "25")
+      .attr("height", "25")
+      .append("image")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/usr.png")
+      .attr("x", 3)
       .attr("y", 0)
       .attr("width", 40)
       .attr("height",40);
@@ -1246,7 +1783,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/conv.png")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/conv.png")
       .attr("x", -4)
       .attr("y", -2)
       .attr("width", 49)
@@ -1258,7 +1795,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/vgg.png")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/vgg.png")
       .attr("x", 2)
       .attr("y", 1)
       .attr("width", 45)
@@ -1270,7 +1807,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/ResNet.png")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/ResNet.png")
       .attr("x", -10)
       .attr("y", 0)
       .attr("width", 60)
@@ -1282,7 +1819,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/Transformer.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/Transformer.jpg")
       .attr("x", -4)
       .attr("y", -4)
       .attr("width", 49)
@@ -1294,7 +1831,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/yolo.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/yolo.jpg")
       .attr("x", -4)
       .attr("y", -2)
       .attr("width", 49)
@@ -1306,7 +1843,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/cifar.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/cifar.jpg")
       .attr("x", 0)
       .attr("y", -5)
       .attr("width", 60)
@@ -1318,7 +1855,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/imgnet.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/imgnet.jpg")
       .attr("x", -10)
       .attr("y", -5)
       .attr("width", 60)
@@ -1330,7 +1867,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7667/img/background/coco.jpg")
+      .attr("xlink:href", "http://10.214.242.155:7996/img/background/coco.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -1529,34 +2066,128 @@ onMounted(async () => {
   //   }
   // }
 
-
+//await
   function click(d) {
-    if(d.type=='pretrained' || d.type=='users'){
-      scriptVisible.value = false
-      PrunedialogVisible.value = true
-      console.log("d.type", d.type)
-      if(d.type==='pretrained'){
-        modelType.value = "Publicly pretrained model"
+    if(d.type=='pretrained' || d.type=='usr'){
+      if(d.parent.parent.name=='CIFAR100'){
+        radio1.value = 'sl'
+        criterion.value = ''
+        batchsize.value = 0
+        speedup.value = ''
+        finetune.value = ''
+        scriptVisible.value = false
+        PrunedialogVisible.value = true
+        console.log("d.type", d.type)
+        if(d.type==='pretrained'){
+          modelType.value = "Publicly pretrained model"
+          modelTypeSimple.value = "Pretrain"
+        }else if(d.type==='usr'){
+          modelType.value = "User trained model"
+          modelTypeSimple.value = d.name
+        }
+
+        console.log("d.path", d.path)
+        modelPath.value = d.path
+        console.log("d.acc", d.acc)
+        modelAcc.value = d.acc
+        console.log("d.params", d.params)
+        modelParams.value = d.params
+        console.log("d.flops", d.flops)
+        modelFlops.value = d.flops
+        console.log("d.parent.name", d.parent.name)
+        modelName.value = d.parent.name
+        console.log("d.parent.parent.name", d.parent.parent.name)
+        if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+          modelDataset.value = d.parent.parent.name + " (Classification)"
+          modelDatasetSimple.value = d.parent.parent.name
+        }else if(d.parent.parent.name==="COCO"){
+          modelDataset.value = d.parent.parent.name + " (Detection)"
+          modelDatasetSimple.value = d.parent.parent.name
+        }
+
+        structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+            d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
+        console.log("structureBeforePruned", structureBeforePruned.value)
+        // await axios
+        //     .post(`/user/getStructureBeforePruned`, {
+        //     })
+        //     .then((response) => {
+        //       let ranks = response.data.data.ranklistinfo
+        //       console.log("response.data.data", response.data.data)
+        //       console.log("ranks: ", ranks)
+        //       servers.value = ranks
+        //     })
+        //     .catch((errors) => {
+        //       console.log('error', errors)
+        //     })
+
+
+        // ElMessage.success("选择了预训练模型！")
+      }else if(d.parent.parent.name=='ImageNet'){
+        if(d.model_name=='ImageNet_ResNet50_Pretrained' || d.model_name=='ImageNet_DenseNet121_Pretrained'){
+          lr.value = 0.08
+        }else if(d.model_name=='ImageNet_MobileNetV2_Pretrained'){
+          lr.value = 0.045
+        }else if(d.model_name=='ImageNet_VGG19-BN_Pretrained' || d.model_name=='ImageNet_VGG16-BN_Pretrained'){
+          lr.value = 0.01
+        }
+        radio1.value = 'sl'
+        criterion.value = ''
+        batchsize.value = 0
+        speedup.value = ''
+        finetune.value = ''
+        scriptVisible.value = false
+        ImageNetPrunedialogVisible.value = true
+        console.log("d.type", d.type)
+        if(d.type==='pretrained'){
+          modelType.value = "Publicly pretrained model"
+          modelTypeSimple.value = "Pretrain"
+        }else if(d.type==='usr'){
+          modelType.value = "User trained model"
+          modelTypeSimple.value = d.name
+        }
+
+        console.log("d.path", d.path)
+        modelPath.value = d.path
+        console.log("d.acc", d.acc)
+        modelAcc.value = d.acc
+        console.log("d.params", d.params)
+        modelParams.value = d.params
+        console.log("d.flops", d.flops)
+        modelFlops.value = d.flops
+        console.log("d.parent.name", d.parent.name)
+        modelName.value = d.parent.name
+        console.log("d.parent.parent.name", d.parent.parent.name)
+        if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+          modelDataset.value = d.parent.parent.name + " (Classification)"
+          modelDatasetSimple.value = d.parent.parent.name
+        }else if(d.parent.parent.name==="COCO"){
+          modelDataset.value = d.parent.parent.name + " (Detection)"
+          modelDatasetSimple.value = d.parent.parent.name
+        }
+
+        structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+            d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
+        console.log("structureBeforePruned", structureBeforePruned.value)
       }
 
-      console.log("d.path", d.path)
-      modelPath.value = d.path
-      console.log("d.acc", d.acc)
-      modelAcc.value = d.acc
-      console.log("d.params", d.params)
-      modelParams.value = d.params
-      console.log("d.flops", d.flops)
-      modelFlops.value = d.flops
-      console.log("d.parent.name", d.parent.name)
+    }else if(d.type=='upload'){
+      ckpt.value = ''
+      ckptUploaded.value = false
+      uploadType.value = ''
       modelName.value = d.parent.name
+      usrModelName.value = ''
       console.log("d.parent.parent.name", d.parent.parent.name)
       if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
         modelDataset.value = d.parent.parent.name + " (Classification)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }else if(d.parent.parent.name==="COCO"){
+        modelDataset.value = d.parent.parent.name + " (Detection)"
+        modelDatasetSimple.value = d.parent.parent.name
       }
-
-      // ElMessage.success("选择了预训练模型！")
-    }else if(d.type=='upload'){
-      // ElMessage.success("准备上传模型")
+      console.log("modelName.value: ", modelName.value)
+      console.log("modelDatasetSimple.value: ", modelDatasetSimple.value)
+      UploadVisible.value = true
     }else{
       if (d3.event.defaultPrevented) return; // click suppressed
       d = toggleChildren(d);
@@ -1659,33 +2290,58 @@ onMounted(async () => {
           return d._children ? "lightsteelblue" : "#fff";
         });
 
-        nodeEnter.append("circle")
+    nodeEnter.append("circle")
         .attr('class', 'nodeCircleBorder')
         .attr("r", 0)
         .style("stroke", "rgba(121, 80, 173, 0.5)")
         .style("stroke-width", function(d) {
-
-        if (d.model_name === "CIFAR100_ResNet56_Pretrained" 
-        || d.model_name === "CIFAR100_ResNet18_Pretrained" 
-        ||d.model_name === "CIFAR100_VGG19_Pretrained"
-        ||d.model_name==="CIFAR100_DenseNet121_Pretrained"
-        ||d.model_name==="CIFAR100_GoogleNet_Pretrained"
-        ||d.model_name==="CIFAR100_SE-ResNet_Pretrained"
-        ||d.model_name==="CIFAR100_Xception_Pretrained"
-        ||d.model_name==="CIFAR100_InceptionV4_Pretrained"
-        ||d.model_name === "CIFAR10_ResNet56_Pretrained" 
-        || d.model_name === "CIFAR10_ResNet18_Pretrained" 
-        ||d.model_name === "CIFAR10_VGG19_Pretrained"
-        ||d.model_name==="CIFAR10_DenseNet121_Pretrained"
-        ||d.model_name==="CIFAR10_GoogleNet_Pretrained"
-        ||d.model_name==="CIFAR10_SE-ResNet_Pretrained"
-        ||d.model_name==="CIFAR10_Xception_Pretrained"
-        ||d.model_name==="CIFAR10_InceptionV4_Pretrained" )
+          if (d.status==='done')
           return "6px";
         else 
           return "0";
         })
         .style("fill", "none")
+
+    // click(
+    nodeEnter.append("circle")
+        .attr('class', 'nodeCircleBorderFailed')
+        .attr("r", 0)
+        .style("stroke", "#FC7272")
+        .style("stroke-width", function(d) {
+          if (d.status==='verfailed')
+            return "6px";
+          else
+            return 0;
+        })
+        .style("fill", "none")
+
+
+    nodeEnter.append("circle")
+        .attr('class', 'nodeCircleBorderUnknown')
+        .attr("r", 0)
+        .style("stroke", "#808080")
+        .style("stroke-width", function(d) {
+          if (d.status==='unknown')
+            return "6px";
+          else
+            return 0;
+        })
+        .style("fill", "none")
+
+    nodeEnter.append("circle")
+        .attr('class', 'nodeCircleBorderUnequiped')
+        .attr("r", 0)
+        .style("stroke", "#FFA722")
+        .style("stroke-width", function(d) {
+          if (d.status==='unequiped')
+            return "6px";
+          else
+            return 0;
+        })
+        .style("fill", "none")
+
+
+
 
         // .style("pointer-events", "none");
 
@@ -1712,11 +2368,12 @@ onMounted(async () => {
             console.log("d.children", d.children)
             console.log("d._children", d._children)
           }
+          console.log("d.name: ", d.name)
           return d.children || d._children ? "rotate(-90)" : "rotate(-30)";
         })
         // .attr("transform", "rotate(-90)")
         .text(function(d) {
-          return d.name;
+          return d.name=='Upload' ? "Add a new model" : d.name;
         })
         .style("fill-opacity", 0)
         // .style("color", "black")
@@ -1750,11 +2407,22 @@ onMounted(async () => {
           return d.children || d._children ? "end" : "start";
         })
         .text(function(d) {
-          return d.name;
+          return d.name=='Upload' ? "Upload" : d.name;
         });
 
     console.log("!!!", node.select("circle.nodeCircleBorder"))
     node.select("circle.nodeCircleBorder").attr("r", 24)
+
+    console.log("!!!", node.select("circle.nodeCircleBorderFailed"))
+    node.select("circle.nodeCircleBorderFailed").attr("r", 24)
+
+    console.log("!!!", node.select("circle.nodeCircleBorderUnknown"))
+    node.select("circle.nodeCircleBorderUnknown").attr("r", 24)
+
+    console.log("!!!", node.select("circle.nodeCircleBorderUnequiped"))
+    node.select("circle.nodeCircleBorderUnequiped").attr("r", 24)
+
+
 
     // Change the circle fill depending on whether it has children and is collapsed
     node.select("circle.nodeCircle")
@@ -1766,6 +2434,8 @@ onMounted(async () => {
             return "url(#upload)";
           }else if(d.type==="pretrained"){
             return "url(#pretrain)";
+          }else if(d.type==="usr"){
+            return "url(#usr)";
           }else if(d.type==="conv"){
             return "url(#conv)";
           }else if(d.type==="yolo"){
@@ -1787,7 +2457,7 @@ onMounted(async () => {
               return "url(#cifar)";
             }else if(d.name==="CIFAR100"){
               return "url(#imgnet)";
-            }else if(d.name==="COCO128"){
+            }else if(d.name==="COCO"){
               return "url(#coco)";
             }else if(d.name==="SchemaNet"){
               return "url(#zhf)";
@@ -1909,16 +2579,16 @@ onMounted(async () => {
 
 
 function checkFile(file) {
-  const isCSV = file.type === 'text/csv';
-  const isSizeValid = file.size / 1024 <= 500; // Convert size from bytes to kilobytes
-  if (!isCSV) {
-    ElMessage.error('Please upload a CSV file.')
-  }
+  // const isCSV = file.type === 'text/csv';
+  const isSizeValid = file.size / 1024 / 1024 <= 1000; // Convert size from bytes to kilobytes
+  // if (!isCSV) {
+  //   ElMessage.error('Please upload a CSV file.')
+  // }
   if (!isSizeValid) {
-    ElMessage.error('Please upload a CSV file with a size less than 500KB.')
+    ElMessage.error('Please upload a checkpoint file with a size less than 1GB.')
   }
-  checkCsv.value = isCSV && isSizeValid;
-  return isCSV && isSizeValid;
+  checkCsv.value = isSizeValid;
+  return isSizeValid;
 }
 
 function checkFile2(file) {
@@ -1970,11 +2640,14 @@ function checkFilePython(file) {
 // };
 const handleChange1: UploadProps["onChange"] = (file, fileList) => {
   uploadFileList.value = fileList;
-  console.log("uploadFileList.value:", uploadFileList.value)
+  console.log("uploadRef.value: ", uploadRef.value)
+  console.log("uploadFileList.value: ", uploadFileList.value)
   console.log("checkCsv.value: ", checkCsv.value)
-  if(checkCsv.value){
-    uploadCsv('morf')
-  }
+  uploadCkpt('aaaxiba!')
+  //
+  // if(checkCsv.value){
+  //   uploadCkpt('aaaxiba!')
+  // }
 };
 const handleChange2: UploadProps["onChange"] = (file, fileList) => {
   uploadFileList2.value = fileList;
@@ -1992,6 +2665,50 @@ const handleChange3: UploadProps["onChange"] = (file, fileList) => {
     uploadPython()
   }
 };
+
+async function uploadCkpt(type){
+  let param = new FormData();
+  console.log("uploadFileList: ", uploadFileList);
+  uploadFileList.value.forEach(
+      (val, index) => {
+        param.append("pictures", val.raw);
+        console.log("test", val.raw);
+      }
+  );
+  console.log("datasetId: ", store.state.datasetId);
+  param.append("datasetId", store.state.datasetId);
+  let config = {
+    baseURL: "/api",
+    //baseURL: "http://localhost:7996",
+    timeout: 30000,
+    headers: {
+      "Content-Type": "multipart/form-data" //设置headers
+    }
+  };
+  console.log("param: ", param);
+  await axios
+      .post("/data/uploadCkpts", param, config)
+      .then(res => {
+        console.log("res: ", res);
+        if (res.status === 200) {
+          console.log("yes");
+          let arr = res.data.data.imgpath.split("/")
+          ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
+          console.log("ckpt.value: ", ckpt.value);
+          uploadRef.value.clearFiles();
+          uploadFileList.value = [];
+          ckptUploaded.value = true;
+          ElMessage.success('Model uploaded successfully.')
+        }else{
+          ElMessage.error('Model upload failed.')
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  // console.log("uploadFileList: ", uploadFileList);
+}
+
 async function uploadCsv(type){
   let param = new FormData();
   if(type=='morf'){
@@ -2250,7 +2967,7 @@ DetermineUser()
 // export { DetermineUser };
 </script>
 
-<style>
+<style scoped>
 
 #tree-container {
   transform: rotate(90deg);

@@ -5,67 +5,133 @@
     <!--    max-height="100"-->
     <el-table
         :data="tableData"
-        :default-sort="{ prop: ['dateTime'], order: 'descending' }"
+        :default-sort="{ prop: ['submitTime'], order: 'descending' }"
         style="width: 100%"
         :border="false"
     >
       <!--      <el-table-column min-width="20" prop="algorithmId" type="index" label="ID"/>-->
-      <el-table-column min-width="120" fixed prop="userName" label="user name" />
-      <el-table-column min-width="180" prop="taskType" label="task type" />
-      <el-table-column min-width="180" prop="status" label="status" />
-      <el-table-column min-width="140" prop="checkpointPath" label="checkpoint path" sortable="sortable" />
-      <el-table-column min-width="130" prop="SubmitTime" label="Submit Time" sortable="sortable"  />
-<!--      <el-table-column min-width="100" prop="ranking" label="ranking" sortable="sortable" />-->
+      <el-table-column min-width="100" fixed prop="username" label="user name" />
+      <el-table-column min-width="120" fixed prop="modelName" label="model name" />
+      <el-table-column min-width="120" prop="taskType" label="task type" />
 
-      <!--      <el-table-column width="830" prop="morfPath" label="morf" />-->
-      <!--      <el-table-column width="830" prop="lerfPath" label="lerf" />-->
-      <!--      <el-table-column width="830" prop="pythonPath" label="algorithm file" />-->
-      <!--      <el-table-column width="830" prop="email" label="email" />-->
-      <!--      <el-table-column width="830" prop="info" label="info" />-->
+      <el-table-column min-width="120" prop="submitTime" label="submit time" sortable="sortable" />
 
-<!--      <el-table-column min-width="60" label="Details" type="expand">-->
+<!--      <el-table-column min-width="150" label="params" >-->
+<!--        <template #default="props">-->
+<!--          {{ props.row.paramsChange.replace('Params: ', '') }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column min-width="220" label="speed up(FLOPs)" >-->
+<!--        <template #default="props">-->
+<!--          {{ props.row.flopsChange.replace('FLOPs: ', '') }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column min-width="120" label="acc" >-->
+<!--        <template #default="props">-->
+<!--          {{ props.row.accChange.replace('Acc: ', '') }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column min-width="120" label="val loss" >-->
+<!--        <template #default="props">-->
+<!--          {{ props.row.lossChange.replace('Val Loss: ', '') }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column min-width="60" label="statics" type="expand">-->
 <!--        <template #default="props">-->
 <!--          <div m="4">-->
-<!--            <p m="t-0 b-2">Morf result download:-->
-<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.morfPath.split('/').slice(-1)[0]" :underline="false">-->
-<!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
-<!--              </el-link>-->
-<!--            </p>-->
-<!--            <p m="t-0 b-2">Lerf result download:-->
-<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.lerfPath.split('/').slice(-1)[0]" :underline="false">-->
-<!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
-<!--              </el-link>-->
-<!--            </p>-->
-<!--            <p m="t-0 b-2" v-if="props.row.pythonPath.split('/').slice(-1)[0]==='Not Provided'">-->
-<!--              Algorithm file download: {{ props.row.pythonPath.split("/").slice(-1)[0] }}-->
-<!--            </p>-->
-<!--            <p v-else>Algorithm file download:-->
-<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/data/user_upload/'+props.row.pythonPath.split('/').slice(-1)[0]" :underline="false">-->
-<!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
-<!--              </el-link>-->
-<!--            </p>-->
-<!--            <p m="t-0 b-2">Email: {{ props.row.email }}</p>-->
-<!--            <p m="t-0 b-2">Detailed information: {{ props.row.info }}</p>-->
+<!--            <p m="t-0 b-2">{{props.row.paramsChange}}</p>-->
+<!--            <p m="t-0 b-2">{{props.row.flopsChange}}</p>-->
+<!--            <p m="t-0 b-2">{{props.row.accChange}}</p>-->
+<!--            <p m="t-0 b-2">{{props.row.lossChange}}</p>-->
 <!--          </div>-->
 <!--        </template>-->
 <!--      </el-table-column>-->
-      <!--      "'http://10.214.242.155:7996/WorkSpace/data/user_upload/'"-->
 
-      <!--      {{ props.row.morfPath.split("/")[props.row.morfPath.split("/").length-1] }}-->
-
-      <!--      {{ props.row.morfPath.split("/").slice(-1)[0] }}-->
-
-      <!--      {{ props.row.pythonPath.split("/").slice(-1)[0] }}-->
-
-      <el-table-column label="Status" min-width="160">
+      <el-table-column min-width="60" label="details" type="expand">
         <template #default="props">
-          <div v-if="props.row.status==='In Process'">
+          <div m="4">
+            <p m="t-0 b-2">{{props.row.paramsChange}}</p>
+            <p m="t-0 b-2">{{props.row.flopsChange}}</p>
+            <p m="t-0 b-2">{{props.row.accChange}}</p>
+            <p m="t-0 b-2">{{props.row.lossChange}}</p>
+            <p m="t-0 b-2">Unpruned model:
+<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/benchmarks/log/'+props.row.checkpointPath.split('/').slice(-4).join('/')" :underline="false">-->
+<!--              <el-button  size="small" type="warning" plain>Download</el-button>-->
+<!--            </el-link>-->
+
+
+
+
+              <el-link target="_blank" :href="props.row.checkpointPath.includes('Torch-Pruning') ? 'http://10.214.242.155:7996/WorkSpace/' + props.row.checkpointPath.split('Torch-Pruning').slice(-1)[0] : 'http://10.214.242.155:7996/ckpt' + props.row.checkpointPath.split('checkpoints').slice(-1)[0]" :underline="false">
+                <el-button size="small" type="success" plain>Download</el-button>
+              </el-link>
+
+
+
+
+
+<!--              <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.checkpointPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">-->
+<!--                <el-button  size="small" type="success" plain>Download</el-button>-->
+<!--                props.row.checkpointPath-->
+<!--              </el-link>-->
+
+
+            </p>
+<!--            <p m="t-0 b-2">Checkpoint before pruned: {{props.row.checkpointPath}}</p>-->
+            <p m="t-0 b-2">Pruned model:
+<!--              <el-link :href="'http://10.214.242.155:7996/WorkSpace/benchmarks/log/'+props.row.prunedPath.split('/').slice(-5).join('/')" :underline="false">-->
+<!--                <el-button  size="small" type="warning" plain>Download</el-button>-->
+<!--              </el-link>-->
+              <el-link v-if="props.row.prunedPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.prunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                <el-button  size="small" type="success" plain>Download</el-button>
+              </el-link>
+              <text v-else>
+                N/A
+              </text>
+            </p>
+
+
+            <p m="t-0 b-2">
+              Structure before pruned: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                <el-button size="small" type="primary" plain>View</el-button></el-link>
+            </p>
+
+            <p m="t-0 b-2">
+              Structure after pruned:
+              <el-link v-if="props.row.structureAfterPruned!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                <el-button size="small" type="primary" plain>View</el-button>
+              </el-link>
+              <text v-else>
+                N/A
+              </text>
+            </p>
+
+            <p m="t-0 b-2">
+              Log file:
+              <el-link v-if="props.row.logPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                <el-button size="small" type="primary" plain>View</el-button>
+              </el-link>
+              <text v-else>
+                N/A
+              </text>
+            </p>
+
+
+<!--            <p m="t-0 b-2">Checkpoint after pruned: {{props.row.prunedPath}}</p>-->
+          </div>
+        </template>
+      </el-table-column>
+
+
+      <el-table-column label="status" min-width="160">
+        <template #default="props">
+          <div v-if="props.row.status==='Sparse Learning...'||props.row.status==='Pruned, Fine-tuning...'">
             <el-text class="mx-1" type="warning" style="color: #FF8017; font-weight: bold">{{props.row.status}}</el-text>
           </div>
-          <div v-else-if="props.row.status==='Rejected'">
+          <div v-else-if="props.row.status==='Failed'">
             <el-text class="mx-1" type="danger" style="color: #AB140C; font-weight: bold">{{props.row.status}}</el-text>
           </div>
-          <div v-else-if="props.row.status==='Approved'">
+          <div v-else-if="props.row.status==='Pruned(completed)'||props.row.status==='Fine-tuned(completed)'">
             <el-text class="mx-1" type="success" style="color: #67C23A; font-weight: bold">{{props.row.status}}</el-text>
           </div>
 
