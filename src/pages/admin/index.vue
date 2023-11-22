@@ -14,7 +14,7 @@
 <!--      <b-nav tabs>-->
 <!--        <b-nav-item active-class="active" :to="{name: 'ManageServer'}">算力机管理</b-nav-item>-->
 <!--      </b-nav>-->
-      <div class="pt-4">
+      <div class="pt-4" style="width:100%">
         <router-view></router-view>
       </div>
       <!-- </div> -->

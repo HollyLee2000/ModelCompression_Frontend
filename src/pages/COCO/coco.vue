@@ -11,6 +11,7 @@
   <el-container>
   <div class="layout">
 <!--    <h5 class="mb-2">Default colors</h5>-->
+
     <el-menu
         default-active="2"
         class="el-menu-vertical-demo"
@@ -24,16 +25,18 @@
     >
       <div class="sidebar-header">
         <div class="pro-sidebar-logo">
-          <div>VIPA</div>
+          <div>vipa</div>
           <h5>Model Zoo</h5>
         </div>
       </div>
 
       <el-sub-menu index="1">
         <template #title>
-          <el-icon><location /></el-icon>
-          <span>CIFAR10 <span class="menu-suffix">
-                      <span class="badge primary">classification</span>
+          <div class="circle-icon">
+            <img src="http://10.214.242.155:7996/Cifar/0_93.jpg" alt="Icon" />
+          </div>
+          <span>&nbsp;&nbsp;CIFAR10 <span class="menu-suffix  ">
+                      <span class="badge primary">classify</span>
                     </span> </span>
         </template>
         <el-menu-item @click="centerNodebyName('CIFAR10', 'Xception')" index="1-1">Xception </el-menu-item>
@@ -49,9 +52,11 @@
 
       <el-sub-menu index="2">
         <template #title>
-          <el-icon><location /></el-icon>
-          <span>CIFAR100 <span class="menu-suffix">
-                      <span class="badge primary">classification</span>
+          <div class="circle-icon">
+            <img src="http://10.214.242.155:7996/Cifar/9_36064.jpg" alt="Icon" />
+          </div>
+          <span>&nbsp;&nbsp;CIFAR100 <span class="menu-suffix">
+                      <span class="badge primary">classify</span>
                     </span></span>
         </template>
         <el-menu-item @click="centerNodebyName('CIFAR100', 'Xception')" index="2-1">Xception</el-menu-item>
@@ -68,9 +73,11 @@
 
       <el-sub-menu index="3">
         <template #title>
-          <el-icon><location /></el-icon>
-          <span>ImageNet <span class="menu-suffix">
-                      <span class="badge primary">classification</span>
+          <div class="circle-icon">
+            <img src="http://10.214.242.155:7996/VOC/2010_001499.jpg" alt="Icon" />
+          </div>
+          <span>&nbsp;&nbsp;ImageNet <span class="menu-suffix">
+                      <span class="badge primary">classify</span>
                     </span></span>
         </template>
         <el-menu-item @click="centerNodebyName('ImageNet', 'ViT_B_16(timm)')" index="3-1">ViT_base (timm)</el-menu-item>
@@ -86,10 +93,12 @@
 
       <el-sub-menu index="4">
         <template #title>
-          <el-icon><location /></el-icon>
-          <span>COCO <span class="menu-suffix">
+          <div class="circle-icon">
+            <img src="http://10.214.242.155:7996/VOC/2008_002789.jpg" alt="Icon" />
+          </div>
+          <span>&nbsp;&nbsp;COCO <span class="menu-suffix">
 <!--                      <span class="badge primary">detection</span>-->
-                      <span class="badge secondary">detection</span>
+                      <span class="badge secondary">detect</span>
                     </span></span>
         </template>
         <el-menu-item @click="centerNodebyName('COCO', 'YOLOv5')" index="4-1">YOLOv5</el-menu-item>
@@ -98,7 +107,7 @@
       </el-sub-menu>
     </el-menu>
 
-    <div class="sidebar-footer">
+    <div class="sidebar-footer" v-show="!isCollapseDiv">
       <div class="footer-box">
         <div>
           <img
@@ -128,6 +137,16 @@
 
 
   </div>
+
+
+    <a class="sidebar-collapser" @click="toggleCollapse" v-if="!isCollapse"> {{myIcon}} </a>
+    <a class="sidebar-collapsed" @click="toggleCollapse" v-else> {{myIcon2}} </a>
+
+<!--    sidebar-collapsed-->
+<!--    <div class="toggle-button" >|||</div>-->
+
+
+
 
     <el-main style="padding: 0">
       <div class="holly">
@@ -708,9 +727,15 @@ const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
 
+const myIcon = ref('<')
+const myIcon2 = ref('>')
 const resultLoading4 = ref(false)
 const flag_prune_done = ref(false)  //是否剪枝完成
 const resultShow_tree_result = ref(false)  //剪枝完的结果是否展示
+
+const isCollapse = ref(true)
+
+const isCollapseDiv = ref(true)
 
 const percentage = ref(0)
 const percentage2 = ref(0)
@@ -861,6 +886,25 @@ const modelzoo = ref();
 // dialogVisible_global
 
 const activeTab = ref('cn')
+
+function toggleCollapse () {
+  // if(isCollapse.value){
+  //   myIcon.value = '<'
+  // }else{
+  //   myIcon.value = '>'
+  // }
+  isCollapse.value = !isCollapse.value
+  // //等待半秒钟
+  // isCollapseDiv.value = isCollapseDiv.value != true;
+
+  isCollapseDiv.value = !isCollapseDiv.value;
+
+
+  // 等待半秒钟
+  // setTimeout(() => {
+  //   isCollapseDiv.value = !isCollapseDiv.value;
+  // }, 500); // 500毫秒等待时间
+}
 
 function showDialog() {
   console.log("进来了")
@@ -1490,52 +1534,113 @@ const testHtml = () =>{
   console.log("test: ", test)
 }
 
-function zoom() {
-  // if (d3.event.sourceEvent.ctrlKey) {
-  //   svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  // }
-  var svgGroup = d3.select("#tree-container").select("svg").select("g")
-
-  svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-}
-
-var viewerWidth = $(document).height();
-var viewerHeight = $(document).width();
-var duration = 750;
-console.log("fake viewerWidth: ", viewerWidth)
-console.log("fake viewerHeight: ", viewerHeight)
+// var viewerWidth = $(document).height();
+// var viewerHeight = $(document).width();
+// var duration = 750;
+// console.log("fake viewerWidth: ", viewerWidth)
+// console.log("fake viewerHeight: ", viewerHeight)
 // var response = await request2.post(`/user/getModelZoo`, {});
 // var root = response.data;
 
 const treeRoot = ref()
 
-// click d
-function centerNode(source) {
-  console.log("source: ", source)
-  var zoomListener = d3.behavior
-      .zoom()
-      .scaleExtent([0.1, 3])
-      // .filter(function () {
-      //   return d3.event.ctrlKey;
-      // })
-      .on("zoom", zoom);
-  var scale = zoomListener.scale();
-  var x = -source.y0;
-  var y = -source.x0;
-  x = x * scale + viewerHeight / 8;
-  // x = x * scale + viewerHeight / 20;
-  y = y * scale + viewerHeight / 2;
-  d3.select('g').transition()
-      .duration(duration)
-      .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
-  zoomListener.scale(scale);
-  zoomListener.translate([x, y]);
+// // click d
+// function centerNode(source) {
+//   console.log("source: ", source)
+//   var zoomListener = d3.behavior
+//       .zoom()
+//       .scaleExtent([0.1, 3])
+//       // .filter(function () {
+//       //   return d3.event.ctrlKey;
+//       // })
+//       .on("zoom", zoom);
+//   var scale = zoomListener.scale();
+//   var x = -source.y0;
+//   var y = -source.x0;
+//   x = x * scale + viewerHeight / 8;
+//   // x = x * scale + viewerHeight / 20;
+//   y = y * scale + viewerHeight / 2;
+//   d3.select('g').transition()
+//       .duration(duration)
+//       .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+//   zoomListener.scale(scale);
+//   zoomListener.translate([x, y]);
+// }
+
+function toggleChildren(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else if (d._children) {
+    d.children = d._children;
+    d._children = null;
+  }
+  return d;
 }
 
-function centerNodebyName(datasetName, modelName){
+//context
+async function centerNodebyName(datasetName, modelName){
+  //先注释掉，后面再开工
+
+
+  //在跳转之前，先展开当前节点，在收缩其他节点
+  var datasetNode = toggleByDataset(treeRoot.value, datasetName)
+
+  console.log("datasetNode: ", datasetNode)
+
+  // if (d3.event.defaultPrevented) return; // click suppressed
+
+
+
+  await update(datasetNode);
+  // centerNode(d);
+
+
+
+
   console.log("treeRoot: ", treeRoot)
   var targetNode = findNodeByDatasetAndModel(treeRoot.value, datasetName, modelName)
+
+  console.log("targetNode: ", targetNode)
+
+  var tryNode = d3.selectAll('.ghostCircle')
+  console.log("tryNode: ", tryNode)
+  // 使用 filter 方法来选择特定的元素
+  const targetGhostCircle = tryNode.filter(function(d) {
+    return (d.name === modelName && d.parent.name === datasetName) || (d.parent!=undefined && d.parent.name === modelName && d.parent.parent!=undefined && d.parent.parent.name === datasetName);
+  });
+  console.log("targetGhostCircle: ", targetGhostCircle)
+
+  // d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+  //
+  // setTimeout(() => {
+  //   d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+  // }, 1500);
+
+  var tryLink = d3.selectAll('.link')
+  console.log("tryLink: ", tryLink)
+
+  const targetLink = tryLink.filter(function(d) {
+    return d.source.name === modelName && d.source.parent.name === datasetName;
+  });
+  console.log("targetLink: ", targetLink)
+
+
   centerNode(targetNode)
+
+  // targetGhostCircle.attr('class', 'ghostCircle show');
+  // targetLink.attr('class', 'templink');
+
+  setTimeout(() => {
+    targetGhostCircle.attr('class', 'ghostCircle show');
+    targetLink.attr('class', 'templink');
+  }, 200);
+
+
+  setTimeout(() => {
+    targetGhostCircle.attr('class', 'ghostCircle');
+    targetLink.attr('class', 'link');
+  }, 1500);
 }
 
 function findNodeByDatasetAndModel(node, datasetName, modelName) {
@@ -1563,8 +1668,952 @@ function findNodeByDatasetAndModel(node, datasetName, modelName) {
   return null; // Node not found
 }
 
+// function toggleByDataset(node, datasetName) {
+//   var datasetNode
+//   for (var i = 0; i < node.children.length; i++) {
+//     if (node.children[i] === datasetName) {
+//       if (!node.children[i].children) {
+//         toggleChildren(node.children[i]);
+//       }
+//     } else {
+//       if (node.children[i].children) {
+//         toggleChildren(node.children[i]);
+//       }
+//     }
+//   }
+//   return datasetNode
+// }
+
+function toggleByDataset(node, datasetName) {
+  var datasetNode
+  for (var i = 0; i < node.children.length; i++) {
+    console.log("node.children[i]: ", node.children[i])
+    if (node.children[i].name === datasetName){
+      console.log("找到了数据集节点")
+      datasetNode = node.children[i]
+      if(!node.children[i].children){
+        console.log("所要求的数据集节点没有孩子，需要扩展出来")
+        toggleChildren(node.children[i]);
+        // update(node.children[i]);
+      }
+    }else{
+      console.log("这不是要找的数据集节点")
+      if(node.children[i].children){
+        console.log("该节点有孩子，需要抑制")
+        toggleChildren(node.children[i]);
+        // update(node.children[i]);
+      }
+    }
+  }
+  return datasetNode
+
+  // if (node.name === datasetName) {
+  //   // Check if the current node matches the dataset name
+  //   return node
+  // }
+  //
+  // if (node.children) {
+  //   for (var i = 0; i < node.children.length; i++) {
+  //     var result = toggleByDataset(node.children[i], datasetName);
+  //     if (result) {
+  //       return result;
+  //     }
+  //   }
+  // }
+
+  // return null; // Node not found
+}
+
+//迁移标注
+var json;
+var root;
+// var tree;
+var maxLabelLength = 0;
+var treeData;
+var totalNodes = 0;
+// variables for drag/drop
+var selectedNode = null;
+var draggingNode = null;
+// panning variables
+var panSpeed = 200;
+var panBoundary = 20; // Within 20px from edges will pan when dragging.
+// Misc. variables
+var i = 0;
+var duration = 750;
+// var root;
+
+// size of the diagram
+var viewerWidth = $(document).height();
+var viewerHeight = $(document).width();
+console.log("real viewerWidth: ", viewerWidth)
+console.log("real viewerHeight: ", viewerHeight)
+
+var tree = d3.layout.tree()
+    .size([viewerHeight, viewerWidth]);
+
+console.log("tree: ", tree)
+// define a d3 diagonal projection for use by the node paths later on.
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) {
+      return [d.y, d.x];
+    });
+
+// A recursive helper function for performing some setup by walking through all nodes
+
+function visit(parent, visitFn, childrenFn) {
+  if (!parent) return;
+
+  visitFn(parent);
+
+  var children = childrenFn(parent);
+  if (children) {
+    var count = children.length;
+    for (var i = 0; i < count; i++) {
+      visit(children[i], visitFn, childrenFn);
+    }
+  }
+}
+// sort the tree according to the node names
+
+function sortTree() {
+  console.log("执行了此函数")
+  console.log(json)
+  tree.sort(function(a, b) {
+    return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
+  });
+}
+// define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+const zoomListener = d3.behavior
+    .zoom()
+    .scaleExtent([0.1, 3])
+    // .filter(function () {
+    //   return d3.event.ctrlKey;
+    // })
+    .on("zoom", zoom);
+
+// Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+
+function centerNode(source) {
+  var scale = zoomListener.scale();
+  var x = -source.y0;
+  var y = -source.x0;
+  x = x * scale + viewerHeight / 8;
+  // x = x * scale + viewerHeight / 20;
+  y = y * scale + viewerHeight / 2;
+  d3.select('g').transition()
+      .duration(duration)
+      .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+  zoomListener.scale(scale);
+  zoomListener.translate([x, y]);
+}
+
+
+
+function zoom() {
+  // if (d3.event.sourceEvent.ctrlKey) {
+  //   svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  // }
+  var svgGroup = d3.select("#tree-container").select("svg").select("g")
+  svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+function pan(domNode, direction) {
+  var speed = panSpeed;
+  var svgGroup = d3.select("#tree-container").select("svg").select("g")
+  if (panTimer) {
+    clearTimeout(panTimer);
+    var translateCoords = d3.transform(svgGroup.attr("transform"));
+    if (direction == 'left' || direction == 'right') {
+      var translateX = direction == 'left' ? translateCoords.translate[0] + speed : translateCoords.translate[0] - speed;
+      var translateY = translateCoords.translate[1];
+    } else if (direction == 'up' || direction == 'down') {
+      translateX = translateCoords.translate[0];
+      translateY = direction == 'up' ? translateCoords.translate[1] + speed : translateCoords.translate[1] - speed;
+    }
+    var scaleX = translateCoords.scale[0];
+    var scaleY = translateCoords.scale[1];
+    var scale = zoomListener.scale();
+    svgGroup.transition().attr("transform", "translate(" + translateX + "," + translateY + ")scale(" + scale + ")");
+    d3.select(domNode).select('g.node').attr("transform", "translate(" + translateX + "," + translateY + ")");
+    zoomListener.scale(zoomListener.scale());
+    zoomListener.translate([translateX, translateY]);
+    var panTimer = setTimeout(function() {
+      pan(domNode, speed, direction);
+    }, 50);
+  }
+}
+
+
+//context
+function initiateDrag(d, domNode) {
+  var svgGroup = d3.select("#tree-container").select("svg").select("g")
+  draggingNode = d;
+  d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
+  d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+  d3.select(domNode).attr('class', 'node activeDrag');
+
+  svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
+    if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
+    else return -1; // a is the hovered element, bring "a" to the front
+  });
+  // if nodes has children, remove the links and nodes
+  if (nodes.length > 1) {
+    // remove link paths
+    var links = tree.links(nodes);
+    var nodePaths = svgGroup.selectAll("path.link")
+        .data(links, function(d) {
+          return d.target.id;
+        }).remove();
+    // remove child nodes
+    var nodesExit = svgGroup.selectAll("g.node")
+        .data(nodes, function(d) {
+          return d.id;
+        }).filter(function(d, i) {
+          if (d.id == draggingNode.id) {
+            return false;
+          }
+          return true;
+        }).remove();
+  }
+
+  // remove parent link
+  var parentLink = tree.links(tree.nodes(draggingNode.parent));
+  svgGroup.selectAll('path.link').filter(function(d, i) {
+    if (d.target.id == draggingNode.id) {
+      return true;
+    }
+    return false;
+  }).remove();
+
+  dragStarted = null;
+}
+
+// 选择tree-container元素
+const container = d3.select('#tree-container');
+
+// 检查是否存在子元素，如果有则删除
+if (!container.empty()) {
+  container.select('svg').remove();
+}
+
+
+// Define the drag listeners for drag/drop behaviour of nodes.
+var dragListener = d3.behavior.drag()
+    .on("dragstart", function(d) {
+      if (d == root) {
+        return;
+      }
+      dragStarted = true;
+      nodes = tree.nodes(d);
+      d3.event.sourceEvent.stopPropagation();
+      // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
+    })
+    .on("drag", function(d) {
+      if (d == root) {
+        return;
+      }
+      if (dragStarted) {
+        domNode = this;
+        initiateDrag(d, domNode);
+      }
+
+      // get coords of mouseEvent relative to svg container to allow for panning
+      var relCoords = d3.mouse($('svg').get(0));
+      if (relCoords[0] < panBoundary) {
+        var panTimer = true;
+        pan(this, 'left');
+      } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+
+        panTimer = true;
+        pan(this, 'right');
+      } else if (relCoords[1] < panBoundary) {
+        panTimer = true;
+        pan(this, 'up');
+      } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+        panTimer = true;
+        pan(this, 'down');
+      } else {
+        try {
+          clearTimeout(panTimer);
+        } catch (e) {
+
+        }
+      }
+
+      d.x0 += d3.event.dy;
+      d.y0 += d3.event.dx;
+      var node = d3.select(this);
+      node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
+      updateTempConnector();
+    }).on("dragend", function(d) {
+      if (d == root) {
+        return;
+      }
+      domNode = this;
+      if (selectedNode) {
+        // now remove the element from the parent, and insert it into the new elements children
+        var index = draggingNode.parent.children.indexOf(draggingNode);
+        if (index > -1) {
+          draggingNode.parent.children.splice(index, 1);
+        }
+        if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
+          if (typeof selectedNode.children !== 'undefined') {
+            selectedNode.children.push(draggingNode);
+          } else {
+            selectedNode._children.push(draggingNode);
+          }
+        } else {
+          selectedNode.children = [];
+          selectedNode.children.push(draggingNode);
+        }
+        // Make sure that the node being added to is expanded so user can see added node is correctly moved
+        expand(selectedNode);
+        sortTree();
+        endDrag();
+      } else {
+        endDrag();
+      }
+    });
+
+// Function to update the temporary connector indicating dragging affiliation
+var updateTempConnector = function() {
+  var svgGroup = d3.select("#tree-container").select("svg").select("g")
+  var data = [];
+  if (draggingNode !== null && selectedNode !== null) {
+    // have to flip the source coordinates since we did this for the existing connectors on the original tree
+    data = [{
+      source: {
+        x: selectedNode.y0,
+        y: selectedNode.x0
+      },
+      target: {
+        x: draggingNode.y0,
+        y: draggingNode.x0
+      }
+    }];
+  }
+  var link = svgGroup.selectAll(".templink").data(data);
+
+  link.enter().append("path")
+      .attr("class", "templink")
+      .attr("d", d3.svg.diagonal())
+      .attr('pointer-events', 'none');
+
+  link.attr("d", d3.svg.diagonal());
+
+  link.exit().remove();
+};
+
+
+function endDrag() {
+  selectedNode = null;
+  d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+  d3.select(domNode).attr('class', 'node');
+  // now restore the mouseover event or we won't be able to drag a 2nd time
+  d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
+  updateTempConnector();
+  if (draggingNode !== null) {
+    update(root);
+    centerNode(draggingNode);
+    draggingNode = null;
+  }
+}
+
+// Helper functions for collapsing and expanding nodes.
+
+function collapse(d) {
+  if (d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+function expand(d) {
+  if (d._children) {
+    d.children = d._children;
+    d.children.forEach(expand);
+    d._children = null;
+  }
+}
+
+function update(source) {
+  // Compute the new height, function counts total children of root node and sets tree height accordingly.
+  // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
+  // This makes the layout more consistent.
+  var svgGroup = d3.select("#tree-container").select("svg").select("g")
+  console.log("update in click!")
+  console.log("source:", source)
+  console.log("source.text:", source.text)
+  console.log("source._children:", source._children)
+  console.log("source.children:", source.children)
+
+  // if(!source.children){
+  //   console.log("update in click!")
+  // }
+
+  var levelWidth = [1];
+  var childCount = function(level, n) {
+
+    if (n.children && n.children.length > 0) {
+      if (levelWidth.length <= level + 1) levelWidth.push(0);
+
+      levelWidth[level + 1] += n.children.length;
+      n.children.forEach(function(d) {
+        childCount(level + 1, d);
+      });
+    }
+  };
+  childCount(0, root);
+  var newHeight = d3.max(levelWidth) * 105; // 25 pixels per line  /*<><><><><><><><><><><><><><><><><><><><><><><>THIS IS DETERMINING SPACING */
+  tree = tree.size([newHeight, viewerWidth]);
+
+  // Compute the new tree layout.
+  nodes = tree.nodes(root).reverse();
+  var links = tree.links(nodes);
+
+  // Set widths between levels based on maxLabelLength.
+  nodes.forEach(function(d) {
+    d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+    // alternatively to keep a fixed scale one can set a fixed depth per level
+    // Normalize for fixed-depth by commenting out below line
+    // d.y = (d.depth * 500); //500px per level.
+  });
+
+  // Update the nodes…
+  var node = svgGroup.selectAll("g.node")
+      .data(nodes, function(d) {
+        return d.id || (d.id = ++i);
+      });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+      .call(dragListener)
+      .attr("class", "node")
+      .attr("transform", function(d) {
+        return "translate(" + source.y0 + "," + source.x0 + ")";
+      })
+      .on('click', click)
+      .on('contextmenu', contextmenu);
+  // .on('dblclick', dblclick);
+
+  nodeEnter.append("circle")
+      .attr('class', 'nodeCircle')
+      .attr("r", 0)
+      .style("stroke", "black")
+      .style("stroke-width", "1.5px")
+      .style("fill", function(d) {
+        return d._children ? "lightsteelblue" : "#fff";
+      });
+
+  nodeEnter.append("circle")
+      .attr('class', 'nodeCircleBorder')
+      .attr("r", 0)
+      .style("stroke", "rgba(121, 80, 173, 0.5)")
+      .style("stroke-width", function(d) {
+        if (d.status==='done')
+          return "6px";
+        else
+          return "0";
+      })
+      .style("fill", "none")
+
+  // click(
+  nodeEnter.append("circle")
+      .attr('class', 'nodeCircleBorderFailed')
+      .attr("r", 0)
+      .style("stroke", "#FC7272")
+      .style("stroke-width", function(d) {
+        if (d.status==='verfailed')
+          return "6px";
+        else
+          return 0;
+      })
+      .style("fill", "none")
+
+
+  nodeEnter.append("circle")
+      .attr('class', 'nodeCircleBorderUnknown')
+      .attr("r", 0)
+      .style("stroke", "#808080")
+      .style("stroke-width", function(d) {
+        if (d.status==='unknown')
+          return "6px";
+        else
+          return 0;
+      })
+      .style("fill", "none")
+
+  nodeEnter.append("circle")
+      .attr('class', 'nodeCircleBorderUnequiped')
+      .attr("r", 0)
+      .style("stroke", "#FFA722")
+      .style("stroke-width", function(d) {
+        if (d.status==='unequiped')
+          return "6px";
+        else
+          return 0;
+      })
+      .style("fill", "none")
+
+
+
+
+  // .style("pointer-events", "none");
+
+  // nodeEnter.append("circle")
+  //     .attr('class', 'nodeCircleOuter') // 为外圆添加一个类名
+  //     .attr("r", 0)
+  //     .style("stroke", "#7950AD") // 外圆颜色为#7950AD
+  //     .style("stroke-width", "2px") // 设置外圆线宽为2px
+  //     .style("fill", "none"); // 外圆不填充颜色
+
+  nodeEnter.append("text")
+      .attr("x", function(d) {
+        return d.children || d._children ? -10 : 10;
+      })
+      .attr("dy", ".35em")
+      .attr('class', 'nodeText')
+      // .attr('style', 'font-family: Arial;')
+      .attr("text-anchor", function(d){
+        return d.children || d._children ? "end" : "start";
+      })
+      .attr("transform", function(d) {
+        if(d.name=='VGG19'){
+          console.log("找到了VGG19！")
+          console.log("d.children", d.children)
+          console.log("d._children", d._children)
+        }
+        console.log("d.name: ", d.name)
+        return d.children || d._children ? "rotate(-90)" : "rotate(-30)";
+      })
+      // .attr("transform", "rotate(-90)")
+      .text(function(d) {
+        console.log("文字名称: ", d.name)
+        return d.name=="Upload" ? "Add a new model" : (d.name=="CIFAR10" ? "C10" : d.name);
+      })
+      .style("fill-opacity", 0)
+      .style("color", "black")
+      .style("font-size", "16px")
+      .style("font-family", "Arial");
+
+  // phantom node to give us mouseover in a radius around it
+  nodeEnter.append("circle")
+      .attr('class', 'ghostCircle')
+      .attr("r", 30)
+      .attr("opacity", 0.2) // change this to zero to hide the target area
+      .style("fill", "red")
+      .attr('pointer-events', 'mouseover')
+      .on("mouseover", function(node) {
+        overCircle(node);
+      })
+      .on("mouseout", function(node) {
+        outCircle(node);
+      });
+
+  // Update the text to reflect whether node has children or not.
+  node.select('text')
+      .attr("x", function(d) {
+        // console.log("文字名称: ", d.name)
+        // console.log("d.name.length: ", d.name.length)
+        var len = d.name=="CIFAR10" ? 3 : d.name=="CIFAR100" ? 4 : d.name=="ImageNet" ? 2 : d.name=="PowerGrid" ? 4 : d.name.length;
+
+
+        return d.children || d._children ? len*8 : 30;
+        // return d.children || d._children ? -30 : 30;
+      })
+      .attr("y", function(d) {
+        return d.children || d._children ? -35 : 0;
+      })
+      .attr("text-anchor", function(d) {
+        return d.children || d._children ? "end" : "start";
+      })
+      .text(function(d) {
+        // console.log("文字名称: ", d.name)
+        return d.name=="Upload" ? "Upload" : d.name=="CIFAR10" ? "C10" : d.name=="CIFAR100" ? "C100" : d.name=="ImageNet" ? "IN" : d.name=="PowerGrid" ? "Grid" : d.name;
+        // return d.name=='Upload' ? "Upload" : d.name;
+      });
+
+  console.log("!!!", node.select("circle.nodeCircleBorder"))
+  node.select("circle.nodeCircleBorder").attr("r", 24)
+
+  console.log("!!!", node.select("circle.nodeCircleBorderFailed"))
+  node.select("circle.nodeCircleBorderFailed").attr("r", 24)
+
+  console.log("!!!", node.select("circle.nodeCircleBorderUnknown"))
+  node.select("circle.nodeCircleBorderUnknown").attr("r", 24)
+
+  console.log("!!!", node.select("circle.nodeCircleBorderUnequiped"))
+  node.select("circle.nodeCircleBorderUnequiped").attr("r", 24)
+
+
+
+  // Change the circle fill depending on whether it has children and is collapsed
+  node.select("circle.nodeCircle")
+      .attr("r", 20.5) /*<><><><><><><><><><><><><><><><><><><><><><><>THIS IS DETERMINING RADIUS */
+      .style("fill", function(d) {
+        // console.log("d:",d)
+        // console.log("d._children:",d._children)
+        if(d.type==="upload"){
+          return "url(#upload)";
+        }else if(d.type==="pretrained"){
+          return "url(#pretrain)";
+        }else if(d.type==="usr"){
+          return "url(#usr)";
+        }else if(d.type==="conv"){
+          return "url(#conv)";
+        }else if(d.type==="yolo"){
+          return "url(#yolo)";
+        }else if(d.type==="transformer"){
+          return "url(#transformer)";
+        }else if(d.type==="vgg"){
+          return "url(#vgg)";
+        }else if(d.type==="resnet"){
+          return "url(#resnet)";
+        }else{
+          if(d.name==="Model Zoo"){
+            return "url(#hl)";
+          }else if(d.name==="PowerGrid Dataset"){
+            return "url(#grid)";
+          }else if(d.name==="ImageNet"){
+            return "url(#classification)";
+          }else if(d.name==="CIFAR10"){
+            return "url(#cifar)";
+          }else if(d.name==="CIFAR100"){
+            return "url(#imgnet)";
+          }else if(d.name==="COCO"){
+            return "url(#coco)";
+          }else if(d.name==="SchemaNet"){
+            return "url(#zhf)";
+          }else if(d.name==="Dr. Huang"){
+            return "url(#hqh)";
+          }else if(d.name==="局部解释"){
+            return "url(#local)";
+          }else if(d.name==="全局解释"){
+            return "url(#global2)";
+          }else if(d.name==="事后解释性分析"){
+            return "url(#post-hoc)";
+          }else if(d.name==="可解释建模"){
+            return "url(#ad-hoc)";
+          }else if(d.name==="注意力机制"){
+            return "url(#attention2)";
+          }else if(d.name==="神经树"){
+            return "url(#tree)";
+          }else if(d.name==="概念响应"){
+            return "url(#tcav)";
+          }else if(d.name==="归因方法"){
+            return "url(#saliency)";
+          }else if(d.name==="概念原型"){
+            return "url(#prototype)";
+          }else{
+            return "url(#img1)";
+          }
+        }
+        // d._children ? "lightsteelblue" : "url(#img1)";
+
+      });
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
+
+  // Fade the text in
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) {
+        return "translate(" + source.y + "," + source.x + ")";
+      })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 0);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 0);
+
+  // Update the links…
+  var link = svgGroup.selectAll("path.link")
+      .data(links, function(d) {
+        return d.target.id;
+      });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {
+          x: source.x0,
+          y: source.y0
+        };
+        return diagonal({
+          source: o,
+          target: o
+        });
+      });
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {
+          x: source.x,
+          y: source.y
+        };
+        return diagonal({
+          source: o,
+          target: o
+        });
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+var overCircle = function(d) {
+  selectedNode = d;
+  updateTempConnector();
+};
+var outCircle = function(d) {
+  selectedNode = null;
+  updateTempConnector();
+};
+
+function click(d) {
+  console.log("click d: ", d)
+  centerNode(d);
+  if(d.type=='pretrained' || d.type=='usr'){
+    if(d.parent.parent.name=='CIFAR100' || d.parent.parent.name=='CIFAR10'){
+      radio1.value = 'sl'  //要不要sparse learing
+      criterion.value = ''  //重要性指标
+      batchsize.value = 0
+      speedup.value = ''
+      finetune.value = ''
+      scriptVisible.value = false
+      PrunedialogVisible.value = true
+      console.log("d.type", d.type)
+      if(d.type==='pretrained'){
+        modelType.value = "Publicly pretrained model"
+        modelTypeSimple.value = "Pretrain"
+      }else if(d.type==='usr'){
+        modelType.value = "User trained model"
+        modelTypeSimple.value = d.name
+      }
+
+      console.log("d.path", d.path)
+      modelPath.value = d.path
+      console.log("d.acc", d.acc)
+      modelAcc.value = d.acc
+      console.log("d.params", d.params)
+      modelParams.value = d.params
+      console.log("d.flops", d.flops)
+      modelFlops.value = d.flops
+      console.log("d.parent.name", d.parent.name)
+      modelName.value = d.parent.name
+      console.log("d.parent.parent.name", d.parent.parent.name)
+      if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+        modelDataset.value = d.parent.parent.name + " (Classification)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }else if(d.parent.parent.name==="COCO"){
+        modelDataset.value = d.parent.parent.name + " (Detection)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }
+      console.log("modelDataset.value", modelDataset.value)
+
+      structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+          d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
+      console.log("structureBeforePruned", structureBeforePruned.value)
+      // await axios
+      //     .post(`/user/getStructureBeforePruned`, {
+      //     })
+      //     .then((response) => {
+      //       let ranks = response.data.data.ranklistinfo
+      //       console.log("response.data.data", response.data.data)
+      //       console.log("ranks: ", ranks)
+      //       servers.value = ranks
+      //     })
+      //     .catch((errors) => {
+      //       console.log('error', errors)
+      //     })
+
+
+      // ElMessage.success("选择了预训练模型！")
+    }else if(d.parent.parent.name=='ImageNet'){
+      if(d.model_name=='ImageNet_ResNet50_Pretrained' || d.model_name=='ImageNet_DenseNet121_Pretrained'){
+        lr.value = 0.08
+      }else if(d.model_name=='ImageNet_MobileNetV2_Pretrained'){
+        lr.value = 0.045
+      }else if(d.model_name=='ImageNet_VGG19-BN_Pretrained' || d.model_name=='ImageNet_VGG16-BN_Pretrained'){
+        lr.value = 0.01
+      }
+      radio1.value = 'sl'
+      criterion.value = ''
+      batchsize.value = 0
+      speedup.value = ''
+      finetune.value = ''
+      scriptVisible.value = false
+      ImageNetPrunedialogVisible.value = true
+      console.log("d.type", d.type)
+      if(d.type==='pretrained'){
+        modelType.value = "Publicly pretrained model"
+        modelTypeSimple.value = "Pretrain"
+      }else if(d.type==='usr'){
+        modelType.value = "User trained model"
+        modelTypeSimple.value = d.name
+      }
+
+      console.log("d.path", d.path)
+      modelPath.value = d.path
+      console.log("d.acc", d.acc)
+      modelAcc.value = d.acc
+      console.log("d.params", d.params)
+      modelParams.value = d.params
+      console.log("d.flops", d.flops)
+      modelFlops.value = d.flops
+      console.log("d.parent.name", d.parent.name)
+      modelName.value = d.parent.name
+      console.log("d.parent.parent.name", d.parent.parent.name)
+      if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+        modelDataset.value = d.parent.parent.name + " (Classification)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }else if(d.parent.parent.name==="COCO"){
+        modelDataset.value = d.parent.parent.name + " (Detection)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }
+
+      structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+          d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
+      console.log("structureBeforePruned", structureBeforePruned.value)
+    }else if(d.parent.parent.name=='COCO'){
+      radio1.value = 'sl'  //要不要sparse learing
+      criterion.value = ''  //重要性指标
+      batchsize.value = 0
+      speedup.value = ''
+      finetune.value = ''
+      scriptVisible.value = false
+      PruneCOCOdialogVisible.value = true
+      console.log("d.type", d.type)
+      if(d.type==='pretrained'){
+        modelType.value = "Publicly pretrained model"
+        modelTypeSimple.value = "Pretrain"
+      }else if(d.type==='usr'){
+        modelType.value = "User trained model"
+        modelTypeSimple.value = d.name
+      }
+
+      console.log("d.path", d.path)
+      modelPath.value = d.path
+      console.log("d.acc", d.acc)
+      modelAcc.value = d.acc
+      console.log("d.params", d.params)
+      modelParams.value = d.params
+      console.log("d.flops", d.flops)
+      modelFlops.value = d.flops
+      console.log("d.parent.name", d.parent.name)
+      modelName.value = d.parent.name
+      console.log("d.parent.parent.name", d.parent.parent.name)
+      if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+        modelDataset.value = d.parent.parent.name + " (Classification)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }else if(d.parent.parent.name==="COCO"){
+        modelDataset.value = d.parent.parent.name + " (Detection)"
+        modelDatasetSimple.value = d.parent.parent.name
+      }
+      console.log("modelDataset.value", modelDataset.value)
+
+      structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+          d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
+
+
+      console.log("structureBeforePruned", structureBeforePruned.value)
+    }else{
+      console.log("标记d.parent.parent.name: ", d.parent.parent.name)
+    }
+
+  }else if(d.type=='upload'){
+    ckpt.value = ''
+    ckptUploaded.value = false
+    uploadType.value = ''
+    modelName.value = d.parent.name
+    usrModelName.value = ''
+    console.log("d.parent.parent.name", d.parent.parent.name)
+    if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+      modelDataset.value = d.parent.parent.name + " (Classification)"
+      modelDatasetSimple.value = d.parent.parent.name
+    }else if(d.parent.parent.name==="COCO"){
+      modelDataset.value = d.parent.parent.name + " (Detection)"
+      modelDatasetSimple.value = d.parent.parent.name
+    }
+    console.log("modelName.value: ", modelName.value)
+    console.log("modelDatasetSimple.value: ", modelDatasetSimple.value)
+    UploadVisible.value = true
+  }else{
+    if (d3.event.defaultPrevented) return; // click suppressed
+    d = toggleChildren(d);
+    update(d);
+    centerNode(d);
+  }
+  // console.log("测试", d);
+  // d3.event.stopPropagation();
+}
+
+function contextmenu(d) {
+  // d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
+  // d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+  // d3.select(domNode).attr('class', 'node activeDrag');
+  domNode = this;
+  console.log("domNode: ", domNode)
+  console.log("d3.select(domNode): ", d3.select(domNode))
+
+
+  d3.select(domNode).selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+
+  // 等待半秒钟
+  setTimeout(() => {
+    d3.select(domNode).selectAll('.ghostCircle').attr('class', 'ghostCircle');
+  }, 1500); // 500毫秒等待时间
+
+  event.preventDefault();
+  console.log("d.name", d.name);
+  if(d.name==="可解释性"){
+    showDialog_interp();
+  }if(d.name==="可解释建模"){
+    showDialog_atenhoc();
+  }if(d.name==="事后解释性分析"){
+    showDialog_posthoc();
+  }if(d.name==="局部解释"){
+    showDialog_local();
+  }if(d.name==="全局解释"){
+    showDialog_global();
+  }if(d.name==="注意力机制"){
+    showDialog_attention();
+  }if(d.name==="神经树"){
+    showDialog_tree();
+  }if(d.name==="引用概念"){
+    showDialog_intro_concept();
+  }if(d.name==="Constituent Attention"){
+    showDialog_intro_Constituent();
+  }
+}
+
+//把onmounted里的重复变量提出来，函数也提出来
+
 onMounted(async () => {
-  var json;
   try {
     const response = await request2.post(`/user/getModelZoo`, {});
     json = response.data;
@@ -1575,51 +2624,8 @@ onMounted(async () => {
   console.log('json', json)
 
   treeRoot.value = json;
+  treeData = json;
 
-  var treeData = json;
-  var totalNodes = 0;
-  var maxLabelLength = 0;
-// variables for drag/drop
-  var selectedNode = null;
-  var draggingNode = null;
-// panning variables
-  var panSpeed = 200;
-  var panBoundary = 20; // Within 20px from edges will pan when dragging.
-// Misc. variables
-  var i = 0;
-  var duration = 750;
-  var root;
-
-// size of the diagram
-  var viewerWidth = $(document).height();
-  var viewerHeight = $(document).width();
-  console.log("real viewerWidth: ", viewerWidth)
-  console.log("real viewerHeight: ", viewerHeight)
-
-  var tree = d3.layout.tree()
-      .size([viewerHeight, viewerWidth]);
-
-// define a d3 diagonal projection for use by the node paths later on.
-  var diagonal = d3.svg.diagonal()
-      .projection(function(d) {
-        return [d.y, d.x];
-      });
-
-// A recursive helper function for performing some setup by walking through all nodes
-
-  function visit(parent, visitFn, childrenFn) {
-    if (!parent) return;
-
-    visitFn(parent);
-
-    var children = childrenFn(parent);
-    if (children) {
-      var count = children.length;
-      for (var i = 0; i < count; i++) {
-        visit(children[i], visitFn, childrenFn);
-      }
-    }
-  }
 
 // Call visit function to establish maxLabelLength
   visit(treeData, function(d) {
@@ -1629,460 +2635,22 @@ onMounted(async () => {
   }, function(d) {
     return d.children && d.children.length > 0 ? d.children : null;
   });
-
-
-// sort the tree according to the node names
-
-  function sortTree() {
-    console.log("执行了此函数")
-    console.log(json)
-    tree.sort(function(a, b) {
-      return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
-    });
-  }
 // Sort the tree initially incase the JSON isn't in a sorted order.
   sortTree();
 
 // TODO: Pan function, can be better implemented.
 
-  function pan(domNode, direction) {
-    var speed = panSpeed;
-    if (panTimer) {
-      clearTimeout(panTimer);
-      var translateCoords = d3.transform(svgGroup.attr("transform"));
-      if (direction == 'left' || direction == 'right') {
-        var translateX = direction == 'left' ? translateCoords.translate[0] + speed : translateCoords.translate[0] - speed;
-        var translateY = translateCoords.translate[1];
-      } else if (direction == 'up' || direction == 'down') {
-        translateX = translateCoords.translate[0];
-        translateY = direction == 'up' ? translateCoords.translate[1] + speed : translateCoords.translate[1] - speed;
-      }
-      var scaleX = translateCoords.scale[0];
-      var scaleY = translateCoords.scale[1];
-      var scale = zoomListener.scale();
-      svgGroup.transition().attr("transform", "translate(" + translateX + "," + translateY + ")scale(" + scale + ")");
-      d3.select(domNode).select('g.node').attr("transform", "translate(" + translateX + "," + translateY + ")");
-      zoomListener.scale(zoomListener.scale());
-      zoomListener.translate([translateX, translateY]);
-      var panTimer = setTimeout(function() {
-        pan(domNode, speed, direction);
-      }, 50);
-    }
-  }
-
-// Define the zoom function for the zoomable tree
-
-  function zoom() {
-    // if (d3.event.sourceEvent.ctrlKey) {
-    //   svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-    // }
-
-    svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  }
-
-
-// define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
-  const zoomListener = d3.behavior
-      .zoom()
-      .scaleExtent([0.1, 3])
-      // .filter(function () {
-      //   return d3.event.ctrlKey;
-      // })
-      .on("zoom", zoom);
-
-  function initiateDrag(d, domNode) {
-    draggingNode = d;
-    d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
-    d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
-    d3.select(domNode).attr('class', 'node activeDrag');
-
-    svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
-      if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
-      else return -1; // a is the hovered element, bring "a" to the front
-    });
-    // if nodes has children, remove the links and nodes
-    if (nodes.length > 1) {
-      // remove link paths
-      var links = tree.links(nodes);
-      var nodePaths = svgGroup.selectAll("path.link")
-          .data(links, function(d) {
-            return d.target.id;
-          }).remove();
-      // remove child nodes
-      var nodesExit = svgGroup.selectAll("g.node")
-          .data(nodes, function(d) {
-            return d.id;
-          }).filter(function(d, i) {
-            if (d.id == draggingNode.id) {
-              return false;
-            }
-            return true;
-          }).remove();
-    }
-
-    // remove parent link
-    var parentLink = tree.links(tree.nodes(draggingNode.parent));
-    svgGroup.selectAll('path.link').filter(function(d, i) {
-      if (d.target.id == draggingNode.id) {
-        return true;
-      }
-      return false;
-    }).remove();
-
-    dragStarted = null;
-  }
-
-
-  // 选择tree-container元素
-  const container = d3.select('#tree-container');
-
-// 检查是否存在子元素，如果有则删除
-  if (!container.empty()) {
-    container.select('svg').remove();
-  }
-
 // define the baseSvg, attaching a class for styling and the zoomListener
-
-
+  //这个无法移到外面
   var baseSvg = d3.select("#tree-container").append("svg")
       .attr("width", viewerWidth)
       .attr("height", viewerHeight)
       .attr("class", "overlay")
       .call(zoomListener);
 
-  //
-  // var baseSvg = d3.select("#tree-container").append("svg")
-  //     .attr("width", viewerWidth)
-  //     .attr("height", viewerHeight)
-  //     .attr("class", "not-scaling")  // 设置为 "not-scaling"
-  //     .call(zoomListener)
-  //     .on("wheel.zoom", function(event) {
-  //       if (event.ctrlKey) {
-  //         event.preventDefault();
-  //         zoomListener.scaleBy(d3.select(this), Math.pow(2, event.deltaY * 0.002));
-  //       }
-  //     });
-
-
-
-
-//
-//   // 添加提示信息
-//   baseSvg.append("text")
-//       .attr("x", 10)
-//       .attr("y", 20)
-//       .text("这是一棵此系统所包含可解释性方法的分类树")
-//       .attr("fill", "#333")
-//       .attr("font-size", "14px")
-//       .attr("font-weight", "bold");
-//
-//   baseSvg.append("text")
-//       .attr("x", 10)
-//       .attr("y", 45)
-//       .text("Tips:")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px")
-//       .attr("font-weight", "bold");
-//
-//   baseSvg.append("text")
-//       .attr("x", 20)
-//       .attr("y", 65)
-//       .text("1.拖动屏幕可以移动树")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px");
-//
-//   baseSvg.append("text")
-//       .attr("x", 20)
-//       .attr("y", 85)
-//       .text("2.鼠标滚轮转动可以改变树的大小")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px");
-//
-//   baseSvg.append("text")
-//       .attr("x", 20)
-//       .attr("y", 105)
-//       .text("3.左键单击节点可以收缩和扩张节点")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px");
-//
-//   baseSvg.append("text")
-//       .attr("x", 20)
-//       .attr("y", 125)
-//       .text("4.右键单击节点可以查看详细介绍")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px");
-//
-//   baseSvg.append("text")
-//       .attr("x", 20)
-//       .attr("y", 145)
-//       .text("5.拖动节点可以试图将方法分离出树，但是这不会成功")
-//       .attr("fill", "#333")
-//       .attr("font-size", "12px");
-//
-// // 添加按钮
-//   var tooltipButton = baseSvg.append('g')
-//       .attr('class', 'button-group')
-//       .attr('transform', 'translate(10,180)');
-//
-//   tooltipButton.append('rect')
-//       .attr('class', 'button-rect')
-//       .attr('width', 150)
-//       .attr('height', 30)
-//       .attr('rx', 15)
-//       .attr('ry', 15)
-//       .attr('fill', '#409EFF')
-//       .on('click', function() {
-//         window.open('https://example.com/');
-//       });
-//
-//   tooltipButton.append('text')
-//       .attr('class', 'button-text')
-//       .attr('x', 75)
-//       .attr('y', 20)
-//       .attr('text-anchor', 'middle')
-//       .text('点击查看我们对于可解释性的评估标准')
-//       .attr('fill', '#FFFFFF')
-//       .attr('alignment-baseline', 'central');
-
-
-
-// .attr("style", "background: url('@/assets/background.jpg');background-size: cover;")
-
-// console.log("querySelector id: ", document.querySelector('#tree-container'));
-// console.log("querySelector id2: ", document.querySelector('tree-container'));
-// console.log("id: ", document.getElementById("tree-container"))
-// console.log("d3.select: ", d3.select("#tree-container"))
-// console.log("viewerWidth: ", viewerWidth)
-// console.log("viewerHeight: ", viewerHeight)
-// console.log("zoomListener: ", zoomListener)
   console.log("baseSvg: ", baseSvg)
 
 
-// Define the drag listeners for drag/drop behaviour of nodes.
-  var dragListener = d3.behavior.drag()
-      .on("dragstart", function(d) {
-        if (d == root) {
-          return;
-        }
-        dragStarted = true;
-        nodes = tree.nodes(d);
-        d3.event.sourceEvent.stopPropagation();
-        // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
-      })
-      .on("drag", function(d) {
-        if (d == root) {
-          return;
-        }
-        if (dragStarted) {
-          domNode = this;
-          initiateDrag(d, domNode);
-        }
-
-        // get coords of mouseEvent relative to svg container to allow for panning
-        var relCoords = d3.mouse($('svg').get(0));
-        if (relCoords[0] < panBoundary) {
-          var panTimer = true;
-          pan(this, 'left');
-        } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
-
-          panTimer = true;
-          pan(this, 'right');
-        } else if (relCoords[1] < panBoundary) {
-          panTimer = true;
-          pan(this, 'up');
-        } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
-          panTimer = true;
-          pan(this, 'down');
-        } else {
-          try {
-            clearTimeout(panTimer);
-          } catch (e) {
-
-          }
-        }
-
-        d.x0 += d3.event.dy;
-        d.y0 += d3.event.dx;
-        var node = d3.select(this);
-        node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
-        updateTempConnector();
-      }).on("dragend", function(d) {
-        if (d == root) {
-          return;
-        }
-        domNode = this;
-        if (selectedNode) {
-          // now remove the element from the parent, and insert it into the new elements children
-          var index = draggingNode.parent.children.indexOf(draggingNode);
-          if (index > -1) {
-            draggingNode.parent.children.splice(index, 1);
-          }
-          if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
-            if (typeof selectedNode.children !== 'undefined') {
-              selectedNode.children.push(draggingNode);
-            } else {
-              selectedNode._children.push(draggingNode);
-            }
-          } else {
-            selectedNode.children = [];
-            selectedNode.children.push(draggingNode);
-          }
-          // Make sure that the node being added to is expanded so user can see added node is correctly moved
-          expand(selectedNode);
-          sortTree();
-          endDrag();
-        } else {
-          endDrag();
-        }
-      });
-
-  function endDrag() {
-    selectedNode = null;
-    d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
-    d3.select(domNode).attr('class', 'node');
-    // now restore the mouseover event or we won't be able to drag a 2nd time
-    d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
-    updateTempConnector();
-    if (draggingNode !== null) {
-      update(root);
-      centerNode(draggingNode);
-      draggingNode = null;
-    }
-  }
-
-// Helper functions for collapsing and expanding nodes.
-
-  function collapse(d) {
-    if (d.children) {
-      d._children = d.children;
-      d._children.forEach(collapse);
-      d.children = null;
-    }
-  }
-
-  function expand(d) {
-    if (d._children) {
-      d.children = d._children;
-      d.children.forEach(expand);
-      d._children = null;
-    }
-  }
-
-  var overCircle = function(d) {
-    selectedNode = d;
-    updateTempConnector();
-  };
-  var outCircle = function(d) {
-    selectedNode = null;
-    updateTempConnector();
-  };
-
-// Function to update the temporary connector indicating dragging affiliation
-  var updateTempConnector = function() {
-    var data = [];
-    if (draggingNode !== null && selectedNode !== null) {
-      // have to flip the source coordinates since we did this for the existing connectors on the original tree
-      data = [{
-        source: {
-          x: selectedNode.y0,
-          y: selectedNode.x0
-        },
-        target: {
-          x: draggingNode.y0,
-          y: draggingNode.x0
-        }
-      }];
-    }
-    var link = svgGroup.selectAll(".templink").data(data);
-
-    link.enter().append("path")
-        .attr("class", "templink")
-        .attr("d", d3.svg.diagonal())
-        .attr('pointer-events', 'none');
-
-    link.attr("d", d3.svg.diagonal());
-
-    link.exit().remove();
-  };
-
-// Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
-
-  function centerNode(source) {
-    var scale = zoomListener.scale();
-    var x = -source.y0;
-    var y = -source.x0;
-    x = x * scale + viewerHeight / 8;
-    // x = x * scale + viewerHeight / 20;
-    y = y * scale + viewerHeight / 2;
-    d3.select('g').transition()
-        .duration(duration)
-        .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
-    zoomListener.scale(scale);
-    zoomListener.translate([x, y]);
-  }
-
-  function centerNodebyName(datasetName, modelName){
-    var targetNode = findNodeByDatasetAndModel(root, datasetName, modelName)
-    centerNode(targetNode)
-  }
-
-
-  function findNodeByName(node, targetName) {
-    if (node.name === targetName) {
-      return node;
-    }
-
-    if (node.children) {
-      for (var i = 0; i < node.children.length; i++) {
-        var result = findNodeByName(node.children[i], targetName);
-        if (result) {
-          return result;
-        }
-      }
-    }
-
-    return null; // Node not found
-  }
-
-  function findNodeByDatasetAndModel(node, datasetName, modelName) {
-    if (node.name === datasetName) {
-      // Check if the current node matches the dataset name
-      if (node.children) {
-        for (var i = 0; i < node.children.length; i++) {
-          var child = node.children[i];
-          if (child.name === modelName) {
-            return child; // Found the model under the specified dataset
-          }
-        }
-      }
-    }
-
-    if (node.children) {
-      for (var i = 0; i < node.children.length; i++) {
-        var result = findNodeByDatasetAndModel(node.children[i], datasetName, modelName);
-        if (result) {
-          return result;
-        }
-      }
-    }
-
-    return null; // Node not found
-  }
-
-
-
-// Toggle children function
-
-  function toggleChildren(d) {
-    if (d.children) {
-      d._children = d.children;
-      d.children = null;
-    } else if (d._children) {
-      d.children = d._children;
-      d._children = null;
-    }
-    return d;
-  }
 /////////////////////////////////////////////////
 ///////////////// IMAGE DEFS ////////////////////
 /////////////////////////////////////////////////
@@ -2521,549 +3089,14 @@ onMounted(async () => {
   // }
 
 //await
-  function click(d) {
-    console.log("click d: ", d)
-    centerNode(d);
-    if(d.type=='pretrained' || d.type=='usr'){
-      if(d.parent.parent.name=='CIFAR100' || d.parent.parent.name=='CIFAR10'){
-        radio1.value = 'sl'  //要不要sparse learing
-        criterion.value = ''  //重要性指标
-        batchsize.value = 0
-        speedup.value = ''
-        finetune.value = ''
-        scriptVisible.value = false
-        PrunedialogVisible.value = true
-        console.log("d.type", d.type)
-        if(d.type==='pretrained'){
-          modelType.value = "Publicly pretrained model"
-          modelTypeSimple.value = "Pretrain"
-        }else if(d.type==='usr'){
-          modelType.value = "User trained model"
-          modelTypeSimple.value = d.name
-        }
-
-        console.log("d.path", d.path)
-        modelPath.value = d.path
-        console.log("d.acc", d.acc)
-        modelAcc.value = d.acc
-        console.log("d.params", d.params)
-        modelParams.value = d.params
-        console.log("d.flops", d.flops)
-        modelFlops.value = d.flops
-        console.log("d.parent.name", d.parent.name)
-        modelName.value = d.parent.name
-        console.log("d.parent.parent.name", d.parent.parent.name)
-        if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
-          modelDataset.value = d.parent.parent.name + " (Classification)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }else if(d.parent.parent.name==="COCO"){
-          modelDataset.value = d.parent.parent.name + " (Detection)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }
-        console.log("modelDataset.value", modelDataset.value)
-
-        structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
-            d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
-        console.log("structureBeforePruned", structureBeforePruned.value)
-        // await axios
-        //     .post(`/user/getStructureBeforePruned`, {
-        //     })
-        //     .then((response) => {
-        //       let ranks = response.data.data.ranklistinfo
-        //       console.log("response.data.data", response.data.data)
-        //       console.log("ranks: ", ranks)
-        //       servers.value = ranks
-        //     })
-        //     .catch((errors) => {
-        //       console.log('error', errors)
-        //     })
-
-
-        // ElMessage.success("选择了预训练模型！")
-      }else if(d.parent.parent.name=='ImageNet'){
-        if(d.model_name=='ImageNet_ResNet50_Pretrained' || d.model_name=='ImageNet_DenseNet121_Pretrained'){
-          lr.value = 0.08
-        }else if(d.model_name=='ImageNet_MobileNetV2_Pretrained'){
-          lr.value = 0.045
-        }else if(d.model_name=='ImageNet_VGG19-BN_Pretrained' || d.model_name=='ImageNet_VGG16-BN_Pretrained'){
-          lr.value = 0.01
-        }
-        radio1.value = 'sl'
-        criterion.value = ''
-        batchsize.value = 0
-        speedup.value = ''
-        finetune.value = ''
-        scriptVisible.value = false
-        ImageNetPrunedialogVisible.value = true
-        console.log("d.type", d.type)
-        if(d.type==='pretrained'){
-          modelType.value = "Publicly pretrained model"
-          modelTypeSimple.value = "Pretrain"
-        }else if(d.type==='usr'){
-          modelType.value = "User trained model"
-          modelTypeSimple.value = d.name
-        }
-
-        console.log("d.path", d.path)
-        modelPath.value = d.path
-        console.log("d.acc", d.acc)
-        modelAcc.value = d.acc
-        console.log("d.params", d.params)
-        modelParams.value = d.params
-        console.log("d.flops", d.flops)
-        modelFlops.value = d.flops
-        console.log("d.parent.name", d.parent.name)
-        modelName.value = d.parent.name
-        console.log("d.parent.parent.name", d.parent.parent.name)
-        if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
-          modelDataset.value = d.parent.parent.name + " (Classification)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }else if(d.parent.parent.name==="COCO"){
-          modelDataset.value = d.parent.parent.name + " (Detection)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }
-
-        structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
-            d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
-        console.log("structureBeforePruned", structureBeforePruned.value)
-      }else if(d.parent.parent.name=='COCO'){
-        radio1.value = 'sl'  //要不要sparse learing
-        criterion.value = ''  //重要性指标
-        batchsize.value = 0
-        speedup.value = ''
-        finetune.value = ''
-        scriptVisible.value = false
-        PruneCOCOdialogVisible.value = true
-        console.log("d.type", d.type)
-        if(d.type==='pretrained'){
-          modelType.value = "Publicly pretrained model"
-          modelTypeSimple.value = "Pretrain"
-        }else if(d.type==='usr'){
-          modelType.value = "User trained model"
-          modelTypeSimple.value = d.name
-        }
-
-        console.log("d.path", d.path)
-        modelPath.value = d.path
-        console.log("d.acc", d.acc)
-        modelAcc.value = d.acc
-        console.log("d.params", d.params)
-        modelParams.value = d.params
-        console.log("d.flops", d.flops)
-        modelFlops.value = d.flops
-        console.log("d.parent.name", d.parent.name)
-        modelName.value = d.parent.name
-        console.log("d.parent.parent.name", d.parent.parent.name)
-        if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
-          modelDataset.value = d.parent.parent.name + " (Classification)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }else if(d.parent.parent.name==="COCO"){
-          modelDataset.value = d.parent.parent.name + " (Detection)"
-          modelDatasetSimple.value = d.parent.parent.name
-        }
-        console.log("modelDataset.value", modelDataset.value)
-
-        structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
-            d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
-
-
-        console.log("structureBeforePruned", structureBeforePruned.value)
-      }else{
-        console.log("标记d.parent.parent.name: ", d.parent.parent.name)
-      }
-
-    }else if(d.type=='upload'){
-      ckpt.value = ''
-      ckptUploaded.value = false
-      uploadType.value = ''
-      modelName.value = d.parent.name
-      usrModelName.value = ''
-      console.log("d.parent.parent.name", d.parent.parent.name)
-      if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
-        modelDataset.value = d.parent.parent.name + " (Classification)"
-        modelDatasetSimple.value = d.parent.parent.name
-      }else if(d.parent.parent.name==="COCO"){
-        modelDataset.value = d.parent.parent.name + " (Detection)"
-        modelDatasetSimple.value = d.parent.parent.name
-      }
-      console.log("modelName.value: ", modelName.value)
-      console.log("modelDatasetSimple.value: ", modelDatasetSimple.value)
-      UploadVisible.value = true
-    }else{
-      if (d3.event.defaultPrevented) return; // click suppressed
-      d = toggleChildren(d);
-      update(d);
-      centerNode(d);
-    }
-    // console.log("测试", d);
-    // d3.event.stopPropagation();
-  }
-
-  function contextmenu(d) {
-    event.preventDefault();
-    console.log("d.name", d.name);
-    if(d.name==="可解释性"){
-      showDialog_interp();
-    }if(d.name==="可解释建模"){
-      showDialog_atenhoc();
-    }if(d.name==="事后解释性分析"){
-      showDialog_posthoc();
-    }if(d.name==="局部解释"){
-      showDialog_local();
-    }if(d.name==="全局解释"){
-      showDialog_global();
-    }if(d.name==="注意力机制"){
-      showDialog_attention();
-    }if(d.name==="神经树"){
-      showDialog_tree();
-    }if(d.name==="引用概念"){
-      showDialog_intro_concept();
-    }if(d.name==="Constituent Attention"){
-      showDialog_intro_Constituent();
-    }
-  }
-
-  function update(source) {
-    // Compute the new height, function counts total children of root node and sets tree height accordingly.
-    // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
-    // This makes the layout more consistent.
-    console.log("update in click!")
-    console.log("source:", source)
-    console.log("source.text:", source.text)
-    console.log("source._children:", source._children)
-    console.log("source.children:", source.children)
-
-    // if(!source.children){
-    //   console.log("update in click!")
-    // }
-
-    var levelWidth = [1];
-    var childCount = function(level, n) {
-
-      if (n.children && n.children.length > 0) {
-        if (levelWidth.length <= level + 1) levelWidth.push(0);
-
-        levelWidth[level + 1] += n.children.length;
-        n.children.forEach(function(d) {
-          childCount(level + 1, d);
-        });
-      }
-    };
-    childCount(0, root);
-    var newHeight = d3.max(levelWidth) * 105; // 25 pixels per line  /*<><><><><><><><><><><><><><><><><><><><><><><>THIS IS DETERMINING SPACING */
-    tree = tree.size([newHeight, viewerWidth]);
-
-    // Compute the new tree layout.
-    nodes = tree.nodes(root).reverse();
-    var links = tree.links(nodes);
-
-    // Set widths between levels based on maxLabelLength.
-    nodes.forEach(function(d) {
-      d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
-      // alternatively to keep a fixed scale one can set a fixed depth per level
-      // Normalize for fixed-depth by commenting out below line
-      // d.y = (d.depth * 500); //500px per level.
-    });
-
-    // Update the nodes…
-    var node = svgGroup.selectAll("g.node")
-        .data(nodes, function(d) {
-          return d.id || (d.id = ++i);
-        });
-
-    // Enter any new nodes at the parent's previous position.
-    var nodeEnter = node.enter().append("g")
-        .call(dragListener)
-        .attr("class", "node")
-        .attr("transform", function(d) {
-          return "translate(" + source.y0 + "," + source.x0 + ")";
-        })
-        .on('click', click)
-        .on('contextmenu', contextmenu);
-    // .on('dblclick', dblclick);
-
-    nodeEnter.append("circle")
-        .attr('class', 'nodeCircle')
-        .attr("r", 0)
-        .style("stroke", "black")
-        .style("stroke-width", "1.5px")
-        .style("fill", function(d) {
-          return d._children ? "lightsteelblue" : "#fff";
-        });
-
-    nodeEnter.append("circle")
-        .attr('class', 'nodeCircleBorder')
-        .attr("r", 0)
-        .style("stroke", "rgba(121, 80, 173, 0.5)")
-        .style("stroke-width", function(d) {
-          if (d.status==='done')
-            return "6px";
-          else
-            return "0";
-        })
-        .style("fill", "none")
-
-    // click(
-    nodeEnter.append("circle")
-        .attr('class', 'nodeCircleBorderFailed')
-        .attr("r", 0)
-        .style("stroke", "#FC7272")
-        .style("stroke-width", function(d) {
-          if (d.status==='verfailed')
-            return "6px";
-          else
-            return 0;
-        })
-        .style("fill", "none")
-
-
-    nodeEnter.append("circle")
-        .attr('class', 'nodeCircleBorderUnknown')
-        .attr("r", 0)
-        .style("stroke", "#808080")
-        .style("stroke-width", function(d) {
-          if (d.status==='unknown')
-            return "6px";
-          else
-            return 0;
-        })
-        .style("fill", "none")
-
-    nodeEnter.append("circle")
-        .attr('class', 'nodeCircleBorderUnequiped')
-        .attr("r", 0)
-        .style("stroke", "#FFA722")
-        .style("stroke-width", function(d) {
-          if (d.status==='unequiped')
-            return "6px";
-          else
-            return 0;
-        })
-        .style("fill", "none")
 
 
 
 
-    // .style("pointer-events", "none");
 
-    // nodeEnter.append("circle")
-    //     .attr('class', 'nodeCircleOuter') // 为外圆添加一个类名
-    //     .attr("r", 0)
-    //     .style("stroke", "#7950AD") // 外圆颜色为#7950AD
-    //     .style("stroke-width", "2px") // 设置外圆线宽为2px
-    //     .style("fill", "none"); // 外圆不填充颜色
-
-    nodeEnter.append("text")
-        .attr("x", function(d) {
-          return d.children || d._children ? -10 : 10;
-        })
-        .attr("dy", ".35em")
-        .attr('class', 'nodeText')
-        // .attr('style', 'font-family: Arial;')
-        .attr("text-anchor", function(d){
-          return d.children || d._children ? "end" : "start";
-        })
-        .attr("transform", function(d) {
-          if(d.name=='VGG19'){
-            console.log("找到了VGG19！")
-            console.log("d.children", d.children)
-            console.log("d._children", d._children)
-          }
-          console.log("d.name: ", d.name)
-          return d.children || d._children ? "rotate(-90)" : "rotate(-30)";
-        })
-        // .attr("transform", "rotate(-90)")
-        .text(function(d) {
-          return d.name=='Upload' ? "Add a new model" : d.name;
-        })
-        .style("fill-opacity", 0)
-        .style("color", "black")
-        .style("font-size", "16px")
-        .style("font-family", "Arial");
-
-    // phantom node to give us mouseover in a radius around it
-    nodeEnter.append("circle")
-        .attr('class', 'ghostCircle')
-        .attr("r", 30)
-        .attr("opacity", 0.2) // change this to zero to hide the target area
-        .style("fill", "red")
-        .attr('pointer-events', 'mouseover')
-        .on("mouseover", function(node) {
-          overCircle(node);
-        })
-        .on("mouseout", function(node) {
-          outCircle(node);
-        });
-
-    // Update the text to reflect whether node has children or not.
-    node.select('text')
-        .attr("x", function(d) {
-          return d.children || d._children ? d.name.length*8 : 30;
-          // return d.children || d._children ? -30 : 30;
-        })
-        .attr("y", function(d) {
-          return d.children || d._children ? -35 : 0;
-        })
-        .attr("text-anchor", function(d) {
-          return d.children || d._children ? "end" : "start";
-        })
-        .text(function(d) {
-          return d.name=='Upload' ? "Upload" : d.name;
-        });
-
-    console.log("!!!", node.select("circle.nodeCircleBorder"))
-    node.select("circle.nodeCircleBorder").attr("r", 24)
-
-    console.log("!!!", node.select("circle.nodeCircleBorderFailed"))
-    node.select("circle.nodeCircleBorderFailed").attr("r", 24)
-
-    console.log("!!!", node.select("circle.nodeCircleBorderUnknown"))
-    node.select("circle.nodeCircleBorderUnknown").attr("r", 24)
-
-    console.log("!!!", node.select("circle.nodeCircleBorderUnequiped"))
-    node.select("circle.nodeCircleBorderUnequiped").attr("r", 24)
-
-
-
-    // Change the circle fill depending on whether it has children and is collapsed
-    node.select("circle.nodeCircle")
-        .attr("r", 20.5) /*<><><><><><><><><><><><><><><><><><><><><><><>THIS IS DETERMINING RADIUS */
-        .style("fill", function(d) {
-          // console.log("d:",d)
-          // console.log("d._children:",d._children)
-          if(d.type==="upload"){
-            return "url(#upload)";
-          }else if(d.type==="pretrained"){
-            return "url(#pretrain)";
-          }else if(d.type==="usr"){
-            return "url(#usr)";
-          }else if(d.type==="conv"){
-            return "url(#conv)";
-          }else if(d.type==="yolo"){
-            return "url(#yolo)";
-          }else if(d.type==="transformer"){
-            return "url(#transformer)";
-          }else if(d.type==="vgg"){
-            return "url(#vgg)";
-          }else if(d.type==="resnet"){
-            return "url(#resnet)";
-          }else{
-            if(d.name==="Model Zoo"){
-              return "url(#hl)";
-            }else if(d.name==="PowerGrid Dataset"){
-              return "url(#grid)";
-            }else if(d.name==="ImageNet"){
-              return "url(#classification)";
-            }else if(d.name==="CIFAR10"){
-              return "url(#cifar)";
-            }else if(d.name==="CIFAR100"){
-              return "url(#imgnet)";
-            }else if(d.name==="COCO"){
-              return "url(#coco)";
-            }else if(d.name==="SchemaNet"){
-              return "url(#zhf)";
-            }else if(d.name==="Dr. Huang"){
-              return "url(#hqh)";
-            }else if(d.name==="局部解释"){
-              return "url(#local)";
-            }else if(d.name==="全局解释"){
-              return "url(#global2)";
-            }else if(d.name==="事后解释性分析"){
-              return "url(#post-hoc)";
-            }else if(d.name==="可解释建模"){
-              return "url(#ad-hoc)";
-            }else if(d.name==="注意力机制"){
-              return "url(#attention2)";
-            }else if(d.name==="神经树"){
-              return "url(#tree)";
-            }else if(d.name==="概念响应"){
-              return "url(#tcav)";
-            }else if(d.name==="归因方法"){
-              return "url(#saliency)";
-            }else if(d.name==="概念原型"){
-              return "url(#prototype)";
-            }else{
-              return "url(#img1)";
-            }
-          }
-          // d._children ? "lightsteelblue" : "url(#img1)";
-
-        });
-
-    // Transition nodes to their new position.
-    var nodeUpdate = node.transition()
-        .duration(duration)
-        .attr("transform", function(d) {
-          return "translate(" + d.y + "," + d.x + ")";
-        });
-
-    // Fade the text in
-    nodeUpdate.select("text")
-        .style("fill-opacity", 1);
-
-    // Transition exiting nodes to the parent's new position.
-    var nodeExit = node.exit().transition()
-        .duration(duration)
-        .attr("transform", function(d) {
-          return "translate(" + source.y + "," + source.x + ")";
-        })
-        .remove();
-
-    nodeExit.select("circle")
-        .attr("r", 0);
-
-    nodeExit.select("text")
-        .style("fill-opacity", 0);
-
-    // Update the links…
-    var link = svgGroup.selectAll("path.link")
-        .data(links, function(d) {
-          return d.target.id;
-        });
-
-    // Enter any new links at the parent's previous position.
-    link.enter().insert("path", "g")
-        .attr("class", "link")
-        .attr("d", function(d) {
-          var o = {
-            x: source.x0,
-            y: source.y0
-          };
-          return diagonal({
-            source: o,
-            target: o
-          });
-        });
-
-    // Transition links to their new position.
-    link.transition()
-        .duration(duration)
-        .attr("d", diagonal);
-
-    // Transition exiting nodes to the parent's new position.
-    link.exit().transition()
-        .duration(duration)
-        .attr("d", function(d) {
-          var o = {
-            x: source.x,
-            y: source.y
-          };
-          return diagonal({
-            source: o,
-            target: o
-          });
-        })
-        .remove();
-
-    // Stash the old positions for transition.
-    nodes.forEach(function(d) {
-      d.x0 = d.x;
-      d.y0 = d.y;
-    });
-  }
 
 // Append a group which holds all nodes and which the zoom Listener can act upon.
-  var svgGroup = baseSvg.append("g");
+  baseSvg.append("g");
 
 // Define the root
   root = treeData;
@@ -3071,33 +3104,10 @@ onMounted(async () => {
   root.y0 = 0;
 
 // Layout the tree initially and center on the root node.
+  toggleByDataset(root, "null");
   update(root);
   centerNode(root);
 
-  // centerNodebyName('CIFAR10', 'ResNet18')
-
-  // 在json中查找名为"ResNet18"的节点
-  // var testNode = findNodeByName(json, "CIFAR100");
-  //
-  // var targetNode = findNodeByDatasetAndModel(json, "CIFAR100", "ResNet18");
-
-// 如果找到节点，将其传递给 centerNode 函数
-//   if (targetNode) {
-//     centerNode(targetNode);
-//   } else {
-//     console.log("Node not found");
-//   }
-
-// 如果找到节点，将其传递给centerNode函数
-//   if (testNode) {
-//     centerNode(testNode);
-//   } else {
-//     console.log("Node not found");
-//   }
-  console.log("root: ", root);
-
-  console.log("querySelector id: ", document.querySelector('#tree-container'));
-  console.log("querySelector id2: ", document.querySelector('tree-container'));
 });
 
 
@@ -3508,11 +3518,11 @@ $sidebar-header-height: 100px;
   //-moz-transform: rotate(90deg);
   //-ms-transform: rotate(90deg);
   //-o-transform: rotate(90deg);
-  transform: rotate(90deg) translateX(-10%); /* 旋转并向上移动 */
-  -webkit-transform: rotate(90deg) translateX(-10%);
-  -moz-transform: rotate(90deg) translateX(-10%);
-  -ms-transform: rotate(90deg) translateX(-10%);
-  -o-transform: rotate(90deg) translateX(-10%);
+  transform: rotate(90deg) translateX(-2%); /* 旋转并向上移动 */
+  -webkit-transform: rotate(90deg) translateX(-2%);
+  -moz-transform: rotate(90deg) translateX(-2%);
+  -ms-transform: rotate(90deg) translateX(-2%);
+  -o-transform: rotate(90deg) translateX(-2%);
   overflow: hidden;
   //overflow-x: visible;
   //overflow-y: visible;
@@ -3632,7 +3642,7 @@ $sidebar-header-height: 100px;
   min-height: $sidebar-header-height;
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 15px;
   > span {
     overflow: hidden;
     white-space: nowrap;
@@ -3645,8 +3655,8 @@ $sidebar-header-height: 100px;
   align-items: center;
 
   > div {
-    width: 50px;
-    min-width: 50px;
+    width: 35px;
+    min-width: 35px;
     height: 35px;
     min-height: 35px;
     display: flex;
@@ -3654,7 +3664,7 @@ $sidebar-header-height: 100px;
     justify-content: center;
     border-radius: 8px;
     color: white;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
     background-color: #ff8100;
     margin-right: 10px;
@@ -3676,6 +3686,102 @@ $sidebar-header-height: 100px;
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   max-height: 100%;
 }
+
+.toggle-button{
+  /*添加背景颜色*/
+  background-color: #706D6D;
+  /*设置文本大小*/
+  font-size:10px;
+  /*设置文本行高*/
+  line-height:24px;
+  /*设置文本颜色*/
+  color:#fff;
+  /*设置文本居中*/
+  text-align: center;
+  /*设置文本间距*/
+  letter-spacing: 0.2em;
+  /*设置鼠标悬浮变小手效果*/
+  cursor:pointer;
+}
+
+.circle-icon {
+  display: inline-block;
+  width: 24px; /* 调整圆圈的大小 */
+  height: 24px; /* 调整圆圈的大小 */
+  background-color: #ccc; /* 圆圈的背景颜色 */
+  border-radius: 50%; /* 使元素呈现为圆形 */
+  text-align: center;
+  line-height: 24px; /* 垂直居中文本 */
+  overflow: hidden; /* 隐藏溢出内容 */
+  //margin-right: 10px;
+}
+
+.circle-icon img {
+  max-width: 150%; /* 使图片适应圆圈大小 */
+  max-height: 150%; /* 使图片适应圆圈大小 */
+  vertical-align: middle; /* 垂直居中图片 */
+}
+
+.sidebar-collapser {
+  transition: left, right, 0.3s;
+  position: fixed;
+  left: 210px;
+  top: 100px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #00829f;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  transform: translateX(50%);
+  z-index: 111;
+  cursor: pointer;
+  color: white;
+  box-shadow: 1px 1px 4px #0c1e35;
+}
+
+.sidebar-collapsed {
+  transition: left, right, 0.3s;
+  position: fixed;
+  left: 42px;
+  top: 100px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #00829f;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  transform: translateX(50%);
+  z-index: 111;
+  cursor: pointer;
+  color: white;
+  box-shadow: 1px 1px 4px #0c1e35;
+}
+
+//.link {
+//  fill: none;
+//  stroke: #7950AD;
+//  stroke-width: 1.5px;
+//}
+//
+//.templink {
+//  fill: none;
+//  /*stroke: red;*/
+//  stroke: #FFCCCC;
+//  stroke-width: 3px;
+//}
+
+
 
 
 </style>

@@ -41,7 +41,7 @@ body{
 
   .templink {
     fill: none;
-    stroke: red;
+    stroke: #FFCCCC;;
     stroke-width: 3px;
   }
 

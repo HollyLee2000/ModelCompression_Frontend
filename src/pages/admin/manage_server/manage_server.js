@@ -100,6 +100,73 @@ export const getCurrentrank = function () {
     })
 }
 
+export const getQualitativeComparison = function () {
+    let dataset = this.dataset
+    let model = this.model
+    if(dataset===' '){
+        dataset = ''
+    }
+    if(model===' '){
+        model = ''
+    }
+    request2.post(`/user/getQualitativeComparison`, {
+        morfpath: dataset, //懒得重命名了
+        lerfpath: model  //懒得重命名了
+    })
+        .then((response) => {
+            let ranks = response.data.data.qualitativeinfo
+            console.log("response.data.data", response.data.data)
+            console.log("ranks: ", ranks)
+            // ranks = ranks.map(addSelectField)
+            // for (let rank of ranks) {
+            //     rank.link = '详情'
+            // }
+            // console.log('getranks')
+            this.servers = ranks
+            this.currentPage = 1
+        })
+        .catch((errors) => {
+            console.log('error', errors)
+            this.servers = []
+            this.errors = errors
+        })
+}
+
+export const getLeaderboard = function () {
+    let dataset = this.dataset
+    let model = this.model
+    if(dataset===' '){
+        dataset = ''
+    }
+    if(model===' '){
+        model = ''
+    }
+    request2.post(`/user/getLeaderboard`, {
+        morfpath: dataset, //懒得重命名了
+        lerfpath: model  //懒得重命名了
+    })
+        .then((response) => {
+            let ranks = response.data.data.leaderboardinfo
+            console.log("response.data.data", response.data.data)
+            console.log("ranks: ", ranks)
+            // ranks = ranks.map(addSelectField)
+            // for (let rank of ranks) {
+            //     rank.link = '详情'
+            // }
+            // console.log('getranks')
+            this.leaderboards = ranks
+            this.currentPage = 1
+        })
+        .catch((errors) => {
+            console.log('error', errors)
+            this.leaderboards = []
+            this.errors = errors
+        })
+}
+
+
+
+
 
 
 

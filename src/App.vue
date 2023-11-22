@@ -15,7 +15,7 @@
 <!--          <el-menu-item index="cifar" v-if="store.state.isAut" @click="$router.push('/cifar')">COMPRESSION</el-menu-item>-->
 
           <el-menu-item index="cifar" v-if="store.state.isAut"  @click="$router.push('/coco')">COMPRESSION</el-menu-item>
-          <el-menu-item index="task"  v-if="store.state.isAut" @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>
+          <el-menu-item index="task"  v-if="store.state.isAut" @click="$router.push('/Admin')">COMPARISON</el-menu-item>
 <!--          <el-menu-item index="Algorithm" v-if="store.state.isAut"  @click="$router.push('/Algorithm')">FINETUNE</el-menu-item>-->
 <!--          <el-menu-item index="task"  @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>-->
 <!--          <el-menu-item index="datasetPreview"  @click="$router.push('/datasetPreview')">DATASETS</el-menu-item>-->
