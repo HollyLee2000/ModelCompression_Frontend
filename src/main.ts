@@ -18,6 +18,7 @@ import { BootstrapVue3  } from 'bootstrap-vue-3'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import './custom.scss'
+// Vue.prototype.$echarts = echarts  //定义为全局变量
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css' //黑色主题，会好看一点

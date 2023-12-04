@@ -9,6 +9,8 @@
 <!--    -->
 <!--  </el-main>-->
   <el-container>
+<!--    <div id="gpuChart" style="width: 50%; height: 30%; "></div>-->
+<!--    <div id="gpuChart" style="width: 50%; height: 30%; " ref="gpuChartRef"></div>-->
   <div class="layout">
 <!--    <h5 class="mb-2">Default colors</h5>-->
 
@@ -137,6 +139,8 @@
 
 
   </div>
+
+
 
 
     <a class="sidebar-collapser" @click="toggleCollapse" v-if="!isCollapse"> {{myIcon}} </a>
@@ -340,11 +344,11 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.
-          Without sparse learning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>
+          Without sparse learning and fine-tuning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
-          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="sl" size="large" border disabled >With Sparse Learning</el-radio>
           <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
         </el-radio-group>
       </div>
@@ -402,8 +406,7 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
-          Online fine-tuning is currently not supported on this server.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune. </label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -412,10 +415,98 @@
         </el-radio-group>
       </div>
 
+
+
+
+
+
+
+      <div v-show="finetune==='True'">
+
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+        </div>
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <el-input
+              v-model="epoch"
+              placeholder="Please input"
+              style="margin-left: 50px; border: 0; color: black; width: 8%"
+          />
+        </div>
+
+<!--        gpuChartRef-->
+
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+        </div>
+        <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
+          <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
+            <el-radio label="Bar" size="large">Bar charts</el-radio>
+            <el-radio label="Pie" size="large">Pie charts</el-radio>
+          </el-radio-group>
+          <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">
+            <div style="display: flex; flex-direction: column; width: 40%">
+<!--              <el-radio-group style="border: 0; color: black;" v-model="client155_1_form">-->
+<!--                <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+<!--                <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+<!--              </el-radio-group>-->
+              <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                <template #default="props">
+                  {{props.row.tot_memory}} MiB
+                </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.remain_memory/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 100%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 40%">
+<!--              <el-radio-group style="border: 0; color: black;" v-model="client155_2_form">-->
+<!--                <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+<!--                <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+<!--              </el-radio-group>-->
+              <el-radio style="width:33%" label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                  <template #default="props">
+                    {{props.row.tot_memory}} MiB
+                  </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.remain_memory/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 100%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
+            <el-radio label="Random" size="large" border>Random</el-radio>
+          </el-radio-group>
+        </div>
+
+
+      </div>
+
       <div style="margin: 0 0 20px 0; text-align: center">
         <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
         <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="Info()">Submit Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -539,10 +630,23 @@
         </el-radio-group>
       </div>
 
+      <div v-show="finetune==='True'">
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Select the client and submit the pruning task that needs fine-tuning.</label>
+        </div>
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="client">
+            <el-radio label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
+            <el-radio label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+            <el-radio label="Random" size="large" border>Random</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+
       <div style="margin: 0 0 20px 0; text-align: center">
         <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
         <el-button v-if="finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="Info()">Submit Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -677,10 +781,23 @@
         </el-radio-group>
       </div>
 
+      <div v-show="finetune==='True'">
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Select the client and submit the pruning task that needs fine-tuning.</label>
+        </div>
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="client">
+            <el-radio label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
+            <el-radio label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+            <el-radio label="Random" size="large" border>Random</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+
       <div style="margin: 0 0 20px 0; text-align: center">
         <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
         <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="Info()">Submit Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -701,8 +818,9 @@
 
 <script lang="ts" setup>
 import { UploadFilled } from '@element-plus/icons-vue'
+import * as echarts from 'echarts'
 import {ElMessage, UploadInstance, UploadProps} from "element-plus";
-import { ref } from 'vue';
+import {getCurrentInstance, ref, watch} from 'vue';
 import axios from "axios";
 import {useStore} from "vuex";
 import request from "@/api";
@@ -740,11 +858,11 @@ const isCollapseDiv = ref(true)
 const percentage = ref(0)
 const percentage2 = ref(0)
 const colors = [
-  { color: '#FDACBE', percentage: 20 },
-  { color: '#f56c6c', percentage: 40 },
+  { color: '#20BD1C', percentage: 20 },
+  { color: '#5cb87a', percentage: 40 },
   { color: '#e6a23c', percentage: 60 },
-  { color: '#5cb87a', percentage: 80 },
-  { color: '#20BD1C', percentage: 100 },
+  { color: '#f56c6c', percentage: 80 },
+  { color: '#FE0A10', percentage: 100 },
 ]
 
 // 使用ref创建一个变量，用于记录已上传的文件
@@ -784,7 +902,7 @@ const speedup = ref()
 const batchsize = ref(0)
 const finetune = ref('')
 const criterion = ref('')
-const radio1 = ref('sl')
+const radio1 = ref('wosl')
 const PrunedialogVisible = ref(false);
 const PruneCOCOdialogVisible = ref(false);
 const ImageNetPrunedialogVisible = ref(false);
@@ -800,6 +918,11 @@ const Email = ref('')
 const Infos = ref('')
 const morf = ref('')
 const lerf = ref('')
+const client = ref('')
+const gpuName = ref('')
+const gpuTotMem = ref(0)
+const gpuRemainMem = ref(0)
+const gpuInfos = ref();
 const pythonValue = ref('')
 const servers = ref([])
 const servers2 = ref([])
@@ -819,6 +942,37 @@ const lr = ref(0)
 let checkCsv = ref(false)
 let checkCsv2 = ref(false)
 let checkPython = ref(false)
+
+
+const { proxy: ctx } = getCurrentInstance()
+
+
+
+
+//
+// //初始化图表
+// let myChart = echarts.init(document.getElementById('gpuChart') );
+// //配置图表的参数
+// let option = {
+//   title: {
+//     text:'扇形图示例'
+//   },
+//   series : [
+//     {
+//       name:'数据',
+//       type: 'pie' ,
+//       radius: '50%',
+//       data: [
+//           {value: 335,  name:'数据1'},
+//           {value: 310,  name:'数据2'},
+//           {value: 234,  name:'数据3'}
+//       ]
+//     }
+//   ]
+// };
+// //使用配置项显示图表
+// myChart.setOption(option);
+
 
 
 const style = ref({
@@ -883,9 +1037,66 @@ const dialogVisible_intro_constituent = ref(false);
 const resultLoading2 = ref(false)
 const ckptUploaded = ref(false)
 const modelzoo = ref();
+const epoch = ref();
+const optionList = []
+const client155_1_form = ref('Pie');
+const client155_2_form = ref('Pie');
+const client155_form = ref('Pie')
+
+
 // dialogVisible_global
 
 const activeTab = ref('cn')
+
+//gpuChartRef
+
+// 监听 finetune 变量的变化
+// watch(finetune, (newValue, oldValue) => {
+//   if (newValue === 'True') {
+//     // 执行 finetune 为 True 时的操作
+//     console.log('finetune 变为 True，执行操作...');
+//     setTimeout(() => {
+//       //初始化图表
+//       for(let i=0; i<optionList.length; i++){
+//         let myChart = echarts.init(document.getElementById('gpuChart_'+i));
+//         myChart.setOption(optionList[i]);
+//       }
+//     }, 200)  //要延迟200毫秒才能挂载
+//   }
+// });
+
+watch(client155_form, (newValue, oldValue) => {
+  if (newValue === 'Pie') {
+    // 执行 finetune 为 True 时的操作
+    console.log('设定为Pie，执行操作...');
+    setTimeout(() => {
+      //初始化图表
+      for(let i=0; i<optionList.length; i++){
+        let myChart = echarts.init(document.getElementById('gpuChart_'+i));
+        myChart.setOption(optionList[i]);
+
+        for(let i=0; i<optionList.length; i++){
+          let myChart2 = echarts.init(document.getElementById('gpuChart2_'+i));
+          myChart2.setOption(optionList[i]);
+        }
+      }
+    }, 200)  //要延迟200毫秒才能挂载
+  }
+});
+
+// watch(client155_2_form, (newValue, oldValue) => {
+//   if (newValue === 'Pie') {
+//     // 执行 finetune 为 True 时的操作
+//     console.log('设定为Pie，执行操作...');
+//     setTimeout(() => {
+//       //初始化图表
+//       for(let i=0; i<optionList.length; i++){
+//         let myChart2 = echarts.init(document.getElementById('gpuChart2_'+i));
+//         myChart2.setOption(optionList[i]);
+//       }
+//     }, 200)  //要延迟200毫秒才能挂载
+//   }
+// });
 
 function toggleCollapse () {
   // if(isCollapse.value){
@@ -966,8 +1177,259 @@ function showDialog_intro_Constituent() {
 //       })
 // }
 
-const Info = () => {
-  ElMessage.error("Online sparse learning and fine-tune has not been implemented on this server!")
+
+//OnlinePruning
+const SubmitTask = () => {
+  let tempScript
+  console.log("speedup.value:", speedup.value)
+  let flag = true
+  if(radio1.value!='sl'&&radio1.value!='wosl'){
+    ElMessage.error("Choose whether to employ sparse learning!")
+  }else if(criterion.value===''){
+    ElMessage.error("Select the pruner!")
+  }else if(batchsize.value===0){
+    ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
+  }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
+    ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
+  }else if(finetune.value===''){
+    ElMessage.error("Choose whether to fine-tune!")
+    // isNaN()函数用于判断给定的值是否是一个数字。Number.isInteger()函数用于检测给定的值是否是一个整数
+  }else if(finetune.value==='True'&&(epoch.value===undefined||epoch.value===null|| isNaN(epoch.value) || !Number.isInteger(Number(epoch.value)))) {
+    ElMessage.error("Input/Correct the number of epochs for finetuning!")
+  }else {
+    let modelname = ''
+    if (modelName.value === "ResNet56(tiny)") {
+      modelname = "resnet56"
+    } else if (modelName.value === "SE-ResNet20") {
+      modelname = "se_resnet20"
+    } else {
+      modelname = modelName.value
+    }
+    modelname = modelname.toLowerCase()
+    let dataroot
+    let dataset
+    let sl
+    if (modelDataset.value === 'CIFAR10 (Classification)') {
+      dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
+      dataset = 'cifar10'
+    } else if (modelDataset.value === 'CIFAR100 (Classification)') {
+      dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
+      dataset = 'cifar100'
+    }else if(modelDataset.value==='ImageNet (Classification)'){
+      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+      dataset = 'imagenet'
+    }else if(modelDataset.value==='COCO (Detection)'){
+      dataroot = ''
+      dataset = 'coco'
+    }
+    if(radio1.value==="sl"){
+      sl = 'True'
+    }else if(radio1.value==="wosl"){
+      sl = 'False'
+    }
+
+    if(dataset == 'imagenet'){
+      if(modelname=='resnet50'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
+      }else if(modelname=='densenet121'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value + " --client " + client.value
+      }else if(modelname=='mobilenetv2'){
+        modelname = 'mobilenet_v2'
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value+  " --client " + client.value
+      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value + " --client " + client.value
+      }
+
+    }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
+    }else if(dataset == 'coco'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
+    }
+    // console.log("script.value: ", script.value)
+    // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
+
+
+    console.log("tempScript: ", tempScript)
+    resultLoading2.value = true
+    let success = ''
+    resultShow_tree_result.value = false
+    flag_prune_done.value = false
+
+    //可能不需要这一步，直接改后端
+    // request.post('/algorithm/submitPruneAlgorithm', {
+    //   algorithmName: 'cifarAlgorithm',
+    //   datasetId: batchsize.value,
+    //   datasetName: dataset,
+    //   modelName: tempScript,
+    //   userName: tempScript,
+    // }).then((response) => {
+    //   flag = true
+    //   //先返回log file, 后面说进度条的事
+    //   console.log("prune response.data", response.data)
+    //   //下面都删掉,success改为waiting
+    //   let arr = response.data.data.result
+    //   logPath.value = arr[0]
+    //   console.log("logPath:", logPath.value)
+    //   // percentage.value = 100
+    //   // 取出最后7行
+    //   let lastFourRows = arr.slice(-7);
+    //
+    //   success = lastFourRows[6]
+    //
+    //   console.log("success:", success)
+    //
+    //
+    //   if (success === 'Success') {
+    //     paramsChange.value = lastFourRows[0]
+    //     FLOPsChange.value = lastFourRows[1]
+    //     AccChange.value = lastFourRows[2]
+    //     LossChange.value = lastFourRows[3]
+    //     PrunedPath.value = lastFourRows[4]
+    //     structureAfterPruned.value = lastFourRows[5]
+    //     // logPath.value = lastFourRows[6]
+    //     // ElMessage.success('Task completed successfully!')
+    //   } else {
+    //     paramsChange.value = 'Params: N/A'
+    //     FLOPsChange.value = 'FLOPs: N/A'
+    //     if(dataset == 'coco'){
+    //       AccChange.value = 'mAp: N/A'
+    //     }else{
+    //       AccChange.value = 'Acc: N/A'
+    //     }
+    //     LossChange.value = 'Val Loss: N/A'
+    //     PrunedPath.value = 'N/A'
+    //     structureAfterPruned.value = 'N/A'
+    //     // logPath.value = 'N/A'
+    //     // ElMessage.error('Task failed!')
+    //   }
+    //   console.log("paramsChange.value", paramsChange.value)
+    //   console.log("FLOPsChange.value", FLOPsChange.value)
+    //   console.log("AccChange.value", AccChange.value)
+    //   console.log("LossChange.value", LossChange.value)
+    //   console.log("PrunedPath.value", PrunedPath.value)
+    //   console.log("success:", success)
+    //   resultShow_tree_result.value = true
+    //   resultLoading4.value = false
+    //   flag_prune_done.value = true
+    //   // dialogVisible.value = true
+    // })
+    //     .catch((error) => {
+    //       console.error(error)
+    //     })
+    // logPath.value = 'test_log_path'
+
+
+
+    //首先解决date是字符串排序异常的问题
+    //存到后端数据库，数据库的history需要增加训练epoch数，当前epoch数，是否为要训练的记录，训练的服务器（前端增加训练的服务器的选择，服务器下要有剩余显存和任务数）
+
+    // 服务器给对应客户端分发任务(服务器也要发消息，但只有有任务的时候才发，不是频繁的心跳包，服务器给客户端发消息的端口应该不同，每个客户端的端口用map存储)
+
+    // 多个客户端一起发消息的实现
+
+    // 客户端数据库表的设计需要任务有是在训练还是在等待还是完成的字段
+
+    // 客户端根据等待时间训练一个
+
+    // 客户端的心跳包需要表面自己的身份（哪个服务器，是否有任务在训练，服务器端口固定50016）
+
+    const intervalHistory = setInterval(() => {
+      if (flag) {
+        console.log("flag:", flag)
+        let taskType = ''
+        if(dataset == 'coco'){
+          if (finetune.value === 'False') {
+            taskType = 'Directly Pruned'
+          }else if (finetune.value === 'True') {
+            taskType = 'Pruned --> Fine-tuned'
+          }
+        }else{
+          if (radio1.value === 'wosl' && finetune.value === 'False') {
+            taskType = 'Directly Pruned'
+          } else if (radio1.value === 'sl' && finetune.value === 'False') {
+            taskType = 'Sparse learning --> Pruned'
+          } else if (radio1.value === 'wosl' && finetune.value === 'True') {
+            taskType = 'Pruned --> Fine-tuned'
+          } else if (radio1.value === 'sl' && finetune.value === 'True') {
+            taskType = 'Sparse learning --> Pruned --> Fine-tuned'
+          }
+        }
+
+        success = 'Waiting'
+
+        let temp1 = {
+          username: store.state.username + " " + epoch.value,
+          modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+          tasktype: taskType,
+          checkpointpath: modelPath.value,
+          status: success,
+          paramschange: 'Params: N/A',
+          flopschange: 'FLOPs: N/A',
+          accchange: 'Acc: N/A',
+          losschange: 'Val Loss: N/A',
+          prunedpath: 'N/A',
+          structurebeforepruned: structureBeforePruned.value,
+          structureafterpruned: 'N/A',
+          logpath: 'N/A',
+          script: tempScript,
+          client: client.value
+        };
+
+
+        console.log("history record:", temp1)
+
+        axios.post(`/user/SubmitTrainingHistory`, temp1)
+            .then((response) => {
+              // console.log("temp1: ", temp1)
+              if (response.status === 200) {
+                if (success === 'Waiting') {
+                  ElMessage({
+                    showClose: true,
+                    message: 'Pruning task has been submitted and recorded in history.',
+                    type: 'success',
+                    duration: 6000
+                  })
+                }
+                // else {
+                //   ElMessage({
+                //     showClose: true,
+                //     message: 'Sorry, pruning task failed and has been recorded in history. You can find more information from the log.',
+                //     type: 'error',
+                //     duration: 6000
+                //   })
+                // }
+              }
+            })
+            .catch((errors) => {
+              if (success === 'Waiting') {
+                ElMessage({
+                  showClose: true,
+                  message: 'Sorry, pruning task has not been recorded in history.',
+                  type: 'error',
+                  duration: 6000
+                })
+              }
+              // else {
+              //   ElMessage({
+              //     showClose: true,
+              //     message: 'Pruning task has been completed, but something went worng with the server so that it has not been recorded in history. You can find more information from the log.',
+              //     type: 'error',
+              //     duration: 6000
+              //   })
+              // }
+              console.log('error', errors)
+            })
+        flag = false
+
+
+        resultLoading2.value = false
+        PrunedialogVisible.value = false
+        PruneCOCOdialogVisible.value = false
+        ImageNetPrunedialogVisible.value = false
+
+      }
+    }, 2000)
+  }
 }
 
 //OnlinePruning
@@ -1494,6 +1956,8 @@ const GenerateScript = () => {
     ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
   }else if(finetune.value===''){
     ElMessage.error("Choose whether to fine-tune!")
+  }else if(finetune.value==='True'&&(epoch.value===undefined||epoch.value===null|| isNaN(epoch.value) || !Number.isInteger(Number(epoch.value)))) {
+    ElMessage.error("Input/Correct the number of epochs for finetuning!")
   }else{
     let modelname = ''
     if(modelName.value==="ResNet56(tiny)"){
@@ -1527,20 +1991,31 @@ const GenerateScript = () => {
     }
     if(dataset == 'imagenet'){
       if(modelname=='resnet50'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
       }else if(modelname=='densenet121'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
       }else if(modelname=='mobilenetv2'){
         modelname = 'mobilenet_v2'
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+      }
+
+      if(finetune.value==='True'){
+        script.value += " --epoch " + epoch.value
       }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
       script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+      if(finetune.value==='True'){
+        script.value += " --epoch " + epoch.value
+      }
+
     }else if(dataset == 'coco'){
       console.log("???")
+      if(finetune.value==='True'){
+        script.value += " --epoch " + epoch.value
+      }
       if(modelname == 'yolov7')
       script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
       else if(modelname == 'yolov8')
@@ -2148,6 +2623,7 @@ function update(source) {
       })
       .style("fill", "none")
 
+
   // click(
   nodeEnter.append("circle")
       .attr('class', 'nodeCircleBorderFailed')
@@ -2424,16 +2900,21 @@ var outCircle = function(d) {
   updateTempConnector();
 };
 
-function click(d) {
+
+async function click(d) {
   console.log("click d: ", d)
   centerNode(d);
   if(d.type=='pretrained' || d.type=='usr'){
     if(d.parent.parent.name=='CIFAR100' || d.parent.parent.name=='CIFAR10'){
-      radio1.value = 'sl'  //要不要sparse learing
+      radio1.value = 'wosl'  //要不要sparse learing
       criterion.value = ''  //重要性指标
       batchsize.value = 0
+      // client155_1_form.value = 'Bar'
+      // client155_2_form.value = 'Bar'
+      client155_form.value = 'Bar'
       speedup.value = ''
       finetune.value = ''
+      epoch.value = null
       scriptVisible.value = false
       PrunedialogVisible.value = true
       console.log("d.type", d.type)
@@ -2491,7 +2972,7 @@ function click(d) {
       }else if(d.model_name=='ImageNet_VGG19-BN_Pretrained' || d.model_name=='ImageNet_VGG16-BN_Pretrained'){
         lr.value = 0.01
       }
-      radio1.value = 'sl'
+      radio1.value = 'wosl'
       criterion.value = ''
       batchsize.value = 0
       speedup.value = ''
@@ -2530,7 +3011,7 @@ function click(d) {
           d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
       console.log("structureBeforePruned", structureBeforePruned.value)
     }else if(d.parent.parent.name=='COCO'){
-      radio1.value = 'sl'  //要不要sparse learing
+      radio1.value = 'wosl'  //要不要sparse learing
       criterion.value = ''  //重要性指标
       batchsize.value = 0
       speedup.value = ''
@@ -2574,6 +3055,53 @@ function click(d) {
     }else{
       console.log("标记d.parent.parent.name: ", d.parent.parent.name)
     }
+
+    //gpuChartRef
+    await request.post('/algorithm/gpuInfoList')
+        .then((response)=>{
+          console.log(response)
+          let originGPUs=response.data.data
+          console.log("originGPUs: ", originGPUs)
+          gpuInfos.value = originGPUs
+          for(let i=0; i<originGPUs.length; i++){
+            let option = {
+              tooltip: {
+                trigger: "item",
+                formatter: "{a} <br/>{b} : {c}MiB ({d}%)",
+              },
+              color:['#ef6567', '#3BA272'],
+              series : [
+                {
+                  name:originGPUs[i].name+'显存信息',
+                  type: 'pie' ,
+                  radius: '90%',
+                  data: [
+                    {value: originGPUs[i].tot_memory - originGPUs[i].remain_memory,  name:'已用显存'},
+                    {value: originGPUs[i].remain_memory,  name:'剩余显存'},
+                  ],
+                  // center: ["40%", "60%"],
+                  emphasis: {
+                    itemStyle: {
+                      shadowBlur: 10,
+                      shadowOffsetX: 0,
+                      shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                  },
+                }
+              ]
+            }
+            optionList.push(option);
+          }
+
+
+          // gpuRemainMem.value = originGPUs.remain_memory
+          // gpuTotMem.value = originGPUs.tot_memory
+          // console.log("gpuRemainMem: ", gpuRemainMem.value)
+          // console.log("gpuTotMem: ", gpuTotMem.value)
+        })
+        .catch((error)=>{
+          console.error(error)
+        })
 
   }else if(d.type=='upload'){
     ckpt.value = ''
@@ -2644,6 +3172,43 @@ function contextmenu(d) {
 //把onmounted里的重复变量提出来，函数也提出来
 
 onMounted(async () => {
+
+//   //初始化图表
+// // let myChart = echarts.init(document.getElementById('gpuChart') );
+//   let myChart = echarts.init(ctx.$refs.gpuChartRef);
+// // gpuChartRef
+// //配置图表的参数
+//   let option = {
+//     tooltip: {
+//       trigger: "item",
+//       formatter: "{a} <br/>{b} : {c} ({d}%)",
+//     },
+//     color:['#ef6567', '#3BA272'],
+//     series : [
+//       {
+//         name:'GPU显存信息',
+//         type: 'pie' ,
+//         radius: '90%',
+//         data: [
+//           {value: 40,  name:'已用显存'},
+//           {value: 60,  name:'剩余显存'},
+//         ],
+//         // center: ["40%", "60%"],
+//         emphasis: {
+//           itemStyle: {
+//             shadowBlur: 10,
+//             shadowOffsetX: 0,
+//             shadowColor: "rgba(0, 0, 0, 0.5)",
+//           },
+//         },
+//       }
+//     ]
+//   };
+// //使用配置项显示图表
+//   myChart.setOption(option);
+
+
+
   try {
     const response = await request2.post(`/user/getModelZoo`, {});
     json = response.data;
