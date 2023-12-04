@@ -2001,19 +2001,19 @@ const GenerateScript = () => {
         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
       }
 
-      if(finetune.value){
+      if(finetune.value==='True'){
         script.value += " --epoch " + epoch.value
       }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
       script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
-      if(finetune.value){
+      if(finetune.value==='True'){
         script.value += " --epoch " + epoch.value
       }
 
     }else if(dataset == 'coco'){
       console.log("???")
-      if(finetune.value){
+      if(finetune.value==='True'){
         script.value += " --epoch " + epoch.value
       }
       if(modelname == 'yolov7')
