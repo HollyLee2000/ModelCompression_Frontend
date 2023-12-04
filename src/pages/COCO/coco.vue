@@ -1477,9 +1477,25 @@ const updateTree =  () => {
   }else if(dataset == 'cifar10' || dataset == 'cifar100'){
     tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode test_prune --model " + modelname + " --batch-size 128 --restore " + ckpt.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method group_norm --speed-up 2.1 --global-pruning --reg 5e-4 --sl False --finetune False"
   }else if(dataset == 'coco'){
+    
+    if(modelname == 'yolov7')
     tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False --weights " + ckpt.value
+    else if(modelname == 'yolov8')
+    {
+      console.log("modelname is",modelname)
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False  "
+    }
+    else if(modelname == 'yolov5' )
+    {
+    console.log("modelname is",modelname)
+    tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False --weights " + ckpt.value
+    }
   }
 
+  
+
+
+  // /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py
 
   console.log("uploadTree: ", tempScript)
 
@@ -1682,10 +1698,17 @@ const OnlinePruning = () => {
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
     }else if(dataset == 'coco'){
+      if(modelname == 'yolov7')
       tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      else if(modelname == 'yolov8')
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      else if(modelname == 'yolov5')
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
     }
+    
     // console.log("script.value: ", script.value)
     // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
+
 
 
     console.log("tempScript: ", tempScript)
@@ -1990,11 +2013,18 @@ const GenerateScript = () => {
 
     }else if(dataset == 'coco'){
       console.log("???")
-      script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
       if(finetune.value){
         script.value += " --epoch " + epoch.value
       }
+      if(modelname == 'yolov7')
+      script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      else if(modelname == 'yolov8')
+      script.value = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      else if(modelname == 'yolov5')
+      script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
     }
+    
+    
     console.log("script.value: ", script.value)
     scriptVisible.value = true;
   }
