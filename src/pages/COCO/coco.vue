@@ -505,8 +505,8 @@
 
       <div style="margin: 0 0 20px 0; text-align: center">
         <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
-        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
+        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Submit Prune-Only Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Prune-Finetune Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -1177,7 +1177,7 @@ function showDialog_intro_Constituent() {
 //       })
 // }
 
-
+//
 //OnlinePruning
 const SubmitTask = () => {
   let tempScript
@@ -1226,6 +1226,10 @@ const SubmitTask = () => {
       sl = 'True'
     }else if(radio1.value==="wosl"){
       sl = 'False'
+    }
+
+    if(finetune.value){
+      epoch.value = 90
     }
 
     if(dataset == 'imagenet'){
@@ -1638,7 +1642,7 @@ const updateTree =  () => {
 
 //不需要判断sl和finetune
 const OnlinePruning = () => {
-  isPruned.value = false
+  isPruned.value = false  //可能改
   console.log("speedup.value:", speedup.value)
   let flag = false
   if(radio1.value!='sl'&&radio1.value!='wosl'){
