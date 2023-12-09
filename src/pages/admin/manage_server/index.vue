@@ -55,8 +55,9 @@
       </el-radio-group>
     </div>
 
+<!--    Any-->
     <div style="display: inline-block;" v-if="type==='QualitativeComparison'">
-      <el-select v-model="dataset" style="margin: 10px; display: inline-block;" placeholder="Select Dataset" size="large" @change="getQualitativeComparison">
+      <el-select v-model="dataset" class="forSearchHistory" placeholder="Select Dataset" size="large" @change="getQualitativeComparison">
         <el-option
             v-for="item in optionList"
             :key="item.value"
@@ -64,11 +65,9 @@
             :value="item.value"
         />
       </el-select>
-      <div style="margin: 10px; display: inline-block;" >
-<!--        keyup.enter:回车触发事件-->
-<!--        <el-input @keyup.enter="getDataset(searchOption)" v-model="searchContent" style="width:150px; height: 40px"/>-->
 
-        <el-select v-model="model" style="margin: 10px; display: inline-block;" placeholder="Select Model" size="large" @change="getQualitativeComparison">
+
+        <el-select v-model="model" class="forSearchHistory" placeholder="Select Model" size="large" @change="getQualitativeComparison">
           <el-option
               v-for="item in modelList"
               :key="item.value"
@@ -77,13 +76,8 @@
           />
         </el-select>
 
-<!--        后面加参数type-->
-<!--        <el-button @click="getQualitativeComparison()" style="height: 40px;">-->
-<!--          <el-icon>-->
-<!--            <search/>-->
-<!--          </el-icon>-->
-<!--        </el-button>-->
-      </div>
+
+      <el-button class="SearchReset" type="warning" size="large" plain @click="resetForm">Reset</el-button>
     </div>
 
 
@@ -91,7 +85,7 @@
 
 
     <div style="display: inline-block" v-else>
-      <el-select v-model="dataset" style="margin: 10px; display: inline-block;" placeholder="Select Dataset" size="large" @change="getLeaderboard">
+      <el-select v-model="dataset" class="forSearchHistory" placeholder="Select Dataset" size="large" @change="getLeaderboard">
         <el-option
             v-for="item in optionListLeaderboard"
             :key="item.value"
@@ -99,35 +93,27 @@
             :value="item.value"
         />
       </el-select>
-      <div style="margin: 10px; display: inline-block;" >
-        <!--        keyup.enter:回车触发事件-->
-        <!--        <el-input @keyup.enter="getDataset(searchOption)" v-model="searchContent" style="width:150px; height: 40px"/>-->
 
-        <el-select v-model="model" style="margin: 10px; display: inline-block;" placeholder="Select Model" size="large" @change="getLeaderboard">
-          <el-option
-              v-for="item in modelListLeaderboard"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
+      <el-select v-model="model" class="forSearchHistory" placeholder="Select Model" size="large" @change="getLeaderboard">
+        <el-option
+            v-for="item in modelListLeaderboard"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
 
-        <el-select v-model="speed" style="margin: 10px; display: inline-block;" placeholder="Speed up" size="large">
-          <el-option
-              v-for="item in speedlist"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
+      <el-select v-model="speed" class="forSearchHistory" placeholder="Speed up" size="large">
+        <el-option
+            v-for="item in speedlist"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+      <el-button class="SearchReset" type="warning" size="large" plain @click="resetForm">Reset</el-button>
 
-        <!--        后面加参数type-->
-        <!--        <el-button @click="getQualitativeComparison()" style="height: 40px;">-->
-        <!--          <el-icon>-->
-        <!--            <search/>-->
-        <!--          </el-icon>-->
-        <!--        </el-button>-->
-      </div>
+
     </div>
 
 
@@ -482,10 +468,6 @@ export default {
 
       optionList: [
         {
-          value: " ",
-          label: "Any dataset"
-        },
-        {
           value: "ImageNet",
           label: "ImageNet"
         }, {
@@ -498,10 +480,6 @@ export default {
       ],
       optionListLeaderboard: [
         {
-          value: " ",
-          label: "Any dataset"
-        },
-        {
           value: "CIFAR100",
           label: "CIFAR100"
         }
@@ -509,10 +487,6 @@ export default {
 
 
       modelList: [
-        {
-          value: " ",
-          label: "Any model"
-        },
         {
           value: "MobileNet-v1",
           label: "MobileNet-v1"
@@ -545,10 +519,6 @@ export default {
 
       ],
       modelListLeaderboard: [
-        {
-          value: " ",
-          label: "Any model"
-        },
         {
           value: "ResNet-18",
           label: "ResNet-18"
@@ -617,6 +587,7 @@ export default {
     resetForm(){
       this.dataset = ''
       this.model = ''
+      this.speed = ''
       this.currentPage = 1
       if(this.type==='QualitativeComparison'){
         this.getQualitativeComparison()
