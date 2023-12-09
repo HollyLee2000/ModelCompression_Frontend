@@ -464,8 +464,8 @@
                 </el-table-column>
                 <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
                   <template #default="props">
-                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.remain_memory/props.row.tot_memory).toFixed(1)" :color="colors"  />
-                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 100%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>
                   </template>
                 </el-table-column>
               </el-table>
@@ -489,8 +489,8 @@
                 </el-table-column>
                 <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
                   <template #default="props">
-                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.remain_memory/props.row.tot_memory).toFixed(1)" :color="colors"  />
-                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 100%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>
                   </template>
                 </el-table-column>
               </el-table>
@@ -1112,11 +1112,11 @@ watch(client155_form, (newValue, oldValue) => {
       for(let i=0; i<optionList.length; i++){
         let myChart = echarts.init(document.getElementById('gpuChart_'+i));
         myChart.setOption(optionList[i]);
+      }
 
-        for(let i=0; i<optionList.length; i++){
-          let myChart2 = echarts.init(document.getElementById('gpuChart2_'+i));
-          myChart2.setOption(optionList[i]);
-        }
+      for(let i=0; i<optionList.length; i++){
+        let myChart2 = echarts.init(document.getElementById('gpuChart2_'+i));
+        myChart2.setOption(optionList[i]);
       }
     }, 200)  //要延迟200毫秒才能挂载
   }
@@ -3134,18 +3134,35 @@ async function click(d) {
               tooltip: {
                 trigger: "item",
                 formatter: "{a} <br/>{b} : {c}MiB ({d}%)",
+                confine: false,
+                appendToBody: true,
+                // position: function(point, e, dom, size) {
+                //   // 1.计算出绘制canvas的容器（dom.parentNode的值）相对于页面顶部的高度。注意需要由相对于浏览器窗口上部的距离 加上 页面卷曲的高度 来计算。
+                //   var top = dom.parentNode.getBoundingClientRect().top + (window.scrollY ? window.scrollY : window.pageYOffset)
+                //   // 2.计算出canvas外容器相对与浏览器窗口的左侧的距离
+                //   var left = dom.parentNode.getBoundingClientRect().left
+                //   // 3.因为tooltip内容过多，canvas已经放不下tooltip。所以需要改变tooltip的定位方式为fixed。
+                //   dom.style.position = 'fixed'
+                //   // 4.计算出left
+                //   var resultLeft = point[0] + left + 5 + dom.clientWidth > document.body.clientWidth ? document.body.clientWidth - dom.clientWidth - 20 : point[0] + left + 5
+                //   // 5.计算出top
+                //   var resultTop = (point[1] + top + dom.clientHeight) < document.body.clientHeight ? point[1] + dom.parentNode.getBoundingClientRect().top : dom.parentNode.getBoundingClientRect().top - dom.clientHeight + point[1]
+                //   // 6.返回位置数据 [left, top]
+                //   return [resultLeft, resultTop]
+                // },
+
               },
               color:['#ef6567', '#3BA272'],
               series : [
                 {
                   name:originGPUs[i].name+'显存信息',
                   type: 'pie' ,
-                  radius: '90%',
+                  radius: '70%',
                   data: [
                     {value: originGPUs[i].tot_memory - originGPUs[i].remain_memory,  name:'已用显存'},
                     {value: originGPUs[i].remain_memory,  name:'剩余显存'},
                   ],
-                  // center: ["40%", "60%"],
+                  center: ["50%", "50%"],  // 调整饼图中心点位置
                   emphasis: {
                     itemStyle: {
                       shadowBlur: 10,
@@ -3158,6 +3175,7 @@ async function click(d) {
             }
             optionList.push(option);
           }
+          // gpuChart_
 
 
           // gpuRemainMem.value = originGPUs.remain_memory
