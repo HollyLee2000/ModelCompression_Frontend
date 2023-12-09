@@ -711,30 +711,67 @@
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
-          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="sl" size="large" border v-if="INtype==='cnn'">With Sparse Learning</el-radio>
           <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
         </el-radio-group>
       </div>
+
+
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
           the choice of whether to employ sparse learning will determine the available pruner.</label>
       </div>
+
       <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
-          <!--          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>-->
+          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>
           <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
-          <el-radio label="group_greg" size="large" border>GrowingReg Pruner</el-radio>
+          <el-radio label="growing_reg" size="large" border>GrowingReg Pruner</el-radio>
 
         </el-radio-group>
       </div>
 
-      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+      <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
           <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
           <el-radio label="lamp" size="large" border>BNScale Pruner</el-radio>
           <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
+
+        </el-radio-group>
+      </div>
+
+
+
+
+      <!-- <div v-show="INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
+
+          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
+          <el-radio label="group_greg" size="large" border>GrowingReg Pruner</el-radio>
+
+        </el-radio-group>
+      </div> -->
+
+      <div v-show="radio1==='wosl' && INtype==='hf'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>
+          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>
+          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>
+
+
+        </el-radio-group>
+      </div>
+
+      <div v-show="radio1==='wosl' && INtype==='timm'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>
+          <el-radio label="l2" size="large" border>L2 Pruner</el-radio>
+          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>
+          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>
+          <el-radio label="hessian" size="large" border>Hessian Pruner</el-radio>
 
         </el-radio-group>
       </div>
@@ -903,6 +940,7 @@ const batchsize = ref(0)
 const finetune = ref('')
 const criterion = ref('')
 const radio1 = ref('wosl')
+const INtype = ref('cnn')
 const PrunedialogVisible = ref(false);
 const PruneCOCOdialogVisible = ref(false);
 const ImageNetPrunedialogVisible = ref(false);
@@ -1472,11 +1510,18 @@ const updateTree =  () => {
     }else if(modelname=='densenet121'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method group_norm --soft-keeping-ratio 0.25 --target-flops 2.1 --global-pruning --print-freq 100 --workers 16 --amp --finetune False"
     }else if(modelname=='mobilenetv2'){
-      modelname = 'mobilenet_v2'
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --finetune False"
     }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  ---method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --finetune False"
+    }else if(modelname=='deit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py --mode test_prune --val_batch_size 128 " + ckpt.value
+    }else if(modelname=='vit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py --mode test_prune --val_batch_size 128 "+ ckpt.value
+    }else if(modelname=='vit_b_16(hf)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py --mode test_prune --val_batch_size 128 "+ ckpt.value
     }
+
+    // deit_b_16(timm)  vit_b_16(timm)  vit_b_16(hf)
 
   }else if(dataset == 'cifar10' || dataset == 'cifar100'){
     tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode test_prune --model " + modelname + " --batch-size 128 --restore " + ckpt.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method group_norm --speed-up 2.1 --global-pruning --reg 5e-4 --sl False --finetune False"
@@ -1697,7 +1742,13 @@ const OnlinePruning = () => {
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }
+      }else if(modelname=='deit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(hf)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
@@ -2003,7 +2054,14 @@ const GenerateScript = () => {
         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }
+      }else if(modelname=='deit_b_16(timm)'){
+        script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(timm)'){
+      script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(hf)'){
+      script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+    }
+
 
       if(finetune.value==='True'){
         script.value += " --epoch " + epoch.value
@@ -2969,6 +3027,14 @@ async function click(d) {
 
       // ElMessage.success("选择了预训练模型！")
     }else if(d.parent.parent.name=='ImageNet'){
+        if(d.parent.name.includes('hf')){
+          INtype.value = 'hf';
+        }else if(d.parent.name.includes('timm')){
+          INtype.value = 'timm';
+        }else{
+          INtype.value = 'cnn';
+        }
+
       if(d.model_name=='ImageNet_ResNet50_Pretrained' || d.model_name=='ImageNet_DenseNet121_Pretrained'){
         lr.value = 0.08
       }else if(d.model_name=='ImageNet_MobileNetV2_Pretrained'){
