@@ -5,9 +5,89 @@
     <!--    height="100"-->
     <!--    max-height="100"-->
 <!--    ascending-->
+<!-- -->
+<!--    :default-sort="{ prop: ['submitTime'], order: 'descending' }"-->
+
+
+    <div class="searchHistory">
+      <el-select v-model="client" class="forSearchHistory" placeholder="Select Client" size="large"  @change="getTableData">
+        <el-option
+            v-for="item in optionList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+      <el-select v-model="type" class="forSearchHistory" placeholder="Select Task Type" size="large" @change="getTableData">
+        <el-option
+            v-for="item in clientOptionList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+      <div class="forSearchHistory" >
+        <el-input @keyup.enter="getTableData" v-model="model" style="width:250px; height: 40px" placeholder="Fuzzy keywords of model name"/>
+<!--        <el-button @click="getTableData" style="height: 40px;">-->
+<!--          <el-icon>-->
+<!--            <search/>-->
+<!--          </el-icon>-->
+<!--        </el-button>-->
+      </div>
+      <el-form-item class="forSearchHistory">
+        <el-date-picker v-model="createTimes"
+                        type="daterange"
+                        range-separator="To"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                        format="YYYY-MM-DD"
+                        value-format="YYYY-MM-DD"
+                        @change="getTableData"
+        />
+      </el-form-item>
+      <el-button class="SearchReset" type="primary" plain size="large" @click="getTableData">
+        Search
+      </el-button>
+      <el-button class="SearchReset" type="warning" size="large" plain @click="resetData">Reset</el-button>
+    </div>
+
+
+
+<!--    <div class="search-div">-->
+<!--      <el-form label-width="70px" size="small">-->
+<!--        <el-row>-->
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="Model name">-->
+<!--              <el-input v-model="model"-->
+<!--                        style="width: 100%"-->
+<!--                        placeholder="Enter fuzzy search keywords"-->
+<!--              ></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="创建时间">-->
+<!--              <el-date-picker v-model="createTimes"-->
+<!--                              type="daterange"-->
+<!--                              range-separator="To"-->
+<!--                              start-placeholder="开始时间"-->
+<!--                              end-placeholder="结束时间"-->
+<!--                              format="YYYY-MM-DD"-->
+<!--                              value-format="YYYY-MM-DD"-->
+<!--              />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row style="display:flex">-->
+<!--          <el-button type="primary" size="small" @click="getTableData">-->
+<!--            搜索-->
+<!--          </el-button>-->
+<!--          <el-button size="small" @click="resetData">重置</el-button>-->
+<!--        </el-row>-->
+<!--      </el-form>-->
+<!--    </div>-->
+
     <el-table
         :data="tableData"
-        :default-sort="{ prop: ['submitTime'], order: 'ascending' }"
         style="width: 100%"
         :border="false"
         row-key="historyId"
@@ -17,7 +97,7 @@
       <el-table-column min-width="70" fixed prop="username" label="user name" />
       <el-table-column min-width="100" prop="modelName" label="model name" />
       <el-table-column min-width="100" prop="taskType" label="task type" />
-      <el-table-column min-width="100" prop="submitTime" label="submit time" sortable="sortable" />
+      <el-table-column min-width="100" prop="submitTime" label="submit time" />
       <el-table-column min-width="60" prop="client" label="client" />
       <el-table-column min-width="50" label="details" type="expand">
         <template #default="props">
@@ -92,6 +172,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+        v-model:current-page="pageParams.page"
+        v-model:page-size="pageParams.limit"
+        :page-sizes="[4, 8, 16, 32]"
+        @size-change="getTableData"
+        @current-change="getTableData"
+        layout="total, sizes, prev, pager, next"
+        :total="total"
+        class="pagination"
+    />
+<!--    tableData-->
+
   </div>
 </template>
 
@@ -101,6 +193,7 @@ import {handleError, onMounted, onBeforeUnmount, ref, getCurrentInstance} from "
 import request from '@/api/index'
 import store from '@/store'
 import {router} from "@/router";
+import {Search} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 
@@ -114,6 +207,60 @@ const colors = [
   { color: '#5cb87a', percentage: 80 },
   { color: '#20BD1C', percentage: 100 },
 ]
+
+const model=ref("")
+const type=ref("")
+const createTimes = ref([])
+const createTimeBegin=ref("")
+const createTimeEnd=ref("")
+const client=ref("")
+
+const optionList = [
+  {
+    value: "vipa155_client1",
+    label: "vipa155_client1"
+  }, {
+    value: "vipa155_client2",
+    label: "vipa155_client2"
+  }, {
+    value: "NULL",
+    label: "NULL"
+  }
+];
+
+const clientOptionList = [
+  {
+    value: "Pruned --> Fine-tuned",
+    label: "Pruned --> Fine-tuned"
+  }, {
+    value: "Directly Pruned",
+    label: "Directly Pruned"
+  }, {
+    value: "Upload Raw Model",
+    label: "Upload Raw Model"
+  }
+];
+
+const resetData = () => {
+  model.value = ""
+  type.value = ""
+  createTimes.value = []
+  createTimeBegin.value = ""
+  createTimeEnd.value = ""
+  client.value = ""
+  getTableData()
+}
+
+
+// 分页条数据模型
+const total = ref(0)
+
+//分页
+const pageParamsForm = {
+  page:1, //当前页
+  limit:8 //每页记录数
+}
+const pageParams = ref(pageParamsForm)
 
 // const getRowKeys = (row) => {
 //   return row.id
@@ -147,13 +294,23 @@ const getTableData = async () => {
   //
   // console.log("tableData", tableData.value)
   // console.log("标记")
+  if(createTimes.value.length == 2) {
+    createTimeBegin.value = createTimes.value[0]
+    createTimeEnd.value = createTimes.value[1]
+  }
 
-  await request.post('/history/findHistoryByUser',{
+  await request.post(`/history/findHistoryByUser/${pageParamsForm.page}/${pageParamsForm.limit}`,{
     username: store.state.username,
+    model: model.value,
+    type: type.value,
+    createTimeBegin: createTimeBegin.value,
+    createTimeEnd: createTimeEnd.value,
+    client: client.value
   })
       .then((response)=>{
         console.log(response)
-        let originData=response.data.data.historyInfos
+        let originData=response.data.data.historyInfos.list
+        total.value = response.data.data.historyInfos.total
         console.log("originData: ", originData)
         tableData.value=originData.filter(
             (data) => {
@@ -161,6 +318,9 @@ const getTableData = async () => {
               return (!search.value.length) || data.datasetName.toLowerCase().includes(search.value.toString().toLowerCase())
             }
         )
+        // tableData.value.forEach(item => {
+        //   item.submitTime = new Date(item.submitTime);
+        // });
         // tableData.value = tableData.value.map(row => ({ ...row, expanded: true }));
         store.commit('setHistoryRecords', tableData.value)
         console.log("tableData", tableData.value)
@@ -209,6 +369,8 @@ const getTableData = async () => {
 // });
 
 getTableData();
+
+//先暂停了，后面再开放实时刷新
 
 let intervalHistory = setInterval(getTableData, 2000);
 
@@ -264,6 +426,15 @@ function getRecordDetail(index:any, recordData:any) {
   margin: 0;
   /*height: 100%;*/
 }
+
+.searchHistory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 /*.el-table-column {*/
 /*  min-width: 50px;*/
 /*}*/
