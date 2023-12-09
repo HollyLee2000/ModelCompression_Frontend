@@ -91,7 +91,7 @@
         <el-menu-item @click="centerNodebyName('ImageNet', 'DenseNet121')" index="3-7">DenseNet121</el-menu-item>
         <el-menu-item @click="centerNodebyName('ImageNet', 'DeiT_B_16(timm)')" index="3-8">DeiT_base (timm)</el-menu-item>
       </el-sub-menu>
-
+        
 
       <el-sub-menu index="4">
         <template #title>
@@ -1510,11 +1510,11 @@ const updateTree =  () => {
     }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode test_prune --pretrained --epochs 90 --model "+modelname+" --batch-size 128 --lr 0.01 --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  ---method group_norm --global-pruning --soft-keeping-ratio 0.5 --target-flops 2.1 --finetune False"
     }else if(modelname=='deit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py --mode test_prune --val_batch_size 128 " + ckpt.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py --mode test_prune --val_batch_size 128 --restore " + ckpt.value
     }else if(modelname=='vit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py --mode test_prune --val_batch_size 128 "+ ckpt.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py --mode test_prune --val_batch_size 128 --restore "+ ckpt.value
     }else if(modelname=='vit_b_16(hf)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py --mode test_prune --val_batch_size 128 "+ ckpt.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py --mode test_prune --val_batch_size 128 --restore "+ ckpt.value
     }
 
     // deit_b_16(timm)  vit_b_16(timm)  vit_b_16(hf)
