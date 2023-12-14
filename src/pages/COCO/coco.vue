@@ -1373,9 +1373,13 @@ const SubmitTask = () => {
         }
       } else if(modelname == 'yolov8')
       tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-      else if(modelname == 'yolov5')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-    
+      else if(modelname == 'yolov5'){
+        if(finetune.value==='False'){
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --client " + client.value  + " --weights " + modelPath.value
+        }else{
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+        }
+      }
       // tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
     }
     // console.log("script.value: ", script.value)
