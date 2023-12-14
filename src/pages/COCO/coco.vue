@@ -214,7 +214,7 @@
         />
       </div>
       <div v-show="uploadType!=''" style="margin: 20px 0 20px 0; text-align: center">
-        <el-button size="large" type="success" plain @click="updateTree">Confirm</el-button>
+        <el-button size="large" type="success" plain @click="updateTree">Submit a raw model</el-button>
       </div>
 
 
@@ -314,13 +314,15 @@
              :draggable="true" @close="PrunedialogVisible = false" :append-to-body="true" title="CIFAR Model Pruning" >
     <div v-loading="resultLoading2">
 
-
+<!--      generate the script. If you don't require sparse Learning and fine-tuning,-->
+<!--      click "online pruning" to obtain pruning results immediately. If you need sparse Learning or fine-tuning, you'll need-->
+<!--      to-->
+<!--      and wait for training, which is not yet implemented on this server-->
+<!--      All models trained on the CIFAR dataset-->
+<!--      adopt a learning rate of 0.01 during fine-tuning phases.-->
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #000096">CIFAR Tips: Complete the
-          following information and generate the script. If you don't require sparse Learning and fine-tuning,
-          click "online pruning" to obtain pruning results immediately. If you need sparse Learning or fine-tuning, you'll need
-          to submit a task and wait for training, which is not yet implemented on this server. All models trained on the CIFAR dataset
-          adopt a learning rate of 0.01 during sparse Learning and fine-tuning phases.</label>
+          following information and submit a pruning task.</label>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -341,10 +343,9 @@
 
 
 
-
+<!--      Without sparse learning and fine-tuning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).-->
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.
-          Without sparse learning and fine-tuning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
@@ -352,9 +353,9 @@
           <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
         </el-radio-group>
       </div>
+<!--      the choice of whether to employ sparse learning will determine the available pruner-->
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
-          the choice of whether to employ sparse learning will determine the available pruner.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the importance criterion.</label>
       </div>
       <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
@@ -368,11 +369,10 @@
 
       <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
-          <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
-          <el-radio label="lamp" size="large" border>BNScale Pruner</el-radio>
-          <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
-
+          <el-radio label="l1" size="large" border>Magnitude Importance</el-radio>
+          <el-radio label="random" size="large" border>Random Importance</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP Importance</el-radio>
+          <el-radio label="group_norm" size="large" border>GroupNorm Importance</el-radio>
         </el-radio-group>
       </div>
 
@@ -446,10 +446,6 @@
           </el-radio-group>
           <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">
             <div style="display: flex; flex-direction: column; width: 40%">
-<!--              <el-radio-group style="border: 0; color: black;" v-model="client155_1_form">-->
-<!--                <el-radio label="Bar" size="large">Bar charts</el-radio>-->
-<!--                <el-radio label="Pie" size="large">Pie charts</el-radio>-->
-<!--              </el-radio-group>-->
               <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
               <el-table
                   :data="gpuInfos"
@@ -504,9 +500,10 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: center">
-        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
-        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
+<!--        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>-->
+        <!--        原来的OnlinePruning-->
+        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="SubmitTask">Submit Prune-Only Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask">Submit Prune-Finetune Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -552,10 +549,12 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #000096">COCO Tips: Complete the
-          following information and generate the script. If you don't require fine-tuning,
-          click "online pruning" to obtain pruning results immediately. If you need fine-tuning, you'll need
-          to submit a task and wait for training, which is not yet implemented on this server. All models trained on the COCO dataset
-          adopt a learning rate of 0.01 during fine-tuning phases.</label>
+          following information and submit a pruning task.</label>
+<!--        Complete the-->
+<!--        following information and generate the script. If you don't require fine-tuning,-->
+<!--        click "online pruning" to obtain pruning results immediately. If you need fine-tuning, you'll need-->
+<!--        to submit a task and wait for training, which is not yet implemented on this server. All models trained on the COCO dataset-->
+<!--        adopt a learning rate of 0.01 during fine-tuning phases.-->
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -578,12 +577,12 @@
 
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Select the pruner,
-          Yolo models only support L2Norm pruner.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Select the importance criterion,
+          Yolo models only support L2Norm importance.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l2" size="large" border>L2Norm Pruner</el-radio>
+          <el-radio label="l2" size="large" border>L2Norm Importance</el-radio>
 
         </el-radio-group>
       </div>
@@ -593,16 +592,17 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-          Step2: Choose batch size for
-          evaluation and finetuning. It is recommended to choose 128, but if the task fails, you could choose a smaller one.</label>
+          Step2: Choose batch size for evaluation and finetuning. Fine-tuning the YOLO models requires significant GPU memory
+          consumption, so we recommend selecting a small batch size.</label>
       </div>
+<!--      It is recommended to choose 128, but if the task fails, you could choose a smaller one.-->
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">
-          <el-radio label=32 size="large" border>16</el-radio>
-          <el-radio label=32 size="large" border>32</el-radio>
-          <el-radio label=64 size="large" border>64</el-radio>
-          <el-radio label=128 size="large" border>128</el-radio>
+          <el-radio label=32 size="large" border>4</el-radio>
+          <el-radio label=32 size="large" border>8</el-radio>
+          <el-radio label=64 size="large" border>16</el-radio>
+          <el-radio label=128 size="large" border>32</el-radio>
         </el-radio-group>
       </div>
 
@@ -621,7 +621,7 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
-          Online fine-tuning is currently not supported on this server.</label>
+          Fine-tuning the YOLO models requires extremely long training time.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -632,21 +632,82 @@
 
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="client">
-            <el-radio label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
-            <el-radio label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+          <el-input
+              v-model="epoch"
+              placeholder="Please input"
+              style="margin-left: 50px; border: 0; color: black; width: 8%"
+          />
+        </div>
+
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+        </div>
+        <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
+          <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
+            <el-radio label="Bar" size="large">Bar charts</el-radio>
+            <el-radio label="Pie" size="large">Pie charts</el-radio>
+          </el-radio-group>
+          <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">
+            <div style="display: flex; flex-direction: column; width: 40%">
+              <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                  <template #default="props">
+                    {{props.row.tot_memory}} MiB
+                  </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 40%">
+              <!--              <el-radio-group style="border: 0; color: black;" v-model="client155_2_form">-->
+              <!--                <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+              <!--                <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+              <!--              </el-radio-group>-->
+              <el-radio style="width:33%" label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                  <template #default="props">
+                    {{props.row.tot_memory}} MiB
+                  </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
             <el-radio label="Random" size="large" border>Random</el-radio>
           </el-radio-group>
         </div>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: center">
-        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
-        <el-button v-if="finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
+<!--        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>-->
+        <!--        原来的OnlinePruning-->
+        <el-button v-if="finetune==='False'" size="large" type="warning" plain @click="SubmitTask">Submit Prune-Only Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask">Submit Prune-Finetune Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -832,9 +893,10 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: center">
-        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>
-        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="OnlinePruning()">Online Prune</el-button>
-        <el-button v-else size="large" type="success" plain @click="SubmitTask()">Submit Task</el-button>
+<!--        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>-->
+<!--        原来的OnlinePruning-->
+        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="SubmitTask">Submit Prune-Only Task</el-button>
+        <el-button v-else size="large" type="success" plain @click="SubmitTask">Submit Prune-Finetune Task</el-button>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -857,7 +919,7 @@
 import { UploadFilled } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import {ElMessage, UploadInstance, UploadProps} from "element-plus";
-import {getCurrentInstance, ref, watch} from 'vue';
+import {getCurrentInstance, onBeforeUnmount, ref, watch} from 'vue';
 import axios from "axios";
 import {useStore} from "vuex";
 import request from "@/api";
@@ -911,7 +973,7 @@ const uploadType = ref('')
 
 const isPruned = ref(false)
 
-const isTest = ref(false)
+// const isTest = ref(false)
 
 
 const modelType = ref('')
@@ -1113,7 +1175,16 @@ watch(client155_form, (newValue, oldValue) => {
         let myChart = echarts.init(document.getElementById('gpuChart_'+i));
         myChart.setOption(optionList[i]);
       }
+    }, 200)  //要延迟200毫秒才能挂载
+  }
+});
 
+watch(client155_form, (newValue, oldValue) => {
+  if (newValue === 'Pie') {
+    // 执行 finetune 为 True 时的操作
+    console.log('设定为Pie，执行操作...');
+    setTimeout(() => {
+      //初始化图表
       for(let i=0; i<optionList.length; i++){
         let myChart2 = echarts.init(document.getElementById('gpuChart2_'+i));
         myChart2.setOption(optionList[i]);
@@ -1215,12 +1286,12 @@ function showDialog_intro_Constituent() {
 //       })
 // }
 
-
+//
 //OnlinePruning
 const SubmitTask = () => {
   let tempScript
   console.log("speedup.value:", speedup.value)
-  let flag = true
+  // let flag = true
   if(radio1.value!='sl'&&radio1.value!='wosl'){
     ElMessage.error("Choose whether to employ sparse learning!")
   }else if(criterion.value===''){
@@ -1234,6 +1305,8 @@ const SubmitTask = () => {
     // isNaN()函数用于判断给定的值是否是一个数字。Number.isInteger()函数用于检测给定的值是否是一个整数
   }else if(finetune.value==='True'&&(epoch.value===undefined||epoch.value===null|| isNaN(epoch.value) || !Number.isInteger(Number(epoch.value)))) {
     ElMessage.error("Input/Correct the number of epochs for finetuning!")
+  }else if(finetune.value==='True'&&(client.value==='')) {
+    ElMessage.error("Client is required for Prune-Finetune Task!")
   }else {
     let modelname = ''
     if (modelName.value === "ResNet56(tiny)") {
@@ -1266,6 +1339,11 @@ const SubmitTask = () => {
       sl = 'False'
     }
 
+    if(finetune.value==='False'){
+      epoch.value = '90'
+      client.value = 'NULL'
+    }
+
     if(dataset == 'imagenet'){
       if(modelname=='resnet50'){
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
@@ -1276,12 +1354,29 @@ const SubmitTask = () => {
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value+  " --client " + client.value
       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value + " --client " + client.value
-      }
+      }else if(modelname=='deit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(timm)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }else if(modelname=='vit_b_16(hf)'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+    }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
     }else if(dataset == 'coco'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
+      if(modelname == 'yolov7'){
+        if(finetune.value==='False'){
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --client " + client.value  + " --weights " + modelPath.value
+        }else{
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+        }
+      } else if(modelname == 'yolov8')
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      else if(modelname == 'yolov5')
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+    
+      // tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
     }
     // console.log("script.value: ", script.value)
     // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
@@ -1371,110 +1466,91 @@ const SubmitTask = () => {
 
     // 客户端的心跳包需要表面自己的身份（哪个服务器，是否有任务在训练，服务器端口固定50016）
 
-    const intervalHistory = setInterval(() => {
-      if (flag) {
-        console.log("flag:", flag)
-        let taskType = ''
-        if(dataset == 'coco'){
-          if (finetune.value === 'False') {
-            taskType = 'Directly Pruned'
-          }else if (finetune.value === 'True') {
-            taskType = 'Pruned --> Fine-tuned'
-          }
-        }else{
-          if (radio1.value === 'wosl' && finetune.value === 'False') {
-            taskType = 'Directly Pruned'
-          } else if (radio1.value === 'sl' && finetune.value === 'False') {
-            taskType = 'Sparse learning --> Pruned'
-          } else if (radio1.value === 'wosl' && finetune.value === 'True') {
-            taskType = 'Pruned --> Fine-tuned'
-          } else if (radio1.value === 'sl' && finetune.value === 'True') {
-            taskType = 'Sparse learning --> Pruned --> Fine-tuned'
-          }
-        }
 
-        success = 'Waiting'
+      let taskType = ''
 
-        let temp1 = {
-          username: store.state.username + " " + epoch.value,
-          modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
-          tasktype: taskType,
-          checkpointpath: modelPath.value,
-          status: success,
-          paramschange: 'Params: N/A',
-          flopschange: 'FLOPs: N/A',
-          accchange: 'Acc: N/A',
-          losschange: 'Val Loss: N/A',
-          prunedpath: 'N/A',
-          structurebeforepruned: structureBeforePruned.value,
-          structureafterpruned: 'N/A',
-          logpath: 'N/A',
-          script: tempScript,
-          client: client.value
-        };
+      if (finetune.value === 'False') {
+          taskType = 'Directly Pruned'
+      }else if (finetune.value === 'True') {
+        taskType = 'Pruned --> Fine-tuned'
+      }
 
+      // if(dataset == 'coco'){
+      //   if (finetune.value === 'False') {
+      //     taskType = 'Directly Pruned'
+      //   }else if (finetune.value === 'True') {
+      //     taskType = 'Pruned --> Fine-tuned'
+      //   }
+      // }else{
+      //   if (radio1.value === 'wosl' && finetune.value === 'False') {
+      //     taskType = 'Directly Pruned'
+      //   } else if (radio1.value === 'sl' && finetune.value === 'False') {
+      //     taskType = 'Sparse learning --> Pruned'
+      //   } else if (radio1.value === 'wosl' && finetune.value === 'True') {
+      //     taskType = 'Pruned --> Fine-tuned'
+      //   } else if (radio1.value === 'sl' && finetune.value === 'True') {
+      //     taskType = 'Sparse learning --> Pruned --> Fine-tuned'
+      //   }
+      // }
 
-        console.log("history record:", temp1)
-
-        axios.post(`/user/SubmitTrainingHistory`, temp1)
-            .then((response) => {
-              // console.log("temp1: ", temp1)
-              if (response.status === 200) {
-                if (success === 'Waiting') {
-                  ElMessage({
-                    showClose: true,
-                    message: 'Pruning task has been submitted and recorded in history.',
-                    type: 'success',
-                    duration: 6000
-                  })
-                }
-                // else {
-                //   ElMessage({
-                //     showClose: true,
-                //     message: 'Sorry, pruning task failed and has been recorded in history. You can find more information from the log.',
-                //     type: 'error',
-                //     duration: 6000
-                //   })
-                // }
-              }
-            })
-            .catch((errors) => {
+      success = 'Waiting'
+      let temp1 = {
+        username: store.state.username + " " + epoch.value,
+        modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+        tasktype: taskType,
+        checkpointpath: modelPath.value,
+        status: success,
+        paramschange: 'Params: N/A',
+        flopschange: 'FLOPs: N/A',
+        accchange: 'Acc: N/A',
+        losschange: 'Val Loss: N/A',
+        prunedpath: 'N/A',
+        structurebeforepruned: structureBeforePruned.value,
+        structureafterpruned: 'N/A',
+        logpath: 'N/A',
+        script: tempScript,
+        client: client.value
+      };
+      console.log("history record:", temp1)
+      axios.post(`/user/SubmitTrainingHistory`, temp1)
+          .then((response) => {
+            // console.log("temp1: ", temp1)
+            if (response.status === 200) {
               if (success === 'Waiting') {
                 ElMessage({
                   showClose: true,
-                  message: 'Sorry, pruning task has not been recorded in history.',
-                  type: 'error',
+                  message: 'Pruning task has been submitted.',
+                  type: 'success',
                   duration: 6000
                 })
               }
-              // else {
-              //   ElMessage({
-              //     showClose: true,
-              //     message: 'Pruning task has been completed, but something went worng with the server so that it has not been recorded in history. You can find more information from the log.',
-              //     type: 'error',
-              //     duration: 6000
-              //   })
-              // }
-              console.log('error', errors)
-            })
-        flag = false
+            }
+          })
+          .catch((errors) => {
+            if (success === 'Waiting') {
+              ElMessage({
+                showClose: true,
+                message: 'Sorry, task submission has failed.',
+                type: 'error',
+                duration: 6000
+              })
+            }
+            console.log('error', errors)
+          })
+      resultLoading2.value = false
+      PrunedialogVisible.value = false
+      PruneCOCOdialogVisible.value = false
+      ImageNetPrunedialogVisible.value = false
 
 
-        resultLoading2.value = false
-        PrunedialogVisible.value = false
-        PruneCOCOdialogVisible.value = false
-        ImageNetPrunedialogVisible.value = false
-
-      }
-    }, 2000)
   }
 }
 
 //OnlinePruning
-const updateTree =  () => {
+const updateTree =  async () => {
   // resultLoading.value = true
-  jumpOut.value = false
-  isTest.value = false
+  // jumpOut.value = false
+  // isTest.value = false
   let modelname = ''
   if (modelName.value === "ResNet56(tiny)") {
     modelname = "resnet56"
@@ -1522,9 +1598,9 @@ const updateTree =  () => {
   }else if(dataset == 'cifar10' || dataset == 'cifar100'){
     tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode test_prune --model " + modelname + " --batch-size 128 --restore " + ckpt.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method group_norm --speed-up 2.1 --global-pruning --reg 5e-4 --sl False --finetune False"
   }else if(dataset == 'coco'){
-    
-    if(modelname == 'yolov7')
-    tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False --weights " + ckpt.value
+    if(modelname == 'yolov7'){
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False --weights " + ckpt.value
+    }
     else if(modelname == 'yolov8')
     {
       console.log("modelname is",modelname)
@@ -1555,7 +1631,6 @@ const updateTree =  () => {
   }else if(usrModelName.value===''){
     ElMessage.error('Please give your model a name')
   }else{
-
     let temp1 = {
       username: store.state.username,
       name: modelName.value,
@@ -1565,7 +1640,7 @@ const updateTree =  () => {
       morfPath: ckpt.value,
       lerfPath: usrModelName.value,
       pythonPath: tempScript,
-      email: "",
+      email: structureBeforePruned.value,
       info: "",
     };
     console.log("temp1: ", temp1)
@@ -1574,43 +1649,27 @@ const updateTree =  () => {
 
     ElMessage({
       showClose: true,
-      message: 'We are analyzing the model you\'ve submitted and conducting pruning test.',
+      message: 'We will analyze the model you\'ve submitted and conducting pruning test.',
       type: 'warning',
-      duration: 10000
+      duration: 5000
     })
-    request.post(`/user/updateJsonTree`, temp1)
+    await request.post(`/user/updateJsonTree`, temp1)
         .then((response) => {
-          jumpOut.value = true
+          // jumpOut.value = true
           // console.log("temp1: ", temp1)
           console.log("updateJsonTree response:", response)
           resultLoading.value = false
           if (response.status === 200){
-            if(response.data.data.succeed===true){
-              isTest.value = true
-              ElMessage({
-                showClose: true,
-                message: 'Test passed, and model added successfully! You can reload the window to see your model.',
-                type: 'success',
-                duration: 10000
-              })
-              // ElMessage.success('Test passed, and model added successfully!')
-              UploadVisible.value = false
-              // dialogVisible2.value = false
-              // window.location.reload();
-            }else{
-              ElMessage({
-                showClose: true,
-                message: 'Test failed. Please ensure the model format is correct and provide the correct path.',
-                type: 'error',
-                duration: 10000
-              })
-
-              // ElMessage.error('Test failed. Please ensure the model format is correct and provide the correct path.')
-            }
+            ElMessage({
+              showClose: true,
+              message: 'Task submitted!',
+              type: 'success',
+              duration: 10000
+            })
           }else{
             ElMessage({
               showClose: true,
-              message: 'Test failed. Please ensure the model format is correct and provide the correct path.',
+              message: 'Task submission failed!',
               type: 'error',
               duration: 10000
             })
@@ -1624,54 +1683,56 @@ const updateTree =  () => {
           console.log('error', errors)
         })
 
+    UploadVisible.value = false
 
 
 
 
-    console.log("dataset: ", dataset)
-    //获取进度条
-    let processTimeout = 0;
-    const intervalId = setInterval(() => {
-      if(jumpOut.value){
-        clearInterval(intervalId)
-      }
-      request.post('/user/getProcess', {
-        batchSize: 10086,
-        dataset: dataset
-      })
-          .then((response) => {
-            let process, total, prunnerGot;
-            process = parseInt(response.data.data.process);
-            total = parseInt(response.data.data.total);
-            prunnerGot = response.data.data.prunner
-            if (process > 0) {
-              resultLoading.value = false
-              dialogVisible2.value = true
-              // resultLoading2.value = false
-              // resultLoading4.value = true
-              // dialogVisible_adjust_result.value = true
-              // resultLoading3.value = false
-              // resultLoading4.value = true
-            }
-            // detectSettingLoading.value=false;
-            // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
-            percentage2.value = (1.0 * process / total * 100).toFixed(1)
-            console.log("prunnerGot:", prunnerGot)
-            console.log("process:", process)
-            console.log("total:", total)
-            console.log("percentage2.value:", percentage2.value)
-            if (process == total)
-              clearInterval(intervalId)
-          })
-          .catch((error) => {
-            processTimeout += 1;
-            if (processTimeout > 10) {
-              ElMessage.error('服务器出错，请稍后再试');
-              clearInterval(intervalId)
-            }
-            console.error(error)
-          })
-    }, 2000)
+
+    // console.log("dataset: ", dataset)
+    // //获取进度条
+    // let processTimeout = 0;
+    // const intervalId = setInterval(() => {
+    //   if(jumpOut.value){
+    //     clearInterval(intervalId)
+    //   }
+    //   request.post('/user/getProcess', {
+    //     batchSize: 10086,
+    //     dataset: dataset
+    //   })
+    //       .then((response) => {
+    //         let process, total, prunnerGot;
+    //         process = parseInt(response.data.data.process);
+    //         total = parseInt(response.data.data.total);
+    //         prunnerGot = response.data.data.prunner
+    //         if (process > 0) {
+    //           resultLoading.value = false
+    //           dialogVisible2.value = true
+    //           // resultLoading2.value = false
+    //           // resultLoading4.value = true
+    //           // dialogVisible_adjust_result.value = true
+    //           // resultLoading3.value = false
+    //           // resultLoading4.value = true
+    //         }
+    //         // detectSettingLoading.value=false;
+    //         // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
+    //         percentage2.value = (1.0 * process / total * 100).toFixed(1)
+    //         console.log("prunnerGot:", prunnerGot)
+    //         console.log("process:", process)
+    //         console.log("total:", total)
+    //         console.log("percentage2.value:", percentage2.value)
+    //         if (process == total)
+    //           clearInterval(intervalId)
+    //       })
+    //       .catch((error) => {
+    //         processTimeout += 1;
+    //         if (processTimeout > 10) {
+    //           ElMessage.error('服务器出错，请稍后再试');
+    //           clearInterval(intervalId)
+    //         }
+    //         console.error(error)
+    //       })
+    // }, 2000)
 
 
 
@@ -1681,414 +1742,416 @@ const updateTree =  () => {
 
 }
 
-//不需要判断sl和finetune
-const OnlinePruning = () => {
-  isPruned.value = false
-  console.log("speedup.value:", speedup.value)
-  let flag = false
-  if(radio1.value!='sl'&&radio1.value!='wosl'){
-    ElMessage.error("Choose whether to employ sparse learning!")
-  }else if(criterion.value===''){
-    ElMessage.error("Select the pruner!")
-  }else if(batchsize.value===0){
-    ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
-  }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
-    ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
-  }else if(finetune.value===''){
-    ElMessage.error("Choose whether to fine-tune!")
-  }else {
-    let modelname = ''
-    if (modelName.value === "ResNet56(tiny)") {
-      modelname = "resnet56"
-    } else if (modelName.value === "SE-ResNet20") {
-      modelname = "se_resnet20"
-    } else {
-      modelname = modelName.value
-    }
-    modelname = modelname.toLowerCase()
-    let dataroot
-    let dataset
-    let sl
-    if (modelDataset.value === 'CIFAR10 (Classification)') {
-      dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
-      dataset = 'cifar10'
-    } else if (modelDataset.value === 'CIFAR100 (Classification)') {
-      dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
-      dataset = 'cifar100'
-    }else if(modelDataset.value==='ImageNet (Classification)'){
-      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
-      dataset = 'imagenet'
-    }else if(modelDataset.value==='COCO (Detection)'){
-      dataroot = ''
-      dataset = 'coco'
-    }
-    if(radio1.value==="sl"){
-      sl = 'True'
-    }else if(radio1.value==="wosl"){
-      sl = 'False'
-    }
-    let tempScript
-    if(dataset == 'imagenet'){
-      if(modelname=='resnet50'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
-      }else if(modelname=='densenet121'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
-      }else if(modelname=='mobilenetv2'){
-        modelname = 'mobilenet_v2'
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }else if(modelname=='deit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
-    }else if(modelname=='vit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
-    }else if(modelname=='vit_b_16(hf)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
-    }
-
-    }else if(dataset == 'cifar10' || dataset == 'cifar100'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
-    }else if(dataset == 'coco'){
-      if(modelname == 'yolov7')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-      else if(modelname == 'yolov8')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-      else if(modelname == 'yolov5')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-    }
-    
-    // console.log("script.value: ", script.value)
-    // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
 
 
-
-    console.log("tempScript: ", tempScript)
-    resultLoading2.value = true
-    let success = ''
-    resultShow_tree_result.value = false
-    flag_prune_done.value = false
-    request.post('/algorithm/callPruneAlgorithm', {
-      algorithmName: 'cifarAlgorithm',
-      datasetId: batchsize.value,
-      datasetName: dataset,
-      modelName: tempScript,
-      userName: tempScript,
-    }).then((response) => {
-      console.log("prune response.data", response.data)
-      let arr = response.data.data.result
-      flag = true
-      isPruned.value = true
-      logPath.value = arr[0]
-      console.log("logPath:", logPath.value)
-      // percentage.value = 100
-      // 取出最后7行
-      let lastFourRows = arr.slice(-7);
-
-      success = lastFourRows[6]
-
-      console.log("success:", success)
-
-
-      if (success === 'Success') {
-        paramsChange.value = lastFourRows[0]
-        FLOPsChange.value = lastFourRows[1]
-        AccChange.value = lastFourRows[2]
-        LossChange.value = lastFourRows[3]
-        PrunedPath.value = lastFourRows[4]
-        structureAfterPruned.value = lastFourRows[5]
-        // logPath.value = lastFourRows[6]
-        // ElMessage.success('Task completed successfully!')
-      } else {
-        paramsChange.value = 'Params: N/A'
-        FLOPsChange.value = 'FLOPs: N/A'
-        if(dataset == 'coco'){
-          AccChange.value = 'mAp: N/A'
-        }else{
-          AccChange.value = 'Acc: N/A'
-        }
-        LossChange.value = 'Val Loss: N/A'
-        PrunedPath.value = 'N/A'
-        structureAfterPruned.value = 'N/A'
-        // logPath.value = 'N/A'
-        // ElMessage.error('Task failed!')
-      }
-      console.log("paramsChange.value", paramsChange.value)
-      console.log("FLOPsChange.value", FLOPsChange.value)
-      console.log("AccChange.value", AccChange.value)
-      console.log("LossChange.value", LossChange.value)
-      console.log("PrunedPath.value", PrunedPath.value)
-      console.log("success:", success)
-      resultShow_tree_result.value = true
-      resultLoading4.value = false
-      flag_prune_done.value = true
-      // dialogVisible.value = true
-    })
-        .catch((error) => {
-          console.error(error)
-        })
-
-
-    //获取进度条
-    let processTimeout = 0;
-    const intervalId = setInterval(() => {
-      request.post('/algorithm/getProcess', {
-        batchSize: batchsize.value,
-        dataset: dataset
-      })
-          .then((response) => {
-            let process, total, prunnerGot;
-            process = parseInt(response.data.data.process);
-            total = parseInt(response.data.data.total);
-            prunnerGot = response.data.data.prunner
-            if (process > 0 && !flag_prune_done.value) {
-              dialogVisible.value = true
-              resultLoading2.value = false
-              resultLoading4.value = true
-              // dialogVisible_adjust_result.value = true
-              // resultLoading3.value = false
-              // resultLoading4.value = true
-            }
-            // detectSettingLoading.value=false;
-            // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
-            percentage.value = (1.0 * process / total * 100).toFixed(1)
-            console.log("prunnerGot:", prunnerGot)
-            console.log("process:", process)
-            console.log("total:", total)
-            console.log("percentage.value:", percentage.value)
-            if (process == total)
-              clearInterval(intervalId)
-          })
-          .catch((error) => {
-            processTimeout += 1;
-            if (processTimeout > 10) {
-              ElMessage.error('服务器出错，请稍后再试');
-              clearInterval(intervalId)
-            }
-            console.error(error)
-          })
-    }, 2000)
-
-    const intervalHistory = setInterval(() => {
-      if (flag) {
-        console.log("flag:", flag)
-        let taskType = ''
-        if(dataset == 'coco'){
-          if (finetune.value === 'False') {
-            taskType = 'Directly Pruned'
-          }else if (finetune.value === 'True') {
-            taskType = 'Pruned --> Fine-tuned'
-          }
-        }else{
-          if (radio1.value === 'wosl' && finetune.value === 'False') {
-            taskType = 'Directly Pruned'
-          } else if (radio1.value === 'sl' && finetune.value === 'False') {
-            taskType = 'Sparse learning --> Pruned'
-          } else if (radio1.value === 'wosl' && finetune.value === 'True') {
-            taskType = 'Pruned --> Fine-tuned'
-          } else if (radio1.value === 'sl' && finetune.value === 'True') {
-            taskType = 'Sparse learning --> Pruned --> Fine-tuned'
-          }
-        }
-
-
-        if (success === 'Success') {
-          success = 'Pruned(completed)'
-        } else {
-          success = 'Failed'
-        }
-
-        // paramsChange.value = lastFourRows[0]
-        // FLOPsChange.value = lastFourRows[1]
-        // AccChange.value = lastFourRows[2]
-        // LossChange.value = lastFourRows[3]
-        // PrunedPath.value = lastFourRows[4]
-        let temp1
-        if (success === 'Pruned(completed)') {
-          temp1 = {
-            username: store.state.username,
-            modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
-            tasktype: taskType,
-            checkpointpath: modelPath.value,
-            status: success,
-            paramschange: paramsChange.value,
-            flopschange: FLOPsChange.value,
-            accchange: AccChange.value,
-            losschange: LossChange.value,
-            prunedpath: PrunedPath.value,
-            structurebeforepruned: structureBeforePruned.value,
-            structureafterpruned: structureAfterPruned.value,
-            logpath: logPath.value
-          };
-        } else {
-          temp1 = {
-            username: store.state.username,
-            modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
-            tasktype: taskType,
-            checkpointpath: modelPath.value,
-            status: success,
-            paramschange: 'Params: N/A',
-            flopschange: 'FLOPs: N/A',
-            accchange: 'Acc: N/A',
-            losschange: 'Val Loss: N/A',
-            prunedpath: 'N/A',
-            structurebeforepruned: structureBeforePruned.value,
-            structureafterpruned: 'N/A',
-            logpath: logPath.value
-          };
-        }
-
-        // paramsChange.value = 'Params: N/A'
-        // FLOPsChange.value = 'FLOPs: N/A'
-        // AccChange.value = 'Acc: N/A'
-        // LossChange.value = 'Val Loss: N/A'
-        // PrunedPath.value = 'N/A'
-        // structureAfterPruned.value = 'N/A'
-
-
-        console.log("history record:", temp1)
-
-        axios.post(`/user/SubmitHistory`, temp1)
-            .then((response) => {
-              // console.log("temp1: ", temp1)
-              if (response.status === 200) {
-                if (success === 'Pruned(completed)') {
-                  ElMessage({
-                    showClose: true,
-                    message: 'Pruning task has been completed and recorded in history. You can find more information from the log.',
-                    type: 'success',
-                    duration: 6000
-                  })
-                } else {
-                  ElMessage({
-                    showClose: true,
-                    message: 'Sorry, pruning task failed and has been recorded in history. You can find more information from the log.',
-                    type: 'error',
-                    duration: 6000
-                  })
-                }
-              }
-            })
-            .catch((errors) => {
-              if (success === 'Pruned(completed)') {
-                ElMessage({
-                  showClose: true,
-                  message: 'Sorry, pruning task failed and has not been recorded in history. You can find more information from the log.',
-                  type: 'error',
-                  duration: 6000
-                })
-              } else {
-                ElMessage({
-                  showClose: true,
-                  message: 'Pruning task has been completed, but something went worng with the server so that it has not been recorded in history. You can find more information from the log.',
-                  type: 'error',
-                  duration: 6000
-                })
-              }
-              console.log('error', errors)
-            })
-        flag = false
-        // resultLoading2.value = false
-      }
-    }, 2000)
-  }
-}
-
-
-// OnlinePruning
-const GenerateScript = () => {
-  console.log("speedup.value:", speedup.value)
-  if(radio1.value!='sl'&&radio1.value!='wosl'){
-    ElMessage.error("Choose whether to employ sparse learning!")
-  }else if(criterion.value===''){
-    ElMessage.error("Select the pruner!")
-  }else if(batchsize.value===0){
-    ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
-  }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
-    ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
-  }else if(finetune.value===''){
-    ElMessage.error("Choose whether to fine-tune!")
-  }else if(finetune.value==='True'&&(epoch.value===undefined||epoch.value===null|| isNaN(epoch.value) || !Number.isInteger(Number(epoch.value)))) {
-    ElMessage.error("Input/Correct the number of epochs for finetuning!")
-  }else{
-    let modelname = ''
-    if(modelName.value==="ResNet56(tiny)"){
-      modelname = "resnet56"
-    }else if(modelName.value==="SE-ResNet"){
-      modelname = "se_resnet20"
-    }else{
-      modelname = modelName.value
-    }
-    modelname = modelname.toLowerCase()
-    let dataroot
-    let dataset
-    let sl
-    if(modelDataset.value==='CIFAR10 (Classification)'){
-      dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
-      dataset = 'cifar10'
-    }else if(modelDataset.value==='CIFAR100 (Classification)'){
-      dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
-      dataset = 'cifar100'
-    }else if(modelDataset.value==='ImageNet (Classification)'){
-      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
-      dataset = 'imagenet'
-    }else if(modelDataset.value==='COCO (Detection)'){
-      dataroot = ''
-      dataset = 'coco'
-    }
-    if(radio1.value==="sl"){
-      sl = 'True'
-    }else if(radio1.value==="wosl"){
-      sl = 'False'
-    }
-    if(dataset == 'imagenet'){
-      if(modelname=='resnet50'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
-      }else if(modelname=='densenet121'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
-      }else if(modelname=='mobilenetv2'){
-        modelname = 'mobilenet_v2'
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
-        script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
-      }else if(modelname=='deit_b_16(timm)'){
-        script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
-    }else if(modelname=='vit_b_16(timm)'){
-      script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
-    }else if(modelname=='vit_b_16(hf)'){
-      script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
-    }
-
-
-      if(finetune.value==='True'){
-        script.value += " --epoch " + epoch.value
-      }
-
-    }else if(dataset == 'cifar10' || dataset == 'cifar100'){
-      script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
-      if(finetune.value==='True'){
-        script.value += " --epoch " + epoch.value
-      }
-
-    }else if(dataset == 'coco'){
-      console.log("???")
-      if(finetune.value==='True'){
-        script.value += " --epoch " + epoch.value
-      }
-      if(modelname == 'yolov7')
-      script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-      else if(modelname == 'yolov8')
-      script.value = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-      else if(modelname == 'yolov5')
-      script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
-    }
-    
-    
-    console.log("script.value: ", script.value)
-    scriptVisible.value = true;
-  }
+// 不再需要了
+// const OnlinePruning = () => {
+//   isPruned.value = false  //可能改
+//   console.log("speedup.value:", speedup.value)
+//   let flag = false
+//   if(radio1.value!='sl'&&radio1.value!='wosl'){
+//     ElMessage.error("Choose whether to employ sparse learning!")
+//   }else if(criterion.value===''){
+//     ElMessage.error("Select the pruner!")
+//   }else if(batchsize.value===0){
+//     ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
+//   }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
+//     ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
+//   }else if(finetune.value===''){
+//     ElMessage.error("Choose whether to fine-tune!")
+//   }else {
+//     let modelname = ''
+//     if (modelName.value === "ResNet56(tiny)") {
+//       modelname = "resnet56"
+//     } else if (modelName.value === "SE-ResNet20") {
+//       modelname = "se_resnet20"
+//     } else {
+//       modelname = modelName.value
+//     }
+//     modelname = modelname.toLowerCase()
+//     let dataroot
+//     let dataset
+//     let sl
+//     if (modelDataset.value === 'CIFAR10 (Classification)') {
+//       dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
+//       dataset = 'cifar10'
+//     } else if (modelDataset.value === 'CIFAR100 (Classification)') {
+//       dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
+//       dataset = 'cifar100'
+//     }else if(modelDataset.value==='ImageNet (Classification)'){
+//       dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+//       dataset = 'imagenet'
+//     }else if(modelDataset.value==='COCO (Detection)'){
+//       dataroot = ''
+//       dataset = 'coco'
+//     }
+//     if(radio1.value==="sl"){
+//       sl = 'True'
+//     }else if(radio1.value==="wosl"){
+//       sl = 'False'
+//     }
+//     let tempScript
+//     if(dataset == 'imagenet'){
+//       if(modelname=='resnet50'){
+//         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
+//       }else if(modelname=='densenet121'){
+//         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
+//       }else if(modelname=='mobilenetv2'){
+//         modelname = 'mobilenet_v2'
+//         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+//       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+//         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs 90 --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+//       }else if(modelname=='deit_b_16(timm)'){
+//       tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+//     }else if(modelname=='vit_b_16(timm)'){
+//       tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+//     }else if(modelname=='vit_b_16(hf)'){
+//       tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+//     }
+//
+//     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+//       tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+//     }else if(dataset == 'coco'){
+//       if(modelname == 'yolov7')
+//       tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//       else if(modelname == 'yolov8')
+//       tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//       else if(modelname == 'yolov5')
+//       tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//     }
+//
+//     // console.log("script.value: ", script.value)
+//     // tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model " + modelname + " --batch-size " + batchsize.value + " --restore " + modelPath.value + " --dataroot " + dataroot + " --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset " + dataset + "  --method " + criterion.value + " --speed-up " + speedup.value + " --global-pruning --reg 5e-4 --sl " + sl + " --finetune " + finetune.value
+//
+//
+//
+//     console.log("tempScript: ", tempScript)
+//     resultLoading2.value = true
+//     let success = ''
+//     resultShow_tree_result.value = false
+//     flag_prune_done.value = false
+//     request.post('/algorithm/callPruneAlgorithm', {
+//       algorithmName: 'cifarAlgorithm',
+//       datasetId: batchsize.value,
+//       datasetName: dataset,
+//       modelName: tempScript,
+//       userName: tempScript,
+//     }).then((response) => {
+//       console.log("prune response.data", response.data)
+//       let arr = response.data.data.result
+//       flag = true
+//       isPruned.value = true
+//       logPath.value = arr[0]
+//       console.log("logPath:", logPath.value)
+//       // percentage.value = 100
+//       // 取出最后7行
+//       let lastFourRows = arr.slice(-7);
+//
+//       success = lastFourRows[6]
+//
+//       console.log("success:", success)
+//
+//
+//       if (success === 'Success') {
+//         paramsChange.value = lastFourRows[0]
+//         FLOPsChange.value = lastFourRows[1]
+//         AccChange.value = lastFourRows[2]
+//         LossChange.value = lastFourRows[3]
+//         PrunedPath.value = lastFourRows[4]
+//         structureAfterPruned.value = lastFourRows[5]
+//         // logPath.value = lastFourRows[6]
+//         // ElMessage.success('Task completed successfully!')
+//       } else {
+//         paramsChange.value = 'Params: N/A'
+//         FLOPsChange.value = 'FLOPs: N/A'
+//         if(dataset == 'coco'){
+//           AccChange.value = 'mAp: N/A'
+//         }else{
+//           AccChange.value = 'Acc: N/A'
+//         }
+//         LossChange.value = 'Val Loss: N/A'
+//         PrunedPath.value = 'N/A'
+//         structureAfterPruned.value = 'N/A'
+//         // logPath.value = 'N/A'
+//         // ElMessage.error('Task failed!')
+//       }
+//       console.log("paramsChange.value", paramsChange.value)
+//       console.log("FLOPsChange.value", FLOPsChange.value)
+//       console.log("AccChange.value", AccChange.value)
+//       console.log("LossChange.value", LossChange.value)
+//       console.log("PrunedPath.value", PrunedPath.value)
+//       console.log("success:", success)
+//       resultShow_tree_result.value = true
+//       resultLoading4.value = false
+//       flag_prune_done.value = true
+//       // dialogVisible.value = true
+//     })
+//         .catch((error) => {
+//           console.error(error)
+//         })
+//
+//
+//     //获取进度条
+//     let processTimeout = 0;
+//     const intervalId = setInterval(() => {
+//       request.post('/algorithm/getProcess', {
+//         batchSize: batchsize.value,
+//         dataset: dataset
+//       })
+//           .then((response) => {
+//             let process, total, prunnerGot;
+//             process = parseInt(response.data.data.process);
+//             total = parseInt(response.data.data.total);
+//             prunnerGot = response.data.data.prunner
+//             if (process > 0 && !flag_prune_done.value) {
+//               dialogVisible.value = true
+//               resultLoading2.value = false
+//               resultLoading4.value = true
+//               // dialogVisible_adjust_result.value = true
+//               // resultLoading3.value = false
+//               // resultLoading4.value = true
+//             }
+//             // detectSettingLoading.value=false;
+//             // percentage.value = (1.0 * process / total * 100).toFixed(1).toString()
+//             percentage.value = (1.0 * process / total * 100).toFixed(1)
+//             console.log("prunnerGot:", prunnerGot)
+//             console.log("process:", process)
+//             console.log("total:", total)
+//             console.log("percentage.value:", percentage.value)
+//             if (process == total)
+//               clearInterval(intervalId)
+//           })
+//           .catch((error) => {
+//             processTimeout += 1;
+//             if (processTimeout > 10) {
+//               ElMessage.error('服务器出错，请稍后再试');
+//               clearInterval(intervalId)
+//             }
+//             console.error(error)
+//           })
+//     }, 2000)
+//
+//     const intervalHistory = setInterval(() => {
+//       if (flag) {
+//         console.log("flag:", flag)
+//         let taskType = ''
+//         if(dataset == 'coco'){
+//           if (finetune.value === 'False') {
+//             taskType = 'Directly Pruned'
+//           }else if (finetune.value === 'True') {
+//             taskType = 'Pruned --> Fine-tuned'
+//           }
+//         }else{
+//           if (radio1.value === 'wosl' && finetune.value === 'False') {
+//             taskType = 'Directly Pruned'
+//           } else if (radio1.value === 'sl' && finetune.value === 'False') {
+//             taskType = 'Sparse learning --> Pruned'
+//           } else if (radio1.value === 'wosl' && finetune.value === 'True') {
+//             taskType = 'Pruned --> Fine-tuned'
+//           } else if (radio1.value === 'sl' && finetune.value === 'True') {
+//             taskType = 'Sparse learning --> Pruned --> Fine-tuned'
+//           }
+//         }
+//
+//
+//         if (success === 'Success') {
+//           success = 'Pruned(completed)'
+//         } else {
+//           success = 'Failed'
+//         }
+//
+//         // paramsChange.value = lastFourRows[0]
+//         // FLOPsChange.value = lastFourRows[1]
+//         // AccChange.value = lastFourRows[2]
+//         // LossChange.value = lastFourRows[3]
+//         // PrunedPath.value = lastFourRows[4]
+//         let temp1
+//         if (success === 'Pruned(completed)') {
+//           temp1 = {
+//             username: store.state.username,
+//             modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+//             tasktype: taskType,
+//             checkpointpath: modelPath.value,
+//             status: success,
+//             paramschange: paramsChange.value,
+//             flopschange: FLOPsChange.value,
+//             accchange: AccChange.value,
+//             losschange: LossChange.value,
+//             prunedpath: PrunedPath.value,
+//             structurebeforepruned: structureBeforePruned.value,
+//             structureafterpruned: structureAfterPruned.value,
+//             logpath: logPath.value
+//           };
+//         } else {
+//           temp1 = {
+//             username: store.state.username,
+//             modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
+//             tasktype: taskType,
+//             checkpointpath: modelPath.value,
+//             status: success,
+//             paramschange: 'Params: N/A',
+//             flopschange: 'FLOPs: N/A',
+//             accchange: 'Acc: N/A',
+//             losschange: 'Val Loss: N/A',
+//             prunedpath: 'N/A',
+//             structurebeforepruned: structureBeforePruned.value,
+//             structureafterpruned: 'N/A',
+//             logpath: logPath.value
+//           };
+//         }
+//
+//         // paramsChange.value = 'Params: N/A'
+//         // FLOPsChange.value = 'FLOPs: N/A'
+//         // AccChange.value = 'Acc: N/A'
+//         // LossChange.value = 'Val Loss: N/A'
+//         // PrunedPath.value = 'N/A'
+//         // structureAfterPruned.value = 'N/A'
+//
+//
+//         console.log("history record:", temp1)
+//
+//         axios.post(`/user/SubmitHistory`, temp1)
+//             .then((response) => {
+//               // console.log("temp1: ", temp1)
+//               if (response.status === 200) {
+//                 if (success === 'Pruned(completed)') {
+//                   ElMessage({
+//                     showClose: true,
+//                     message: 'Pruning task has been completed and recorded in history. You can find more information from the log.',
+//                     type: 'success',
+//                     duration: 6000
+//                   })
+//                 } else {
+//                   ElMessage({
+//                     showClose: true,
+//                     message: 'Sorry, pruning task failed and has been recorded in history. You can find more information from the log.',
+//                     type: 'error',
+//                     duration: 6000
+//                   })
+//                 }
+//               }
+//             })
+//             .catch((errors) => {
+//               if (success === 'Pruned(completed)') {
+//                 ElMessage({
+//                   showClose: true,
+//                   message: 'Sorry, pruning task failed and has not been recorded in history. You can find more information from the log.',
+//                   type: 'error',
+//                   duration: 6000
+//                 })
+//               } else {
+//                 ElMessage({
+//                   showClose: true,
+//                   message: 'Pruning task has been completed, but something went worng with the server so that it has not been recorded in history. You can find more information from the log.',
+//                   type: 'error',
+//                   duration: 6000
+//                 })
+//               }
+//               console.log('error', errors)
+//             })
+//         flag = false
+//         // resultLoading2.value = false
+//       }
+//     }, 2000)
+//   }
+// }
 
 
-}
+// 不再需要了
+// const GenerateScript = () => {
+//   console.log("speedup.value:", speedup.value)
+//   if(radio1.value!='sl'&&radio1.value!='wosl'){
+//     ElMessage.error("Choose whether to employ sparse learning!")
+//   }else if(criterion.value===''){
+//     ElMessage.error("Select the pruner!")
+//   }else if(batchsize.value===0){
+//     ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
+//   }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
+//     ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
+//   }else if(finetune.value===''){
+//     ElMessage.error("Choose whether to fine-tune!")
+//   }else if(finetune.value==='True'&&(epoch.value===undefined||epoch.value===null|| isNaN(epoch.value) || !Number.isInteger(Number(epoch.value)))) {
+//     ElMessage.error("Input/Correct the number of epochs for finetuning!")
+//   }else{
+//     let modelname = ''
+//     if(modelName.value==="ResNet56(tiny)"){
+//       modelname = "resnet56"
+//     }else if(modelName.value==="SE-ResNet"){
+//       modelname = "se_resnet20"
+//     }else{
+//       modelname = modelName.value
+//     }
+//     modelname = modelname.toLowerCase()
+//     let dataroot
+//     let dataset
+//     let sl
+//     if(modelDataset.value==='CIFAR10 (Classification)'){
+//       dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
+//       dataset = 'cifar10'
+//     }else if(modelDataset.value==='CIFAR100 (Classification)'){
+//       dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
+//       dataset = 'cifar100'
+//     }else if(modelDataset.value==='ImageNet (Classification)'){
+//       dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+//       dataset = 'imagenet'
+//     }else if(modelDataset.value==='COCO (Detection)'){
+//       dataroot = ''
+//       dataset = 'coco'
+//     }
+//     if(radio1.value==="sl"){
+//       sl = 'True'
+//     }else if(radio1.value==="wosl"){
+//       sl = 'False'
+//     }
+//     if(dataset == 'imagenet'){
+//       if(modelname=='resnet50'){
+//         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value
+//       }else if(modelname=='densenet121'){
+//         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value
+//       }else if(modelname=='mobilenetv2'){
+//         modelname = 'mobilenet_v2'
+//         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+//       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+//         script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value
+//       }else if(modelname=='deit_b_16(timm)'){
+//         script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+//     }else if(modelname=='vit_b_16(timm)'){
+//       script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+//     }else if(modelname=='vit_b_16(hf)'){
+//       script.value = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --pruning_type "+criterion.value
+//     }
+//
+//
+//       if(finetune.value==='True'){
+//         script.value += " --epoch " + epoch.value
+//       }
+//
+//     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
+//       script.value = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value
+//       if(finetune.value==='True'){
+//         script.value += " --epoch " + epoch.value
+//       }
+//
+//     }else if(dataset == 'coco'){
+//       console.log("???")
+//       if(finetune.value==='True'){
+//         script.value += " --epoch " + epoch.value
+//       }
+//       if(modelname == 'yolov7')
+//       script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//       else if(modelname == 'yolov8')
+//       script.value = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//       else if(modelname == 'yolov5')
+//       script.value = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py  --conf 0.25 --img-size 640 --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+//     }
+//
+//
+//     console.log("script.value: ", script.value)
+//     scriptVisible.value = true;
+//   }
+//
+//
+// }
 
 // var svgGroup
 //以下直到onMounted的代码是把节点转移功能单独提出来
@@ -2963,19 +3026,18 @@ async function click(d) {
   console.log("click d: ", d)
   centerNode(d);
   if(d.type=='pretrained' || d.type=='usr'){
+    radio1.value = 'wosl'  //要不要sparse learing
+    criterion.value = ''  //重要性指标
+    batchsize.value = 0
+    client155_form.value = 'Bar'
+    speedup.value = ''
+    finetune.value = ''
+    epoch.value = null
+    client.value = ''
+    scriptVisible.value = false
     if(d.parent.parent.name=='CIFAR100' || d.parent.parent.name=='CIFAR10'){
-      radio1.value = 'wosl'  //要不要sparse learing
-      criterion.value = ''  //重要性指标
-      batchsize.value = 0
-      // client155_1_form.value = 'Bar'
-      // client155_2_form.value = 'Bar'
-      client155_form.value = 'Bar'
-      speedup.value = ''
-      finetune.value = ''
-      epoch.value = null
-      scriptVisible.value = false
       PrunedialogVisible.value = true
-      console.log("d.type", d.type)
+      // console.log("d.type", d.type)
       if(d.type==='pretrained'){
         modelType.value = "Publicly pretrained model"
         modelTypeSimple.value = "Pretrain"
@@ -3023,13 +3085,15 @@ async function click(d) {
 
       // ElMessage.success("选择了预训练模型！")
     }else if(d.parent.parent.name=='ImageNet'){
-        if(d.parent.name.includes('hf')){
-          INtype.value = 'hf';
-        }else if(d.parent.name.includes('timm')){
-          INtype.value = 'timm';
-        }else{
-          INtype.value = 'cnn';
-        }
+      ImageNetPrunedialogVisible.value = true
+      console.log("d.type", d.type)
+      if(d.parent.name.includes('hf')){
+        INtype.value = 'hf';
+      }else if(d.parent.name.includes('timm')){
+        INtype.value = 'timm';
+      }else{
+        INtype.value = 'cnn';
+      }
 
       if(d.model_name=='ImageNet_ResNet50_Pretrained' || d.model_name=='ImageNet_DenseNet121_Pretrained'){
         lr.value = 0.08
@@ -3038,14 +3102,13 @@ async function click(d) {
       }else if(d.model_name=='ImageNet_VGG19-BN_Pretrained' || d.model_name=='ImageNet_VGG16-BN_Pretrained'){
         lr.value = 0.01
       }
-      radio1.value = 'wosl'
-      criterion.value = ''
-      batchsize.value = 0
-      speedup.value = ''
-      finetune.value = ''
-      scriptVisible.value = false
-      ImageNetPrunedialogVisible.value = true
-      console.log("d.type", d.type)
+      // radio1.value = 'wosl'
+      // criterion.value = ''
+      // batchsize.value = 0
+      // speedup.value = ''
+      // finetune.value = ''
+      // scriptVisible.value = false
+
       if(d.type==='pretrained'){
         modelType.value = "Publicly pretrained model"
         modelTypeSimple.value = "Pretrain"
@@ -3077,12 +3140,12 @@ async function click(d) {
           d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
       console.log("structureBeforePruned", structureBeforePruned.value)
     }else if(d.parent.parent.name=='COCO'){
-      radio1.value = 'wosl'  //要不要sparse learing
-      criterion.value = ''  //重要性指标
-      batchsize.value = 0
-      speedup.value = ''
-      finetune.value = ''
-      scriptVisible.value = false
+      // radio1.value = 'wosl'  //要不要sparse learing
+      // criterion.value = ''  //重要性指标
+      // batchsize.value = 0
+      // speedup.value = ''
+      // finetune.value = ''
+      // scriptVisible.value = false
       PruneCOCOdialogVisible.value = true
       console.log("d.type", d.type)
       if(d.type==='pretrained'){
@@ -3195,6 +3258,8 @@ async function click(d) {
     usrModelName.value = ''
     console.log("d.parent.parent.name", d.parent.parent.name)
     if(d.parent.parent.name==="CIFAR10"||d.parent.parent.name==="CIFAR100"||d.parent.parent.name==="ImageNet"){
+      structureBeforePruned.value = '/nfs/lhl/Torch-Pruning/benchmarks/model_before_pruned/test/'+
+          d.parent.parent.name.toLowerCase()+'_'+d.parent.name.toLowerCase().replace('(tiny)','').replace('-','_')+'_'+'Pretrained.log'
       modelDataset.value = d.parent.parent.name + " (Classification)"
       modelDatasetSimple.value = d.parent.parent.name
     }else if(d.parent.parent.name==="COCO"){

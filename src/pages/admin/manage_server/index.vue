@@ -51,7 +51,7 @@
     <div class="mb-2 flex items-center text-sm">
       <el-radio-group v-model="type" class="ml-4" @change="resetForm">
         <el-radio label="QualitativeComparison" size="large">Published result</el-radio>
-        <el-radio label="QuantitativeLeaderBoard" size="large">Leaderboard</el-radio>
+        <el-radio label="QuantitativeLeaderBoard" size="large">DepGraph leaderboard</el-radio>
       </el-radio-group>
     </div>
 

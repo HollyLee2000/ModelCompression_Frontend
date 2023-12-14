@@ -94,10 +94,15 @@
         :expand-row-keys="expands"
         @expand-change="expandChange"
     >
-      <el-table-column min-width="70" fixed prop="username" label="user name" />
-      <el-table-column min-width="100" prop="modelName" label="model name" />
+      <el-table-column min-width="60" fixed prop="username" label="user name" />
+      <el-table-column min-width="120" prop="modelName" label="model name" />
+      <el-table-column min-width="60" label="algorithm">
+        <template #default="props">
+          <el-link :href="props.row.prunerLink" type="primary" target="_blank">{{props.row.pruner}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column min-width="100" prop="taskType" label="task type" />
-      <el-table-column min-width="100" prop="submitTime" label="submit time" />
+      <el-table-column min-width="80" prop="submitTime" label="submit time" />
       <el-table-column min-width="60" prop="client" label="client" />
       <el-table-column min-width="50" label="details" type="expand">
         <template #default="props">
@@ -154,7 +159,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="status" min-width="180">
+      <el-table-column label="status" min-width="130">
         <template #default="props">
           <div v-if="props.row.status==='Sparse Learning...'||props.row.status==='Pruned, Fine-tuning...'||props.row.status==='Waiting'">
             <el-text class="mx-1" type="warning" style="color: #C0C0C0; font-weight: bold">{{props.row.status}}</el-text>
@@ -162,13 +167,13 @@
           <div v-else-if="props.row.status==='Failed'">
             <el-text class="mx-1" type="danger" style="color: #AB140C; font-weight: bold">{{props.row.status}}</el-text>
           </div>
-          <div v-else-if="props.row.status==='Pruned(completed)'||props.row.status==='Fine-tuned(completed)'">
+          <div v-else-if="props.row.status==='Pruned(completed)'||props.row.status==='Fine-tuned(completed)'||props.row.status==='Uploaded(completed)'">
             <el-text class="mx-1" type="success" style="color: #67C23A; font-weight: bold">{{props.row.status}}</el-text>
           </div>
           <div v-else>
             <el-text class="mx-1" type="success" style="color: #FF8017; font-weight: bold">{{props.row.status}}</el-text>
           </div>
-          <el-progress v-if="props.row.taskType==='Pruned --> Fine-tuned'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.currentEpoch/props.row.totEpoch).toFixed(1)" :color="colors"  />
+          <el-progress :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*props.row.currentEpoch/props.row.totEpoch).toFixed(1)" :color="colors"  />
         </template>
       </el-table-column>
     </el-table>
