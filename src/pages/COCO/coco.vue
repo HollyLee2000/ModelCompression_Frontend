@@ -1355,11 +1355,23 @@ const SubmitTask = () => {
       }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
         tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value + " --client " + client.value
       }else if(modelname=='deit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+        if(finetune.value==='False'){
+          tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
+        }else{
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+        } 
     }else if(modelname=='vit_b_16(timm)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+      if(finetune.value==='False'){
+          tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
+        }else{
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+        } 
     }else if(modelname=='vit_b_16(hf)'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value
+      if(finetune.value==='False'){
+          tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
+        }else{
+          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+        } 
     }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
