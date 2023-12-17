@@ -849,12 +849,12 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">
+          <el-radio label=4 size="large" border>4</el-radio>
+          <el-radio label=8 size="large" border>8</el-radio>
+          <el-radio label=16 size="large" border>16</el-radio>
           <el-radio label=32 size="large" border>32</el-radio>
-          <el-radio label=64 size="large" border>64</el-radio>
-          <el-radio label=128 size="large" border>128</el-radio>
         </el-radio-group>
       </div>
-
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step4: Enter the minimum desired
@@ -870,7 +870,7 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
-          Online fine-tuning is currently not supported on this server.</label>
+          Fine-tuning the Vit models requires extremely long training time.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -881,12 +881,72 @@
 
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="client">
-            <el-radio label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
-            <el-radio label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+          <el-input
+              v-model="epoch"
+              placeholder="Please input"
+              style="margin-left: 50px; border: 0; color: black; width: 8%"
+          />
+        </div>
+
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+        </div>
+        <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
+          <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
+            <el-radio label="Bar" size="large">Bar charts</el-radio>
+            <el-radio label="Pie" size="large">Pie charts</el-radio>
+          </el-radio-group>
+          <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">
+            <div style="display: flex; flex-direction: column; width: 40%">
+              <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                  <template #default="props">
+                    {{props.row.tot_memory}} MiB
+                  </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 40%">
+              <!--              <el-radio-group style="border: 0; color: black;" v-model="client155_2_form">-->
+              <!--                <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+              <!--                <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+              <!--              </el-radio-group>-->
+              <el-radio style="width:33%" label="vipa155_client2" size="large" border>vipa155_client2</el-radio>
+              <el-table
+                  :data="gpuInfos"
+                  style="width: 90%"
+                  :border="false"
+              >
+                <el-table-column min-width="80" fixed prop="name" label="GPU" />
+                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">
+                  <template #default="props">
+                    {{props.row.tot_memory}} MiB
+                  </template>
+                </el-table-column>
+                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">
+                  <template #default="props">
+                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />
+                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
             <el-radio label="Random" size="large" border>Random</el-radio>
           </el-radio-group>
         </div>
@@ -894,8 +954,8 @@
 
       <div style="margin: 0 0 20px 0; text-align: center">
 <!--        <el-button size="large" type="primary" plain @click="GenerateScript()">Generate Script</el-button>-->
-<!--        原来的OnlinePruning-->
-        <el-button v-if="radio1==='wosl' && finetune==='False'" size="large" type="warning" plain @click="SubmitTask">Submit Prune-Only Task</el-button>
+        <!--        原来的OnlinePruning-->
+        <el-button v-if="finetune==='False'" size="large" type="warning" plain @click="SubmitTask">Submit Prune-Only Task</el-button>
         <el-button v-else size="large" type="success" plain @click="SubmitTask">Submit Prune-Finetune Task</el-button>
       </div>
 
@@ -1358,19 +1418,19 @@ const SubmitTask = () => {
         if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --model_name deit_b_16(timm) --timm_type deit"
         } 
     }else if(modelname=='vit_b_16(timm)'){
       if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
-        } 
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value
+      } 
     }else if(modelname=='vit_b_16(hf)'){
       if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --is_huggingface"
         } 
     }
 
