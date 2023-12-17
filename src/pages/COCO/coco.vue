@@ -1430,7 +1430,7 @@ const SubmitTask = () => {
       if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --is_huggingface"
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --is_huggingface --model_name vit_b_16(hf)"
         } 
     }
 
