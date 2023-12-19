@@ -85,25 +85,18 @@
 
 
     <div style="display: inline-block" v-else>
-      <el-select v-model="dataset" class="forSearchHistory" placeholder="Select Dataset" size="large" @change="getLeaderboard">
+      <el-select v-model="Leaderboardsetting" class="forSearchHistory" placeholder="LeaderBoard" size="large" @change="getLeaderboard">
         <el-option
-            v-for="item in optionListLeaderboard"
+            v-for="item in ListLeaderboard"
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            :disabled="item.disabled"
         />
       </el-select>
 
-      <el-select v-model="model" class="forSearchHistory" placeholder="Select Model" size="large" @change="getLeaderboard">
-        <el-option
-            v-for="item in modelListLeaderboard"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        />
-      </el-select>
 
-      <el-select v-model="speed" class="forSearchHistory" placeholder="Speed up" size="large">
+      <el-select v-model="speed" class="forSearchHistory" placeholder="Speed-up" size="large">
         <el-option
             v-for="item in speedlist"
             :key="item.value"
@@ -111,6 +104,16 @@
             :value="item.value"
         />
       </el-select>
+
+      <el-select v-model="regularizer" class="forSearchHistory" placeholder="Regularizer setting" size="large">
+        <el-option
+            v-for="item in regularizerList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+
       <el-button class="SearchReset" type="warning" size="large" plain @click="resetForm">Reset</el-button>
 
 
@@ -125,8 +128,8 @@
         striped
         hover
         responsive
-        :items="servers"
-        :fields="isEditing? fieldsEditing: fields"
+        :items="serversWithCalculatedPruned"
+        :fields="fields"
         :current-page="currentPage"
         :per-page="perPage"
         outlined
@@ -135,34 +138,51 @@
       <template v-slot:cell(source)="data">
         <a :href="data.value" target="_blank">link</a>
       </template>
+      <template v-slot:cell(name)="data">
+        <a :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+      </template>
       <template v-slot:cell(notes)="data">
         <span v-if="data.value==='N/A'">N/A</span>
-        <el-button v-else @click="generateNotes(data.value)" plain>notes</el-button>
+        <el-button v-else @click="generateNotes(data.value)" plain>info</el-button>
       </template>
     </b-table>
 
-
+<!--    speed === '4X' ? leaderboardfields2 : speed === '8X' ? leaderboardfields3 : leaderboardfields1-->
     <b-table
         striped
         hover
         responsive
-        :items="leaderboards"
-        :fields="speed === '4X' ? leaderboardfields2 : speed === '8X' ? leaderboardfields3 : leaderboardfields1"
+        :items="leaderboardsWithCalculatedPruned"
+        :fields="leaderboardfields"
         :current-page="currentPage"
         :per-page="perPage"
         outlined
         v-else
     >
-      <template v-slot:cell(speedUp)="data">
-        <span v-if="speed===''">2X</span>
-        <span v-else>{{speed}}</span>
+<!--      <template v-slot:cell(pruned)="data">-->
+<!--        {{data.pruned2}}-->
+<!--      </template>-->
+      <template v-slot:cell(rank)="data">
+        {{data.index+1}}
       </template>
-      <template v-slot:cell(source)="data">
-        <a :href="data.value" target="_blank">link</a>
+      <template v-slot:cell(name)="data">
+        <a :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
       </template>
-      <template v-slot:cell(notes)="data">
+
+      <template v-slot:cell(accChange)="data">
+        <text v-if="data.value>0">{{"+" + data.value}}</text>
+        <text v-else>{{data.value}}</text>
+      </template>
+
+      <template v-slot:cell(regularizer)="data">
+        <a v-if="data.value!=='N/A'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+        <text v-else>N/A</text>
+      </template>
+
+
+      <template v-slot:cell(notice)="data">
         <span v-if="data.value==='N/A'">N/A</span>
-        <el-button v-else @click="generateNotes(data.value)" plain>notes</el-button>
+        <el-button v-else @click="generateNotes(data.value)" plain>info</el-button>
       </template>
     </b-table>
 
@@ -235,19 +255,16 @@ export default {
         {
           key: 'model',
           label: 'Model',
-          sortable: true,
           class: 'text-center'
         },
         {
           key: 'year',
           label: 'Year',
-          sortable: true,
           class: 'text-center'
         },
         {
           key: 'name',
           label: 'Algorithm',
-          sortable: true,
           class: 'text-center'
         },
         {
@@ -272,20 +289,20 @@ export default {
           class: 'text-center'
         },
         {
-          key: 'source',
-          label: 'Source',
-          class: 'text-center',
-          // formatter: (value) => {
-          //   return `<a href="${value}" target="_blank">${value}</a>`;
-          // }
-        },
-        {
           key: 'notes',
-          label: 'Notes',
+          label: 'Notice',
           class: 'text-center'
         }
+        // formatter: (value) => {
+        //   return `<a href="${value}" target="_blank">${value}</a>`;
+        // }
       ],
-      leaderboardfields1:[
+      leaderboardfields:[
+        {
+          key: 'rank',
+          label: 'Rank',
+          class: 'text-center'
+        },
         {
           key: 'dataset',
           label: 'Dataset',
@@ -294,19 +311,16 @@ export default {
         {
           key: 'model',
           label: 'Model',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'year',
-          label: 'Year',
-          sortable: true,
           class: 'text-center'
         },
         {
           key: 'name',
-          label: 'Algorithm',
-          sortable: true,
+          label: 'Importance',
+          class: 'text-center'
+        },
+        {
+          key: 'regularizer',
+          label: 'Regularizer',
           class: 'text-center'
         },
         {
@@ -315,156 +329,35 @@ export default {
           class: 'text-center'
         },
         {
-          key: 'pruned2',
+          key: 'pruned',
           label: 'Pruned',
           stickyColumn: true,
           class: 'text-center'
         },
         {
-          key: 'accChange2',
+          key: 'accChange',
           label: 'ΔAcc',
           class: 'text-center'
         },
         {
-          key: 'speedUp',
-          label: 'Speed up',
+          key: 'paramsChange',
+          label: 'Pruning ratio',
           class: 'text-center'
         },
         {
-          key: 'source',
-          label: 'Source',
-          class: 'text-center',
-          // formatter: (value) => {
-          //   return `<a href="${value}" target="_blank">${value}</a>`;
-          // }
-        },
-        {
-          key: 'notes',
-          label: 'Notes',
+          key: 'notice',
+          label: 'Notice',
           class: 'text-center'
-        }
+        },
+        // {
+        //   key: 'regularizerLink',
+        //   label: 'RegularizerLink',
+        //   class: 'text-center',
+        //   // formatter: (value) => {
+        //   //   return `<a href="${value}" target="_blank">${value}</a>`;
+        //   // }
+        // }
       ],
-
-      leaderboardfields2:[
-        {
-          key: 'dataset',
-          label: 'Dataset',
-          class: 'text-center'
-        },
-        {
-          key: 'model',
-          label: 'Model',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'year',
-          label: 'Year',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'name',
-          label: 'Algorithm',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'base',
-          label: 'Baseline',
-          class: 'text-center'
-        },
-        {
-          key: 'pruned4',
-          label: 'Pruned',
-          stickyColumn: true,
-          class: 'text-center'
-        },
-        {
-          key: 'accChange4',
-          label: 'ΔAcc',
-          class: 'text-center'
-        },
-        {
-          key: 'speedUp',
-          label: 'Speed up',
-          class: 'text-center'
-        },
-        {
-          key: 'source',
-          label: 'Source',
-          class: 'text-center',
-          // formatter: (value) => {
-          //   return `<a href="${value}" target="_blank">${value}</a>`;
-          // }
-        },
-        {
-          key: 'notes',
-          label: 'Notes',
-          class: 'text-center'
-        }
-      ],
-
-      leaderboardfields3:[
-        {
-          key: 'dataset',
-          label: 'Dataset',
-          class: 'text-center'
-        },
-        {
-          key: 'model',
-          label: 'Model',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'year',
-          label: 'Year',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'name',
-          label: 'Algorithm',
-          sortable: true,
-          class: 'text-center'
-        },
-        {
-          key: 'base',
-          label: 'Baseline',
-          class: 'text-center'
-        },
-        {
-          key: 'pruned6',
-          label: 'Pruned',
-          stickyColumn: true,
-          class: 'text-center'
-        },
-        {
-          key: 'accChange6',
-          label: 'ΔAcc',
-          class: 'text-center'
-        },
-        {
-          key: 'speedUp',
-          label: 'Speed up',
-          class: 'text-center'
-        },
-        {
-          key: 'source',
-          label: 'Source',
-          class: 'text-center',
-          // formatter: (value) => {
-          //   return `<a href="${value}" target="_blank">${value}</a>`;
-          // }
-        },
-        {
-          key: 'notes',
-          label: 'Notes',
-          class: 'text-center'
-        }
-      ],
-
 
       optionList: [
         {
@@ -474,12 +367,6 @@ export default {
           value: "CIFAR10",
           label: "CIFAR10"
         }, {
-          value: "CIFAR100",
-          label: "CIFAR100"
-        }
-      ],
-      optionListLeaderboard: [
-        {
           value: "CIFAR100",
           label: "CIFAR100"
         }
@@ -518,10 +405,59 @@ export default {
 
 
       ],
-      modelListLeaderboard: [
+
+      mapList: {
+        "ImageNet - ResNet-50": {
+          "dataset": "ImageNet",
+          "model": "ResNet-50"
+        },
+        "ImageNet - VGG19-BN": {
+          "dataset": "ImageNet",
+          "model": "VGG19-BN"
+        },
+        "CIFAR100 - ResNet-18": {
+          "dataset": "CIFAR100",
+          "model": "ResNet-18"
+        },
+        "CIFAR100 - VGG-19": {
+          "dataset": "CIFAR100",
+          "model": "VGG19"
+        }
+      },
+      ListLeaderboard: [
         {
-          value: "ResNet-18",
-          label: "ResNet-18"
+          value: "ImageNet - ResNet-50",
+          label: "ImageNet - ResNet-50 (25.58 M)",
+          disabled: true
+        },
+        {
+          value: "ImageNet - VGG19-BN",
+          label: "ImageNet - VGG19-BN (143.68 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - ResNet-18",
+          label: "CIFAR100 - ResNet-18 (11.22 M)"
+        },
+        {
+          value: "CIFAR100 - VGG-19",
+          label: "CIFAR100 - VGG-19 (20.09 M)",
+          disabled: true
+        }
+      ],
+      regularizer: '',
+      regularizerList:[
+        {
+          value: 1,
+          label: "With sparse regularizer"
+        },
+        {
+          value: 0,
+          label: "Without sparse regularizer"
+        },
+        {
+          value: 2,
+          label: "Compare sparse regularizer only"
         }
       ],
       speedlist: [
@@ -536,12 +472,17 @@ export default {
         {
           value: "8X",
           label: "8X"
+        },
+        {
+          value: "Average",
+          label: "Average"
         }
       ],
       type: 'QualitativeComparison',
       dataset: '',
       model: '',
       speed: '',
+      Leaderboardsetting:'',
       isEditing: false,
       style: {
         pagination: {
@@ -564,7 +505,32 @@ export default {
     fieldsEditing: function () {
       let res = [{key: 'selected', label: '', class: 'text-center'}]
       return res.concat(this.fields)
-    }
+    },
+    serversWithCalculatedPruned(){
+      return this.servers.map(item => ({
+        ...item,
+        name: item.name + "_split_" + item.source,
+      }))
+    },
+    leaderboardsWithCalculatedPruned() {
+      let cal_leaderboard = this.leaderboards.map(item => ({
+        ...item,
+        pruned: this.speed === 'Average' ? ((parseFloat(item.pruned2) + parseFloat(item.pruned4) + parseFloat(item.pruned6)) / 3).toFixed(2) :
+            this.speed === '4X' ? item.pruned4 : this.speed === '8X' ? item.pruned6 : item.pruned2,
+        paramsChange: this.speed === '4X' ? item.paramsChange4 : this.speed === '8X' ? item.paramsChange6 : item.paramsChange2,
+        regularizer: item.regularizer===null?'N/A':item.regularizer + "_split_" + item.regularizerLink,
+        name: item.name + "_split_" + item.prunerLink,
+        accChange: this.speed === 'Average' ? (((parseFloat(item.pruned2) - parseFloat(item.base)) + (parseFloat(item.pruned4) - parseFloat(item.base)) + (parseFloat(item.pruned6) - parseFloat(item.base))) / 3).toFixed(2) :
+            this.speed === '4X' ? (parseFloat(item.pruned4) - parseFloat(item.base)).toFixed(2) : this.speed === '8X' ? (parseFloat(item.pruned6) - parseFloat(item.base)).toFixed(2) : (parseFloat(item.pruned2) - parseFloat(item.base)).toFixed(2),
+      })).sort((a, b) => parseFloat(b.accChange) - parseFloat(a.accChange)); //按照accChange由大到小进行排序
+      if (this.regularizer === 0) {
+        return cal_leaderboard.filter(item => item.regularizer === 'N/A');
+      } else if (this.regularizer === 1 || this.regularizer === '') {
+        return cal_leaderboard;
+      }else{
+        return cal_leaderboard.filter(item => item.regularizer !== 'N/A')
+      }
+    },
   },
   methods: {
     openDetailPage (id) {
@@ -588,6 +554,8 @@ export default {
       this.dataset = ''
       this.model = ''
       this.speed = ''
+      this.Leaderboardsetting = ''
+      this.regularizer = ''
       this.currentPage = 1
       if(this.type==='QualitativeComparison'){
         this.getQualitativeComparison()

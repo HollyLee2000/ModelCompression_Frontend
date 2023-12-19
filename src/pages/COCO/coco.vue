@@ -174,19 +174,30 @@
           <el-radio label="definePath" size="large" border>Provide model path on the server</el-radio>
         </el-radio-group>
       </div>
+<!--      <el-upload-->
+<!--          v-if="uploadType==='upload'"-->
+<!--          ref="uploadRef"-->
+<!--          method="post"-->
+<!--          class="upload-demo"-->
+<!--          drag-->
+<!--          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
+<!--          :before-upload="checkFile"-->
+<!--          :on-preview="handlePictureCardPreview"-->
+<!--          :on-remove="handleRemove"-->
+<!--          :on-change="handleChange1"-->
+<!--          :limit="1"-->
+<!--          :file-list="uploadFileList"-->
+<!--          style="margin: 10px 50px 10px 50px;"-->
+<!--      >-->
       <el-upload
           v-if="uploadType==='upload'"
-          ref="uploadRef"
-          method="post"
           class="upload-demo"
           drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          action="http://10.214.242.155:7996/data/uploadCkpt"
           :before-upload="checkFile"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove"
-          :on-change="handleChange1"
-          :limit="1"
-          :file-list="uploadFileList"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadFailed"
+          :show-file-list="false"
           style="margin: 10px 50px 10px 50px;"
       >
         <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -3915,181 +3926,195 @@ function checkFilePython(file) {
 //   dialogVisible.value = true;
 //   // console.log("dialogImageUrl.value: ", dialogImageUrl.value)
 // };
-const handleChange1: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList.value = fileList;
-  console.log("uploadRef.value: ", uploadRef.value)
-  console.log("uploadFileList.value: ", uploadFileList.value)
-  console.log("checkCsv.value: ", checkCsv.value)
-  uploadCkpt('aaaxiba!')
-  //
-  // if(checkCsv.value){
-  //   uploadCkpt('aaaxiba!')
-  // }
-};
-const handleChange2: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList2.value = fileList;
-  console.log("uploadFileList2.value:", uploadFileList2.value)
-  console.log("checkCsv2.value: ", checkCsv2.value)
-  if(checkCsv2.value){
-    uploadCsv('lerf')
-  }
-};
-const handleChange3: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList3.value = fileList;
-  console.log("uploadFileList3.value:", uploadFileList3.value)
-  console.log("checkPython.value: ", checkPython.value)
-  if(checkPython.value){
-    uploadPython()
-  }
-};
+// 都不需要了
+// const handleChange1: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList.value = fileList;
+//   console.log("uploadRef.value: ", uploadRef.value)
+//   console.log("uploadFileList.value: ", uploadFileList.value)
+//   console.log("checkCsv.value: ", checkCsv.value)
+//   uploadCkpt('aaaxiba!')
+//   //
+//   // if(checkCsv.value){
+//   //   uploadCkpt('aaaxiba!')
+//   // }
+// };
+// const handleChange2: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList2.value = fileList;
+//   console.log("uploadFileList2.value:", uploadFileList2.value)
+//   console.log("checkCsv2.value: ", checkCsv2.value)
+//   if(checkCsv2.value){
+//     uploadCsv('lerf')
+//   }
+// };
+// const handleChange3: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList3.value = fileList;
+//   console.log("uploadFileList3.value:", uploadFileList3.value)
+//   console.log("checkPython.value: ", checkPython.value)
+//   if(checkPython.value){
+//     uploadPython()
+//   }
+// };
+//
+// async function uploadCkpt(type){
+//   let param = new FormData();
+//   console.log("uploadFileList: ", uploadFileList);
+//   uploadFileList.value.forEach(
+//       (val, index) => {
+//         param.append("pictures", val.raw);
+//         console.log("test", val.raw);
+//       }
+//   );
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCkpts", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           let arr = res.data.data.imgpath.split("/")
+//           ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
+//           console.log("ckpt.value: ", ckpt.value);
+//           uploadRef.value.clearFiles();
+//           uploadFileList.value = [];
+//           ckptUploaded.value = true;
+//           ElMessage.success('Model uploaded successfully.')
+//         }else{
+//           ElMessage.error('Model upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   // console.log("uploadFileList: ", uploadFileList);
+// }
 
-async function uploadCkpt(type){
-  let param = new FormData();
-  console.log("uploadFileList: ", uploadFileList);
-  uploadFileList.value.forEach(
-      (val, index) => {
-        param.append("pictures", val.raw);
-        console.log("test", val.raw);
-      }
-  );
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCkpts", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          let arr = res.data.data.imgpath.split("/")
-          ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
-          console.log("ckpt.value: ", ckpt.value);
-          uploadRef.value.clearFiles();
-          uploadFileList.value = [];
-          ckptUploaded.value = true;
-          ElMessage.success('Model uploaded successfully.')
-        }else{
-          ElMessage.error('Model upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  // console.log("uploadFileList: ", uploadFileList);
+const handleUploadSuccess = (response, uploadFile) =>{
+  console.log("response: ", response);
+  let arr = response.split("/")
+  console.log("arr: ", arr);
+  ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
+  console.log("ckpt.value: ", ckpt.value);
+  ElMessage.success('Model uploaded successfully.')
 }
 
-async function uploadCsv(type){
-  let param = new FormData();
-  if(type=='morf'){
-    console.log("uploadFileList: ", uploadFileList);
-    uploadFileList.value.forEach(
-        (val, index) => {
-          param.append("pictures", val.raw);
-          console.log("test", val.raw);
-        }
-    );
-  }else if(type=='lerf'){
-    console.log("uploadFileList2: ", uploadFileList2);
-    uploadFileList2.value.forEach(
-        (val, index) => {
-          param.append("pictures", val.raw);
-          console.log("test", val.raw);
-        }
-    );
-  }
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCsvs", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          if(type=='morf'){
-            let arr = res.data.data.imgpath.split("/")
-            morf.value = arr[arr.length - 1]
-            console.log("morf.value: ", morf.value);
-            uploadRef.value.clearFiles();
-            uploadFileList.value = [];
-            morfUploaded.value = true;
-            ElMessage.success('Morf file uploaded successfully.')
-          }else if(type=='lerf'){
-            let arr = res.data.data.imgpath.split("/")
-            lerf.value = arr[arr.length - 1]
-            console.log("lerf.value: ", lerf.value);
-            uploadRef2.value.clearFiles();
-            uploadFileList2.value = [];
-            lerfUploaded.value = true;
-            ElMessage.success('Lerf file uploaded successfully.')
-          }
-        }else{
-          ElMessage.error('File upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  // console.log("uploadFileList: ", uploadFileList);
+const handleUploadFailed = (response, uploadFile) =>{
+  ElMessage.error('Model upload failed.')
 }
-
-async function uploadPython(){
-  let param = new FormData();
-  console.log("uploadFileList3: ", uploadFileList3);
-  uploadFileList3.value.forEach(
-      (val, index) => {
-        param.append("pictures", val.raw);
-        console.log("test", val.raw);
-      }
-  );
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCsvs", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          let arr = res.data.data.imgpath.split("/")
-          pythonValue.value = arr[arr.length - 1]
-          console.log("pythonValue.value: ", pythonValue.value);
-          uploadRef3.value.clearFiles();
-          uploadFileList3.value = [];
-          pythonUploaded.value = true;
-          ElMessage.success('File uploaded successfully.')
-        }else{
-          ElMessage.error('File upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-}
+//
+// async function uploadCsv(type){
+//   let param = new FormData();
+//   if(type=='morf'){
+//     console.log("uploadFileList: ", uploadFileList);
+//     uploadFileList.value.forEach(
+//         (val, index) => {
+//           param.append("pictures", val.raw);
+//           console.log("test", val.raw);
+//         }
+//     );
+//   }else if(type=='lerf'){
+//     console.log("uploadFileList2: ", uploadFileList2);
+//     uploadFileList2.value.forEach(
+//         (val, index) => {
+//           param.append("pictures", val.raw);
+//           console.log("test", val.raw);
+//         }
+//     );
+//   }
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCsvs", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           if(type=='morf'){
+//             let arr = res.data.data.imgpath.split("/")
+//             morf.value = arr[arr.length - 1]
+//             console.log("morf.value: ", morf.value);
+//             uploadRef.value.clearFiles();
+//             uploadFileList.value = [];
+//             morfUploaded.value = true;
+//             ElMessage.success('Morf file uploaded successfully.')
+//           }else if(type=='lerf'){
+//             let arr = res.data.data.imgpath.split("/")
+//             lerf.value = arr[arr.length - 1]
+//             console.log("lerf.value: ", lerf.value);
+//             uploadRef2.value.clearFiles();
+//             uploadFileList2.value = [];
+//             lerfUploaded.value = true;
+//             ElMessage.success('Lerf file uploaded successfully.')
+//           }
+//         }else{
+//           ElMessage.error('File upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   // console.log("uploadFileList: ", uploadFileList);
+// }
+//
+// async function uploadPython(){
+//   let param = new FormData();
+//   console.log("uploadFileList3: ", uploadFileList3);
+//   uploadFileList3.value.forEach(
+//       (val, index) => {
+//         param.append("pictures", val.raw);
+//         console.log("test", val.raw);
+//       }
+//   );
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCsvs", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           let arr = res.data.data.imgpath.split("/")
+//           pythonValue.value = arr[arr.length - 1]
+//           console.log("pythonValue.value: ", pythonValue.value);
+//           uploadRef3.value.clearFiles();
+//           uploadFileList3.value = [];
+//           pythonUploaded.value = true;
+//           ElMessage.success('File uploaded successfully.')
+//         }else{
+//           ElMessage.error('File upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+// }
 
 
 async function getUsrRank(){
