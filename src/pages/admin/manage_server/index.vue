@@ -159,9 +159,6 @@
         outlined
         v-else
     >
-<!--      <template v-slot:cell(pruned)="data">-->
-<!--        {{data.pruned2}}-->
-<!--      </template>-->
       <template v-slot:cell(rank)="data">
         {{data.index+1}}
       </template>
@@ -174,6 +171,16 @@
         <text v-else>{{data.value}}</text>
       </template>
 
+      <template v-slot:cell(pruneTime)="data">
+        <text v-if="data.value===null">N/A</text>
+        <text v-else>{{data.value}}s</text>
+      </template>
+
+      <template v-slot:cell(sparseTime)="data">
+        <text v-if="data.value===null">N/A</text>
+        <text v-else>{{data.value}}s</text>
+      </template>
+
       <template v-slot:cell(regularizer)="data">
         <a v-if="data.value!=='N/A'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
         <text v-else>N/A</text>
@@ -184,6 +191,7 @@
         <span v-if="data.value==='N/A'">N/A</span>
         <el-button v-else @click="generateNotes(data.value)" plain>info</el-button>
       </template>
+
     </b-table>
 
     <b-pagination
@@ -304,16 +312,6 @@ export default {
           class: 'text-center'
         },
         {
-          key: 'dataset',
-          label: 'Dataset',
-          class: 'text-center'
-        },
-        {
-          key: 'model',
-          label: 'Model',
-          class: 'text-center'
-        },
-        {
           key: 'name',
           label: 'Importance',
           class: 'text-center'
@@ -343,6 +341,16 @@ export default {
           key: 'paramsChange',
           label: 'Pruning ratio',
           class: 'text-center'
+        },
+        {
+          key: 'pruneTime',
+          label: 'Step time',
+          class: 'text-center',
+        },
+        {
+          key: 'sparseTime',
+          label: 'Reg time',
+          class: 'text-center',
         },
         {
           key: 'notice',
@@ -426,13 +434,18 @@ export default {
       },
       ListLeaderboard: [
         {
-          value: "ImageNet - ResNet-50",
-          label: "ImageNet - ResNet-50 (25.58 M)",
+          value: "ImageNet - ResNet-18",
+          label: "ImageNet - ResNet-18 (11.69 M)",
           disabled: true
         },
         {
-          value: "ImageNet - VGG19-BN",
-          label: "ImageNet - VGG19-BN (143.68 M)",
+          value: "ImageNet - ViT-Small",
+          label: "ImageNet - ViT-Small (Pretrained on 22K - -- M)",
+          disabled: true
+        },
+        {
+          value: "ImageNet - ResNet-50",
+          label: "ImageNet - ResNet-50 (optional, 25.58 M)",
           disabled: true
         },
         {
@@ -440,8 +453,28 @@ export default {
           label: "CIFAR100 - ResNet-18 (11.22 M)"
         },
         {
-          value: "CIFAR100 - VGG-19",
-          label: "CIFAR100 - VGG-19 (20.09 M)",
+          value: "CIFAR100 - VGG19",
+          label: "CIFAR100 - VGG19 (20.09 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - ResNet-50",
+          label: "CIFAR100 - ResNet-50 (optional, 25.16 M)",
+          disabled: true
+        },
+        {
+          value: "COCO - YOLOv8M",
+          label: "COCO - YOLOv8M (25.9 M)",
+          disabled: true
+        },
+        {
+          value: "AGNews - LSTM",
+          label: "AGNews - LSTM (-- M)",
+          disabled: true
+        },
+        {
+          value: "PPI - GAT",
+          label: "PPI - GAT (-- M)",
           disabled: true
         }
       ],
@@ -449,29 +482,29 @@ export default {
       regularizerList:[
         {
           value: 1,
-          label: "With sparse regularizer"
+          label: "With sparsity regularizer"
         },
         {
           value: 0,
-          label: "Without sparse regularizer"
+          label: "Without sparsity regularizer"
         },
         {
           value: 2,
-          label: "Compare sparse regularizer only"
+          label: "Compare sparsity regularizer only"
         }
       ],
       speedlist: [
         {
           value: "2X",
-          label: "2X"
+          label: "2X (↓50%)"
         },
         {
           value: "4X",
-          label: "4X"
+          label: "4X (↓75%)"
         },
         {
           value: "8X",
-          label: "8X"
+          label: "8X (↓87.5%)"
         },
         {
           value: "Average",

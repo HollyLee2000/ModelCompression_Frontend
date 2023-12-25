@@ -96,9 +96,16 @@
     >
       <el-table-column min-width="60" fixed prop="username" label="user name" />
       <el-table-column min-width="120" prop="modelName" label="model name" />
-      <el-table-column min-width="60" label="algorithm">
+      <el-table-column min-width="60" label="importance">
         <template #default="props">
-          <el-link :href="props.row.prunerLink" type="primary" target="_blank">{{props.row.pruner}}</el-link>
+          <el-link v-if="props.row.importance!=='N/A'" :href="props.row.importanceLink" type="primary" target="_blank">{{props.row.importance}}</el-link>
+          <text v-else>{{props.row.importance}}</text>
+        </template>
+      </el-table-column>
+      <el-table-column min-width="60" label="regularizer">
+        <template #default="props">
+          <el-link v-if="props.row.pruner!=='N/A'" :href="props.row.prunerLink" type="primary" target="_blank">{{props.row.pruner}}</el-link>
+          <text v-else>{{props.row.pruner}}</text>
         </template>
       </el-table-column>
       <el-table-column min-width="100" prop="taskType" label="task type" />
