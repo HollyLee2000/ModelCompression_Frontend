@@ -133,8 +133,18 @@ export const getQualitativeComparison = function () {
 }
 
 export const getLeaderboard = function () {
-    let dataset = this.dataset
-    let model = this.model
+    console.log("this.mapList: ", this.mapList)
+    console.log("this.mapList[\"CIFAR100 - VGG-19\"]: ", this.mapList["CIFAR100 - VGG-19"])
+    let dataset
+    let model
+    if(this.Leaderboardsetting === ''){
+        dataset = 'CIFAR100'
+        model = 'ResNet-18'
+    }else{
+        dataset = this.mapList[this.Leaderboardsetting]["dataset"]
+        model = this.mapList[this.Leaderboardsetting]["model"]
+    }
+
     if(dataset===' '){
         dataset = ''
     }

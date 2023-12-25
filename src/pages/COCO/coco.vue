@@ -174,19 +174,30 @@
           <el-radio label="definePath" size="large" border>Provide model path on the server</el-radio>
         </el-radio-group>
       </div>
+<!--      <el-upload-->
+<!--          v-if="uploadType==='upload'"-->
+<!--          ref="uploadRef"-->
+<!--          method="post"-->
+<!--          class="upload-demo"-->
+<!--          drag-->
+<!--          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
+<!--          :before-upload="checkFile"-->
+<!--          :on-preview="handlePictureCardPreview"-->
+<!--          :on-remove="handleRemove"-->
+<!--          :on-change="handleChange1"-->
+<!--          :limit="1"-->
+<!--          :file-list="uploadFileList"-->
+<!--          style="margin: 10px 50px 10px 50px;"-->
+<!--      >-->
       <el-upload
           v-if="uploadType==='upload'"
-          ref="uploadRef"
-          method="post"
           class="upload-demo"
           drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          action="http://10.214.242.155:7996/data/uploadCkpt"
           :before-upload="checkFile"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove"
-          :on-change="handleChange1"
-          :limit="1"
-          :file-list="uploadFileList"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadFailed"
+          :show-file-list="false"
           style="margin: 10px 50px 10px 50px;"
       >
         <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -345,34 +356,49 @@
 
 <!--      Without sparse learning and fine-tuning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).-->
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning. Sparse learning is often time-consuming and does not guarantee benefits.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
-          <el-radio label="sl" size="large" border disabled >With Sparse Learning</el-radio>
-          <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
+          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="wosl" size="large" border>Without Sparse Learning (Recommended)</el-radio>
         </el-radio-group>
+      </div>
+
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Input the number of epochs for sparse learning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+      </div>
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="sl_total_epochs"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
       </div>
 <!--      the choice of whether to employ sparse learning will determine the available pruner-->
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the importance criterion.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner, i.e., importance criterion + sparsity regularizer (if sparse learning is employed).</label>
       </div>
       <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
-          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>
-          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
-          <el-radio label="growing_reg" size="large" border>GrowingReg Pruner</el-radio>
+          <el-radio label="slim" size="large" border>BNScale + BNScale</el-radio>
+          <el-radio label="group_slim" size="large" border>BNScale + GroupLASSO</el-radio>
+          <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
+          <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
+          <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
 
         </el-radio-group>
       </div>
 
       <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l1" size="large" border>Magnitude Importance</el-radio>
-          <el-radio label="random" size="large" border>Random Importance</el-radio>
-          <el-radio label="lamp" size="large" border>LAMP Importance</el-radio>
-          <el-radio label="group_norm" size="large" border>GroupNorm Importance</el-radio>
+          <el-radio label="random" size="large" border>Random</el-radio>
+          <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
+          <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP</el-radio>
+          <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
+          <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
+          <el-radio label="hessian" size="large" border>Hessian</el-radio>
         </el-radio-group>
       </div>
 
@@ -393,6 +419,8 @@
       </div>
 
 
+
+
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step4: Enter the minimum desired
           speedup for the pruned model in terms of FLOPs. This must be a number greater than 1 but not exceeding 10.</label>
@@ -406,7 +434,25 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune. </label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Set the number of iterations for pruning, and 400 is recommended. Increasing the number
+          of pruning iterations facilitates precise acceleration to the target speed in terms of Flops and improve pruning
+          performance. However, for models and methods that are particularly slow
+          in pruning (such as mobileNet and Inception with group convolutions; Taylor and Hessian importance that
+          rely on gradients), you can lower this value accordingly.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="iterative_steps"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
+
+
+
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose whether to fine-tune. </label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -424,7 +470,7 @@
       <div v-show="finetune==='True'">
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -437,7 +483,7 @@
 <!--        gpuChartRef-->
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -1198,6 +1244,8 @@ const resultLoading2 = ref(false)
 const ckptUploaded = ref(false)
 const modelzoo = ref();
 const epoch = ref();
+const sl_total_epochs = ref();
+const iterative_steps = ref();
 const optionList = []
 const client155_1_form = ref('Pie');
 const client155_2_form = ref('Pie');
@@ -1354,12 +1402,18 @@ const SubmitTask = () => {
   // let flag = true
   if(radio1.value!='sl'&&radio1.value!='wosl'){
     ElMessage.error("Choose whether to employ sparse learning!")
+  }else if(radio1.value==='sl'&&finetune.value!=='True'){
+    ElMessage.error("If sparse training is selected, fine-tuning must be selected as well!")
   }else if(criterion.value===''){
     ElMessage.error("Select the pruner!")
   }else if(batchsize.value===0){
     ElMessage.error("Choose the batch size for sparse learning, evaluation and finetuning!")
-  }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined){
+  }else if(speedup.value<=1||speedup.value>10||speedup.value===undefined||speedup.value===''){
     ElMessage.error("Speedup must be a number greater than 1 and not exceeding 10!")
+  }else if(sl_total_epochs.value<1||sl_total_epochs.value>100||sl_total_epochs.value===undefined||sl_total_epochs.value===''){
+    ElMessage.error("Epochs for sparse learning must be a number not smaller than 1 and not exceeding 100!")
+  }else if(iterative_steps.value<1||iterative_steps.value>400||iterative_steps.value===undefined||iterative_steps.value===''){
+    ElMessage.error("Iterative steps for pruning must be a number not smaller than 1 and not exceeding 400!")
   }else if(finetune.value===''){
     ElMessage.error("Choose whether to fine-tune!")
     // isNaN()函数用于判断给定的值是否是一个数字。Number.isInteger()函数用于检测给定的值是否是一个整数
@@ -1435,7 +1489,10 @@ const SubmitTask = () => {
     }
 
     }else if(dataset == 'cifar10' || dataset == 'cifar100'){
-      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_system.py --mode prune --model "+modelname+" --batch-size "+batchsize.value+" --restore " + modelPath.value + " --dataroot "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune --pretrain False  --dataset "+dataset+"  --method "+criterion.value+" --speed-up "+speedup.value+" --global-pruning --reg 5e-4 --sl "+sl+" --finetune "+finetune.value+ " --total-epochs " + epoch.value + " --client " + client.value + " --iterative-steps " + iterative_steps.value
+      if(radio1.value==='sl'){
+        tempScript += " --sl-total-epochs " + sl_total_epochs.value
+      }
     }else if(dataset == 'coco'){
       if(modelname == 'yolov7'){
         if(finetune.value==='False'){
@@ -1548,7 +1605,11 @@ const SubmitTask = () => {
       if (finetune.value === 'False') {
           taskType = 'Directly Pruned'
       }else if (finetune.value === 'True') {
-        taskType = 'Pruned --> Fine-tuned'
+        if(radio1.value==='sl'){
+          taskType = 'Sparse learning --> Pruned --> Fine-tuned'
+        }else{
+          taskType = 'Pruned --> Fine-tuned'
+        }
       }
 
       // if(dataset == 'coco'){
@@ -1571,7 +1632,7 @@ const SubmitTask = () => {
 
       success = 'Waiting'
       let temp1 = {
-        username: store.state.username + " " + epoch.value,
+        username: store.state.username + " " + epoch.value + " " + criterion.value,
         modelname: modelName.value + "-" + modelDatasetSimple.value + "-" + modelTypeSimple.value,
         tasktype: taskType,
         checkpointpath: modelPath.value,
@@ -3110,6 +3171,8 @@ async function click(d) {
     finetune.value = ''
     epoch.value = null
     client.value = ''
+    iterative_steps.value = ''
+    sl_total_epochs.value = ''
     scriptVisible.value = false
     if(d.parent.parent.name=='CIFAR100' || d.parent.parent.name=='CIFAR10'){
       PrunedialogVisible.value = true
@@ -3991,181 +4054,195 @@ function checkFilePython(file) {
 //   dialogVisible.value = true;
 //   // console.log("dialogImageUrl.value: ", dialogImageUrl.value)
 // };
-const handleChange1: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList.value = fileList;
-  console.log("uploadRef.value: ", uploadRef.value)
-  console.log("uploadFileList.value: ", uploadFileList.value)
-  console.log("checkCsv.value: ", checkCsv.value)
-  uploadCkpt('aaaxiba!')
-  //
-  // if(checkCsv.value){
-  //   uploadCkpt('aaaxiba!')
-  // }
-};
-const handleChange2: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList2.value = fileList;
-  console.log("uploadFileList2.value:", uploadFileList2.value)
-  console.log("checkCsv2.value: ", checkCsv2.value)
-  if(checkCsv2.value){
-    uploadCsv('lerf')
-  }
-};
-const handleChange3: UploadProps["onChange"] = (file, fileList) => {
-  uploadFileList3.value = fileList;
-  console.log("uploadFileList3.value:", uploadFileList3.value)
-  console.log("checkPython.value: ", checkPython.value)
-  if(checkPython.value){
-    uploadPython()
-  }
-};
+// 都不需要了
+// const handleChange1: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList.value = fileList;
+//   console.log("uploadRef.value: ", uploadRef.value)
+//   console.log("uploadFileList.value: ", uploadFileList.value)
+//   console.log("checkCsv.value: ", checkCsv.value)
+//   uploadCkpt('aaaxiba!')
+//   //
+//   // if(checkCsv.value){
+//   //   uploadCkpt('aaaxiba!')
+//   // }
+// };
+// const handleChange2: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList2.value = fileList;
+//   console.log("uploadFileList2.value:", uploadFileList2.value)
+//   console.log("checkCsv2.value: ", checkCsv2.value)
+//   if(checkCsv2.value){
+//     uploadCsv('lerf')
+//   }
+// };
+// const handleChange3: UploadProps["onChange"] = (file, fileList) => {
+//   uploadFileList3.value = fileList;
+//   console.log("uploadFileList3.value:", uploadFileList3.value)
+//   console.log("checkPython.value: ", checkPython.value)
+//   if(checkPython.value){
+//     uploadPython()
+//   }
+// };
+//
+// async function uploadCkpt(type){
+//   let param = new FormData();
+//   console.log("uploadFileList: ", uploadFileList);
+//   uploadFileList.value.forEach(
+//       (val, index) => {
+//         param.append("pictures", val.raw);
+//         console.log("test", val.raw);
+//       }
+//   );
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCkpts", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           let arr = res.data.data.imgpath.split("/")
+//           ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
+//           console.log("ckpt.value: ", ckpt.value);
+//           uploadRef.value.clearFiles();
+//           uploadFileList.value = [];
+//           ckptUploaded.value = true;
+//           ElMessage.success('Model uploaded successfully.')
+//         }else{
+//           ElMessage.error('Model upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   // console.log("uploadFileList: ", uploadFileList);
+// }
 
-async function uploadCkpt(type){
-  let param = new FormData();
-  console.log("uploadFileList: ", uploadFileList);
-  uploadFileList.value.forEach(
-      (val, index) => {
-        param.append("pictures", val.raw);
-        console.log("test", val.raw);
-      }
-  );
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCkpts", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          let arr = res.data.data.imgpath.split("/")
-          ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
-          console.log("ckpt.value: ", ckpt.value);
-          uploadRef.value.clearFiles();
-          uploadFileList.value = [];
-          ckptUploaded.value = true;
-          ElMessage.success('Model uploaded successfully.')
-        }else{
-          ElMessage.error('Model upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  // console.log("uploadFileList: ", uploadFileList);
+const handleUploadSuccess = (response, uploadFile) =>{
+  console.log("response: ", response);
+  let arr = response.split("/")
+  console.log("arr: ", arr);
+  ckpt.value = '/nfs/lhl/Torch-Pruning/benchmarks/usr_model/'+arr[arr.length - 1]
+  console.log("ckpt.value: ", ckpt.value);
+  ElMessage.success('Model uploaded successfully.')
 }
 
-async function uploadCsv(type){
-  let param = new FormData();
-  if(type=='morf'){
-    console.log("uploadFileList: ", uploadFileList);
-    uploadFileList.value.forEach(
-        (val, index) => {
-          param.append("pictures", val.raw);
-          console.log("test", val.raw);
-        }
-    );
-  }else if(type=='lerf'){
-    console.log("uploadFileList2: ", uploadFileList2);
-    uploadFileList2.value.forEach(
-        (val, index) => {
-          param.append("pictures", val.raw);
-          console.log("test", val.raw);
-        }
-    );
-  }
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCsvs", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          if(type=='morf'){
-            let arr = res.data.data.imgpath.split("/")
-            morf.value = arr[arr.length - 1]
-            console.log("morf.value: ", morf.value);
-            uploadRef.value.clearFiles();
-            uploadFileList.value = [];
-            morfUploaded.value = true;
-            ElMessage.success('Morf file uploaded successfully.')
-          }else if(type=='lerf'){
-            let arr = res.data.data.imgpath.split("/")
-            lerf.value = arr[arr.length - 1]
-            console.log("lerf.value: ", lerf.value);
-            uploadRef2.value.clearFiles();
-            uploadFileList2.value = [];
-            lerfUploaded.value = true;
-            ElMessage.success('Lerf file uploaded successfully.')
-          }
-        }else{
-          ElMessage.error('File upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  // console.log("uploadFileList: ", uploadFileList);
+const handleUploadFailed = (response, uploadFile) =>{
+  ElMessage.error('Model upload failed.')
 }
-
-async function uploadPython(){
-  let param = new FormData();
-  console.log("uploadFileList3: ", uploadFileList3);
-  uploadFileList3.value.forEach(
-      (val, index) => {
-        param.append("pictures", val.raw);
-        console.log("test", val.raw);
-      }
-  );
-  console.log("datasetId: ", store.state.datasetId);
-  param.append("datasetId", store.state.datasetId);
-  let config = {
-    baseURL: "/api",
-    //baseURL: "http://localhost:7996",
-    timeout: 30000,
-    headers: {
-      "Content-Type": "multipart/form-data" //设置headers
-    }
-  };
-  console.log("param: ", param);
-  await axios
-      .post("/data/uploadCsvs", param, config)
-      .then(res => {
-        console.log("res: ", res);
-        if (res.status === 200) {
-          console.log("yes");
-          let arr = res.data.data.imgpath.split("/")
-          pythonValue.value = arr[arr.length - 1]
-          console.log("pythonValue.value: ", pythonValue.value);
-          uploadRef3.value.clearFiles();
-          uploadFileList3.value = [];
-          pythonUploaded.value = true;
-          ElMessage.success('File uploaded successfully.')
-        }else{
-          ElMessage.error('File upload failed.')
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-}
+//
+// async function uploadCsv(type){
+//   let param = new FormData();
+//   if(type=='morf'){
+//     console.log("uploadFileList: ", uploadFileList);
+//     uploadFileList.value.forEach(
+//         (val, index) => {
+//           param.append("pictures", val.raw);
+//           console.log("test", val.raw);
+//         }
+//     );
+//   }else if(type=='lerf'){
+//     console.log("uploadFileList2: ", uploadFileList2);
+//     uploadFileList2.value.forEach(
+//         (val, index) => {
+//           param.append("pictures", val.raw);
+//           console.log("test", val.raw);
+//         }
+//     );
+//   }
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCsvs", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           if(type=='morf'){
+//             let arr = res.data.data.imgpath.split("/")
+//             morf.value = arr[arr.length - 1]
+//             console.log("morf.value: ", morf.value);
+//             uploadRef.value.clearFiles();
+//             uploadFileList.value = [];
+//             morfUploaded.value = true;
+//             ElMessage.success('Morf file uploaded successfully.')
+//           }else if(type=='lerf'){
+//             let arr = res.data.data.imgpath.split("/")
+//             lerf.value = arr[arr.length - 1]
+//             console.log("lerf.value: ", lerf.value);
+//             uploadRef2.value.clearFiles();
+//             uploadFileList2.value = [];
+//             lerfUploaded.value = true;
+//             ElMessage.success('Lerf file uploaded successfully.')
+//           }
+//         }else{
+//           ElMessage.error('File upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   // console.log("uploadFileList: ", uploadFileList);
+// }
+//
+// async function uploadPython(){
+//   let param = new FormData();
+//   console.log("uploadFileList3: ", uploadFileList3);
+//   uploadFileList3.value.forEach(
+//       (val, index) => {
+//         param.append("pictures", val.raw);
+//         console.log("test", val.raw);
+//       }
+//   );
+//   console.log("datasetId: ", store.state.datasetId);
+//   param.append("datasetId", store.state.datasetId);
+//   let config = {
+//     baseURL: "/api",
+//     //baseURL: "http://localhost:7996",
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "multipart/form-data" //设置headers
+//     }
+//   };
+//   console.log("param: ", param);
+//   await axios
+//       .post("/data/uploadCsvs", param, config)
+//       .then(res => {
+//         console.log("res: ", res);
+//         if (res.status === 200) {
+//           console.log("yes");
+//           let arr = res.data.data.imgpath.split("/")
+//           pythonValue.value = arr[arr.length - 1]
+//           console.log("pythonValue.value: ", pythonValue.value);
+//           uploadRef3.value.clearFiles();
+//           uploadFileList3.value = [];
+//           pythonUploaded.value = true;
+//           ElMessage.success('File uploaded successfully.')
+//         }else{
+//           ElMessage.error('File upload failed.')
+//         }
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+// }
 
 
 async function getUsrRank(){
