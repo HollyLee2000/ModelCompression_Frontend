@@ -828,18 +828,34 @@
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
           the choice of whether to employ sparse learning will determine the available pruner.</label>
       </div>
-
+      <!-- 添加imagenet的sparse learning -->
       <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
-          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>
-          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
-          <el-radio label="growing_reg" size="large" border>GrowingReg Pruner</el-radio>
+          <el-radio label="slim" size="large" border>BNScale + BNScale</el-radio>
+          <el-radio label="group_slim" size="large" border>BNScale + GroupLASSO</el-radio>
+          <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
+          <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
+          <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
 
         </el-radio-group>
       </div>
 
-      <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
+      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="random" size="large" border>Random</el-radio>
+          <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
+          <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP</el-radio>
+          <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
+          <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
+          <el-radio label="hessian" size="large" border>Hessian</el-radio>
+        </el-radio-group>
+      </div>
+      
+      
+
+      <!-- 这里的pruner注释掉 -->
+      <!-- <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
           <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
@@ -847,7 +863,7 @@
           <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
 
         </el-radio-group>
-      </div>
+      </div> -->
 
 
 
@@ -1501,7 +1517,7 @@ const SubmitTask = () => {
           tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
         }
       } else if(modelname == 'yolov8')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --script-mode prune --finetune "+finetune.value
       else if(modelname == 'yolov5'){
         if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --client " + client.value  + " --weights " + modelPath.value
@@ -1741,7 +1757,7 @@ const updateTree =  async () => {
     else if(modelname == 'yolov8')
     {
       console.log("modelname is",modelname)
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False  "
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py  --batch-size 32 --speed-up 2.0 --script-mode test_prune --finetune False  "
     }
     else if(modelname == 'yolov5' )
     {
