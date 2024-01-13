@@ -440,7 +440,12 @@ export default {
         },
         {
           value: "ImageNet - ViT-Small",
-          label: "ImageNet - ViT-Small (Pretrained on 22K - -- M)",
+          label: "ImageNet - ViT-Small (22.05 M)",
+          disabled: true
+        },
+        {
+          value: "ImageNet - ViT-Base",
+          label: "ImageNet - ViT-Base (86.57 M)",
           disabled: true
         },
         {
@@ -453,13 +458,28 @@ export default {
           label: "CIFAR100 - ResNet-18 (11.22 M)"
         },
         {
+          value: "CIFAR100 - ResNet-18-All local prune",
+          label: "CIFAR100 - ResNet-18-All local prune (11.22 M)",
+          disabled: true
+        },
+        {
           value: "CIFAR100 - VGG19",
           label: "CIFAR100 - VGG19 (20.09 M)",
           disabled: true
         },
         {
+          value: "CIFAR100 - VGG19-All local prune",
+          label: "CIFAR100 - VGG19-All local prune (20.09 M)",
+          disabled: true
+        },
+        {
           value: "CIFAR100 - ResNet-50",
-          label: "CIFAR100 - ResNet-50 (optional, 25.16 M)",
+          label: "CIFAR100 - ResNet-50 (25.16 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - ResNet-50-All local prune",
+          label: "CIFAR100 - ResNet-50-All local prune (25.16 M)",
           disabled: true
         },
         {
