@@ -461,16 +461,24 @@
         </el-radio-group>
       </div>
 
-
-
-
+    <div v-show="finetune==='True'">
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Choose whether to use DDP to finetune the pruned model.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
+          <el-radio label="single" size="large" border>Single GPU</el-radio>
+          <el-radio label="DDP" size="large" border>DDP (Recommended)</el-radio>
+        </el-radio-group>
+      </div>
+    </div>
 
 
 
       <div v-show="finetune==='True'">
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -483,7 +491,7 @@
 <!--        gpuChartRef-->
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step9: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -676,9 +684,21 @@
         </el-radio-group>
       </div>
 
+    <div v-show="finetune==='True'">
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose whether to use DDP to finetune the pruned model.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
+          <el-radio label="single" size="large" border>Single GPU</el-radio>
+          <el-radio label="DDP" size="large" border>DDP (Recommended)</el-radio>
+        </el-radio-group>
+      </div>
+    </div>
+
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -689,7 +709,7 @@
         </div>
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -828,18 +848,34 @@
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
           the choice of whether to employ sparse learning will determine the available pruner.</label>
       </div>
-
+      <!-- 添加imagenet的sparse learning -->
       <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
-          <el-radio label="group_slim" size="large" border>BNScale&GroupLasso Pruner</el-radio>
-          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
-          <el-radio label="growing_reg" size="large" border>GrowingReg Pruner</el-radio>
+          <el-radio label="slim" size="large" border>BNScale + BNScale</el-radio>
+          <el-radio label="group_slim" size="large" border>BNScale + GroupLASSO</el-radio>
+          <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
+          <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
+          <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
 
         </el-radio-group>
       </div>
 
-      <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
+      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="random" size="large" border>Random</el-radio>
+          <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
+          <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP</el-radio>
+          <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
+          <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
+          <el-radio label="hessian" size="large" border>Hessian</el-radio>
+        </el-radio-group>
+      </div>
+      
+      
+
+      <!-- 这里的pruner注释掉 -->
+      <!-- <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
           <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
@@ -847,7 +883,7 @@
           <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
 
         </el-radio-group>
-      </div>
+      </div> -->
 
 
 
@@ -927,7 +963,19 @@
 
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose whether to use DDP to finetune the pruned model.</label>
+        </div>
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
+            <el-radio label="single" size="large" border>Single GPU</el-radio>
+            <el-radio label="DDP" size="large" border>DDP (Recommended)</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+
+      <div v-show="finetune==='True'">
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -938,7 +986,7 @@
         </div>
 
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -1108,6 +1156,7 @@ const batchsize = ref(0)
 const finetune = ref('')
 const criterion = ref('')
 const radio1 = ref('wosl')
+const finetunemode = ref('DDP')
 const INtype = ref('cnn')
 const PrunedialogVisible = ref(false);
 const PruneCOCOdialogVisible = ref(false);
@@ -1423,6 +1472,7 @@ const SubmitTask = () => {
     ElMessage.error("Client is required for Prune-Finetune Task!")
   }else {
     let modelname = ''
+
     if (modelName.value === "ResNet56(tiny)") {
       modelname = "resnet56"
     } else if (modelName.value === "SE-ResNet20") {
@@ -1434,6 +1484,7 @@ const SubmitTask = () => {
     let dataroot
     let dataset
     let sl
+
     if (modelDataset.value === 'CIFAR10 (Classification)') {
       dataroot = '/nfs/lhl/datasets/cifar/cifar-10-batches-py'
       dataset = 'cifar10'
@@ -1441,7 +1492,7 @@ const SubmitTask = () => {
       dataroot = '/nfs/lhl/datasets/cifar/cifar-100-python'
       dataset = 'cifar100'
     }else if(modelDataset.value==='ImageNet (Classification)'){
-      dataroot = '/nfs/lhl/datasets/ILSVRC2012'
+      dataroot = '~/datasets/ILSVRC2012/ILSVRC2012/imagenet'
       dataset = 'imagenet'
     }else if(modelDataset.value==='COCO (Detection)'){
       dataroot = ''
@@ -1458,33 +1509,48 @@ const SubmitTask = () => {
       client.value = 'NULL'
     }
 
+
+  // 添加imagenet的DDP脚本
     if(dataset == 'imagenet'){
       if(modelname=='resnet50'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
-      }else if(modelname=='densenet121'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-lr-step-size 10 --prune --cache-dataset --reg 1e-4 --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --soft-keeping-ratio 0.25 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 16 --amp --finetune "+finetune.value + " --client " + client.value
+        if(finetunemode.value==='single') 
+          tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
+        else 
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value + " --distributed"
+     }else if(modelname=='densenet121'){
+      if(finetunemode.value==='single') 
+          tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
+        else 
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value + " --distributed"
       }else if(modelname=='mobilenetv2'){
         modelname = 'mobilenet_v2'
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value+  " --client " + client.value
-      }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
-        tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --wd 0.00004 --lr-step-size 1 --lr-gamma 0.98 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --finetune "+finetune.value + " --client " + client.value
+        if(finetunemode.value==='single') 
+          tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
+        else 
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value + " --distributed"
+     }else if(modelname=='vgg19_bn'||modelname=='vgg16_bn'){
+      if(finetunemode.value==='single') 
+          tempScript = "python /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value
+        else 
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/benchmarks/main_imagenet.py --mode prune --pretrained --epochs " + epoch.value + " --model "+modelname+" --batch-size "+batchsize.value+" --lr " + lr.value + " --lr-step-size 30 --sl-epochs 30 --sl-lr 0.01 --sl-lr-step-size 10 --prune --cache-dataset --data-path "+dataroot+" --output-dir /nfs/lhl/Torch-Pruning/benchmarks/log/prune  --reg 1e-4 --method "+criterion.value+" --global-pruning --soft-keeping-ratio 0.5 --target-flops "+speedup.value+" --global-pruning --print-freq 100 --workers 8 --finetune "+finetune.value + " --client " + client.value + " --distributed"
       }else if(modelname=='deit_b_16(timm)'){
         if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_deit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --model_name deit_b_16(timm) --timm_type deit"
+          if(finetunemode.value==='DDP')
+            tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --model_name deit_b_16(timm) --timm_type deit --distributed --cache-dataset"
         } 
     }else if(modelname=='vit_b_16(timm)'){
       if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_timm_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + "  --cache-dataset --distributed"
       } 
     }else if(modelname=='vit_b_16(hf)'){
       if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/transformers/prune_hf_vit.py  --test_accuracy --val_batch_size  "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value+" --pruning_type "+criterion.value+ " --client " + client.value
         }else{
-          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --is_huggingface --model_name vit_b_16(hf)"
+          tempScript = "torchrun --nproc_per_node=4 /nfs/lhl/Torch-Pruning/transformers/finetune.py --model "+ modelPath.value +" --epochs "+ epoch.value +" --pruning_type "+criterion.value+" --batch-size "+ batchsize.value +" --opt adamw --lr 0.00015 --wd 0.3 --lr-scheduler cosineannealinglr --lr-warmup-method linear --lr-warmup-epochs 0 --lr-warmup-decay 0.033 --amp --label-smoothing 0.11 --mixup-alpha 0.2 --auto-augment ra --clip-grad-norm 1 --ra-sampler --random-erase 0.25 --cutmix-alpha 1.0  --output-dir output/vit_b_16_pruning_taylor_uniform_v2"+ " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value+" --model_name vit_b_16(hf) --distributed --cache-dataset"
         } 
     }
 
@@ -1501,7 +1567,7 @@ const SubmitTask = () => {
           tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov7_train_pruned.py --workers 8 --device 0 --batch-size "+batchsize.value+" --data /nfs/lhl/Torch-Pruning/yolov7/data/coco.yaml --img 640 640 --cfg /nfs/lhl/Torch-Pruning/yolov7/cfg/training/yolov7.yaml "+ " --weights " + modelPath.value +" --name yolov7 --hyp /nfs/lhl/Torch-Pruning/yolov7/data/hyp.scratch.p5.yaml" + " --finetune "+finetune.value + " --client " + client.value + " --speed-up "+speedup.value + " --epochs "+epoch.value
         }
       } else if(modelname == 'yolov8')
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py   --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --script-mode prune --finetune "+finetune.value
       else if(modelname == 'yolov5'){
         if(finetune.value==='False'){
           tempScript = "python /nfs/lhl/Torch-Pruning/yolov7/yolov5_detect_pruned.py --conf 0.25 --img-size 640  --batch-size "+batchsize.value+" --speed-up "+speedup.value+" --mode prune --finetune "+finetune.value + " --client " + client.value  + " --weights " + modelPath.value
@@ -1741,7 +1807,7 @@ const updateTree =  async () => {
     else if(modelname == 'yolov8')
     {
       console.log("modelname is",modelname)
-      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py  --batch-size 32 --speed-up 2.0 --mode test_prune --finetune False  "
+      tempScript = "python /nfs/lhl/Torch-Pruning/yolov8/yolov8_pruning.py  --batch-size 32 --speed-up 2.0 --script-mode test_prune --finetune False  "
     }
     else if(modelname == 'yolov5' )
     {
