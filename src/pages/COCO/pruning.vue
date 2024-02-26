@@ -1335,7 +1335,7 @@ const cascader_props = {
 
 //cascader
 const handleCascaderChange = async (value) => {
-  console.log(value)
+  console.log("value: ", value)
   if(value[0].type=='upload'){
     console.log('这是一个上传模型的任务')
     ckpt.value = ''
@@ -4099,6 +4099,7 @@ onMounted(async () => {
     console.log("raw json: ", json);
     let currentAccess = store.state.access
     let currentUser = store.state.username
+    console.log("currentAccess: ", currentAccess)
     console.log("currentUser: ", currentUser)
     for (const dataset of json.children) {
       for (const network of dataset.children) {
@@ -4110,7 +4111,7 @@ onMounted(async () => {
         }else if(currentAccess==1){
           for (const item of network.children){
             //如果item以currentUser开头则保留这个item
-            network.children = network.children.filter(item => item.name.startsWith(currentUser+":"));
+            network.children = network.children.filter(item => item.type!=='usr'||item.name.startsWith(currentUser+":"));
           }
         }
         json_dict[key] = network.children;

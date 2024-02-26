@@ -13,12 +13,13 @@ const request = axios.create({
 })
 
 request.interceptors.response.use( response => {
-    if(response.data.msg === '用户未登录，请跳转login页面'){
-        ElMessage.error('token失效，请重新登录')
+    if(response.data.msg === '用户未登录'){
+        ElMessage.error("Interceptors response error: You are not logged in or your login has expired.")
         store.commit("loginOut")
-        Cookies.remove("userTicket")
+        // Cookies.remove("userTicket")
+        localStorage.removeItem("userTicket")
         location.reload()
-        router.push('/login')
+        router.push('/homepage')
     }
     return response
 }, error => {
@@ -28,11 +29,12 @@ request.interceptors.response.use( response => {
     // 获取错误状态码，token失效
     const { status } = error.response
     if (status === 401) {
-        ElMessage.error('token失效，请重新登录')
+        ElMessage.error('Interceptors response error.')
 
         // 清除token
         store.commit("loginOut")
-        Cookies.remove("userTicket")
+        // Cookies.remove("userTicket")
+        localStorage.removeItem("userTicket")
         location.reload()
 
         // 重新跳转到login页面
@@ -46,8 +48,15 @@ request.interceptors.response.use( response => {
 // 实现再重新开一个页面仍然保留原有登陆状态。
 request.interceptors.request.use(
     config => {
-        if (localStorage.getItem('Authorization')) {
-            config.headers.Authorization = localStorage.getItem('Authorization');
+        console.log("store.state.userTicket: ", store.state.userTicket)
+        console.log("store.state.access: ", store.state.access)
+        if (store.state.userTicket) {
+            config.headers.userTicket = store.state.userTicket;
+
+        }
+        if (store.state.access==0||store.state.access==1) {
+            config.headers.access = store.state.access;
+
         }
         return config;
     },

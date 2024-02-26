@@ -7,30 +7,28 @@
             background-color="white"
             text-color="#4C4C4C"
             active-text-color="#7C391D"
+            class="el-menu-demo"
             :ellipsis="false"
             router="router"
         >
-          <el-menu-item index="homepage" @click="$router.push('/homepage')">HOME</el-menu-item>
-<!--          <el-menu-item index="imagenet"  @click="$router.push('/imagenet')">ATTRIBUTION</el-menu-item>-->
-<!--          <el-menu-item index="cifar" v-if="store.state.isAut" @click="$router.push('/cifar')">COMPRESSION</el-menu-item>-->
-
-          <el-menu-item index="cifar" v-if="store.state.isAut"  @click="$router.push('/coco')">COMPRESSION</el-menu-item>
-          <el-menu-item index="task"  v-if="store.state.isAut" @click="$router.push('/Admin')">COMPARISON</el-menu-item>
-<!--          <el-menu-item index="Algorithm" v-if="store.state.isAut"  @click="$router.push('/Algorithm')">FINETUNE</el-menu-item>-->
-<!--          <el-menu-item index="task"  @click="$router.push('/Admin')">LEADERBOARD</el-menu-item>-->
-<!--          <el-menu-item index="datasetPreview"  @click="$router.push('/datasetPreview')">DATASETS</el-menu-item>-->
-          <el-menu-item index="history" v-if="store.state.isAut"  @click="$router.push('/history')">HISTORY</el-menu-item>
-<!--          <el-menu-item v-show="store.state.access==1" style="color: #AB140C;" index="coco"  @click="$router.push('/coco')">APPROVAL</el-menu-item>-->
-<!--          <el-menu-item index="Algorithm" @click="$router.push('/Algorithm')">HISTORY</el-menu-item>-->
-<!--          <el-menu-item index="Admin" style="font-size: 15px" @click="$router.push('/Admin')">算力机管理</el-menu-item>-->
-<!--          <el-menu-item index="document" style="font-size: 15px" @click="$router.push('/document')">历史提交记录</el-menu-item>-->
-<!--          <el-menu-item index="dam3d">三维结果展示</el-menu-item>-->
+<!--          <div class="pro-sidebar-logo">-->
+<!--            <div>VIPA</div>-->
+<!--          </div>-->
+          <img src="./assets/VIPA.png" style="margin-right: 2%">
+          <el-menu-item index="homepage">HOME</el-menu-item>
+          <el-menu-item index="Tutorial">TUTORIAL</el-menu-item>
+          <el-menu-item index="pruning" >PRUNING</el-menu-item>
+          <el-menu-item index="benchmark" >BENCHMARK</el-menu-item>
+          <el-menu-item index="history" v-if="store.state.isAut">TASK</el-menu-item>
+          <el-menu-item index="submission" v-if="store.state.isAut">SUBMISSION</el-menu-item>
+          <el-menu-item index="voc" v-if="store.state.isAut">SUB-HISTORY</el-menu-item>
+          <el-menu-item index="cub" style="color: #AB140C;" v-if="store.state.isAut && store.state.access===0">APPROVAL</el-menu-item>
           <div class="flex-grow" />
           <el-menu-item v-if="!store.state.isAut" class="right" index="signin">log in / register</el-menu-item>
           <el-sub-menu v-else class="right">
             <template #title>{{store.state.username}}</template>
             <el-menu-item index="user" style="font-size: 15px">your profile</el-menu-item>
-            <el-menu-item index="" @click="login_out" style="font-size: 15px">sign out</el-menu-item>
+            <el-menu-item index="" @click="loginOut" style="font-size: 15px">sign out</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-header>
@@ -70,10 +68,36 @@ function notImplemented(){
   ElMessage.error('Not implemented yet')
 }
 
-function login_out(){
+
+async function loginOut(){
   console.log("login out")
+  // store.commit("loginOut")
+  // Cookies.remove("userTicket")
+
+  // router.push('/homepage')  //返回主页
+
+      // , store.commit("getUserTicket")  //不需要加参数，header里面有
+  await request.post("/user/logout").then(
+      res => {
+        console.log(res);
+        //console.log(res.data.data.code);
+        if (res.status === 200) {
+          console.log("退出成功了");
+        } else
+          console.log("退出时出现了错误");
+      }
+  ).catch(err => {
+    console.log(err);
+    console.log("logout error");
+  });
+
   store.commit("loginOut")
-  Cookies.remove("userTicket")
+  localStorage.removeItem("userTicket")
+  // location.reload()
+  router.push('/homepage')
+
+
+
   // try
   // router.push('/')
   // router.go(0)
@@ -96,13 +120,14 @@ function login_out(){
 
 
 
-  router.push('/homepage')  //返回主页
+
   // location.reload()  //刷新当前页面
 }
 function login_init(){
   const _username = localStorage.getItem("username")
   const access = localStorage.getItem('access')
   console.log("localStorage", _username, access)
+  console.log("userTicket: ", localStorage.getItem("userTicket"))
   if(_username!=null){
     console.log("setAccount", _username)
     store.commit("loginIn")
@@ -113,7 +138,41 @@ function login_init(){
 login_init()
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
+
+.pro-sidebar-logo {
+  display: flex;
+  align-items: center;
+
+> div {
+  width: 50px;
+  min-width: 50px;
+  height: 35px;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: #ff8100;
+  margin-right: 10px;
+}
+
+> h5 {
+  margin-top: 7px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 20px;
+  line-height: 30px;
+  transition: opacity 0.3s;
+  opacity: 1;
+}
+}
+
+
 .holly-title{
   font-size: 15px
 }

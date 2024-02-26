@@ -6,11 +6,12 @@
           <div class="row align-items-center">
             <div class="col-lg-6">
               <h2 class="title mt-5 mt-lg-0">
-                DepGraph
+                XXXX
               </h2>
-              <p class="f-16 my-4 text-muted benchmark">Towards Any Structural Pruning</p>
-              <button @click="startCompression" class="btn btn-primary" style="margin-right: 10px">Start Compression</button>
-              <button class="btn btn-docs"><a href="https://openaccess.thecvf.com/content/CVPR2023/html/Fang_DepGraph_Towards_Any_Structural_Pruning_CVPR_2023_paper.html" target="_blank" style="color: white">Paper</a></button>
+              <p class="f-16 my-4 text-muted benchmark">Benchmark Towards Any Structural Pruning</p>
+              <button @click="startTutorial" class="btn btn-tutorial" style="margin-right: 10px">Tutorial</button>
+              <button @click="startCompression" class="btn btn-primary" style="margin-right: 10px">Get Started</button>
+              <button class="btn btn-docs"><a href="https://github.com/VainF/Torch-Pruning" target="_blank" style="color: white">Docs</a></button>
 
 
 
@@ -56,30 +57,66 @@
 
 
 
+
+  <div class="container">
+    <section class="video-introduce" id="features" style="box-shadow: 0 5px 20px rgba(0,0,0,0.5);">
+      <div class="container">
+        <div class="row align-items-center" id="part1">
+          <div class="col-lg-7">
+            <div class="sec-image position-relative " id="sec-image">
+              <div class="bg-img overflow-hidden border-radius">
+                <img src="./assets/final_feature.png" alt="" loop=infinite class="img-fluid" />
+              </div>
+              <div id="imgcontainer-1">
+                <div id="inner-2">
+                  <div class="demo-img">
+                    <div class="demo-overlay">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">
+            <h6 class="text-muted fw-normal">INTRODUCTION</h6>
+            <h1 class="fw-bold mt-2">XXXX</h1>
+            <p class="mt-3">
+              XXXX is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+
   <div class="container">
     <div class="row justify-content-between" style="margin: 30px 0;">
-      <div class="col-lg-4 col-md-3 col-sm-8 text-center align-items-center info-title" style="position: relative;">DepGraph</div>
-      <div class="col-lg-8 col-md-9 col-sm-8 info-content">Dependency Graph (DepGraph) explicitly
-        model the dependency between layers and comprehensively group coupled parameters for pruning, enabling
-        any structural pruning on a wide variety of neural networks, including CNNs, RNNs, GNNs, and Transformers.
-          </div>
+<!--      <div class="col-lg-4 col-md-3 col-sm-8 text-center align-items-center info-title" style="position: relative;">DepGraph</div>-->
+<!--      <div class="col-lg-8 col-md-9 col-sm-8 info-content">Dependency Graph (DepGraph) explicitly-->
+<!--        model the dependency between layers and comprehensively group coupled parameters for pruning, enabling-->
+<!--        any structural pruning on a wide variety of neural networks, including CNNs, RNNs, GNNs, and Transformers.-->
+<!--          </div>-->
     </div>
   </div>
 
 
   <!-- start section -->
   <div class="container">
-  <section class="section bg-light features" style="background-color: #f5f7fa; box-shadow: 0 5px 20px rgba(0,0,0,0.5); !important">
+  <section class="section features" style="box-shadow: 0 5px 20px rgba(0,0,0,0.5); !important">
     <div class="container">
       <div class="row justify-content-center mb-4 pb-2">
         <div class="col-lg-7">
           <div class="heading text-center">
             <!-- <h6 class="text-muted f-16 fw-normal">Learning to Write as a Professional</h6> -->
-            <h2 class="mb-3">Compress <span class="text-primary fw-normal"> your model </span>
-              <br> with DepGraph
+            <h2 class="mb-3">Evaluate <span class="text-primary fw-normal"> Structural Pruning </span>
+              <br> with XXXX
 
             </h2>
-            <p class="text-muted para-p mx-auto mb-0">DepGraph can help researchers to efficiently Compress deep learning models on various tasks.</p>
+            <p class="text-muted para-p mx-auto mb-0">XXXX can help researchers to efficiently compress deep models and evaluate structural pruning methods on various tasks.</p>
           </div>
         </div>
       </div>
@@ -88,42 +125,40 @@
         <div class="col-lg-4 mt-4 pt-2">
           <div class="service-box text-center text-lg-start">
             <div class="service-image">
-              <img src="./assets/img-1.png" alt="img-fluid">
+              <img src="./assets/1.png" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Our Motivation</h5>
-            <p><span class="text-gray">Structural pruning enables model acceleration by removing structurally-grouped
-              parameters from neural networks. However, the parameter-grouping patterns vary widely across different
-              models, making architecture-specific pruners, which rely on manually-designed grouping schemes,
-              non-generalizable to new architectures. Our motivation is to tackle general structural pruning of
-              arbitrary architecture like CNNs, RNNs, GNNs and Transformers.</span></p>
-          </div>
-        </div>
-        <div class="col-lg-4 mt-4 pt-2">
-          <div class="service-box text-center text-lg-start">
-            <div class="service-image">
-              <img src="./assets/img-2.png" alt="img-fluid">
-            </div>
-            <h5 class="fw-bold mt-4 mb-3">Structural Coupling</h5>
+            <h5 class="fw-bold mt-4 mb-3">Group Coupled Parameters</h5>
             <p><span class="text-gray">The most prominent obstacle towards any structural pruning lies in the
-              structural coupling, which not only forces different layers to be pruned simultaneously, but also
-              expects all removed parameters to be consistently unimportant, thereby avoiding structural issues and
-              significant performance degradation after pruning. To address this problem, DepGraph explicitly
-              model the dependency between layers and comprehensively group coupled parameters for pruning.</span></p>
+              structural coupling. It forces different layers to be pruned simultaneously and
+              expects all removed parameters to be consistently unimportant. In this benchmark, we employ DepGraph to explicitly
+              model the dependency between layers and group coupled parameters for pruning.</span></p>
           </div>
         </div>
+
+<!--        , thereby avoiding structural issues and-->
+<!--        significant performance degradation after pruning-->
+
         <div class="col-lg-4 mt-4 pt-2">
           <div class="service-box text-center text-lg-start">
             <div class="service-image">
-              <img src="./assets/img-3.png" alt="img-fluid">
+              <img src="./assets/3.png" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Experiments</h5>
-            <p><span class="text-gray">DepGraph has been extensively evaluated
-        on several architectures and tasks, including
-        ResNe(X)t, DenseNet, MobileNet and Vision transformer
-        for images, GAT for graph, DGCNN for 3D point cloud,
-        alongside LSTM for language, and demonstrated that even
-        with a simple norm-based criterion, DepGraph
-        consistently yields gratifying performances.</span>
+            <h5 class="fw-bold mt-4 mb-3">Fair Comparison</h5>
+            <p><span class="text-gray">We compare different pruning methods by controlling the degree of FLOPs acceleration consistently.
+              For fairness, we separately evaluate importance criteria and sparsity regularizers, and extensively investigate the impact of different acceleration degrees,
+              pruning strategies (global or local), model size, and other conditions on the pruning effectiveness.</span></p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 mt-4 pt-2">
+          <div class="service-box text-center text-lg-start">
+            <div class="service-image">
+              <img src="./assets/2.png" alt="img-fluid">
+            </div>
+            <h5 class="fw-bold mt-4 mb-3">Extensive Exploration</h5>
+            <p><span class="text-gray">Based on a unified grouping approach and experimental setting, Our benchmark is
+              able to tackle general structural pruning of arbitrary architecture like CNNs, RNNs, GNNs, YOLOs and Transformers,
+              thereby enabling comprehensive evaluation of different structured pruning methods under various tasks and conditions.</span>
               </p>
           </div>
         </div>
@@ -132,63 +167,30 @@
   </section>
   </div>
 
-  <div class="container">
-  <section class="video-introduce" id="features" style="box-shadow: 0 5px 20px rgba(0,0,0,0.5);">
-    <div class="container">
-      <div class="row align-items-center" id="part1">
-        <div class="col-lg-7">
-          <div class="sec-image position-relative " id="sec-image">
-            <div class="bg-img overflow-hidden border-radius">
-              <img src="./assets/feature.png" alt="" loop=infinite class="img-fluid" />
-            </div>
-            <div id="imgcontainer-1">
-              <div id="inner-2">
-                <div class="demo-img">
-                  <div class="demo-overlay">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">
-          <h6 class="text-muted fw-normal">FEATURES</h6>
-          <h1 class="fw-bold mt-2">Flexible Usage</h1>
-          <p class="mt-3">Users can compress their deep learning model by selecting the desired pruning configuration and generating the script in tutorial. Run the script and the pruned model can be easily obtained. Online pruning is partially available.</p>
-          <!-- <p class="mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus qui, pariatur nulla,
-                  sint
-                  voluptatibus explicabo voluptates aliquid dolorem suscipit nostrum expedita itaque nesciunt
-                  autem ?</p>
-          <div class="get-link mt-4">
-              <a href="#" class="text-primary font-weight-600"> READ MORE <i class="mdi mdi-arrow-right"></i></a>
-          </div> -->
-
-        </div>
-      </div>
-
-    </div>
-  </section>
-  </div>
 
 
-  <div class="footer" id="footer" style="margin-top: 150px">
+
+
+
+
+
+  <div class="footer" id="footer" style="margin-top: 80px">
     <nav class="navbar navbar-expand-lg" style="background-color: rgb(245, 247, 250)" id="footer-navbar">
       <div style="display: flex; justify-content: center" class="container-fluid custom-container">
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>DepGraph TEAM</h2>
+              <h2>XXXX TEAM</h2>
             </div>
           </div>
           <div class="row2">
             <div class="col footer-school">
-              National University of Singapore & Zhejiang University
+              Zhejiang University VIPA Lab & National University of Singapore
             </div>
           </div>
           <div class="row2">
             <div class="col footer-name">
-              Gongfan Fang, Xinyin Ma, Mingli Song, Michael Bi Mi, Xinchao Wang
+              Haoling Li, Changhao Li, Gongfan Fang, Jie Song
             </div>
           </div>
 
@@ -206,6 +208,9 @@
         </div>
       </div>
     </nav></div>
+
+
+
 
 
 
@@ -383,12 +388,11 @@ let deleteShow = ref(false);
 const showList = ref([]), listPreview = ref([]), showListPool = ref([]), listPreview2 = ref([]);
 
 const startCompression = () => {
-  if(store.state.isAut){
-    router.push('/coco')
-  }else{
-    router.push('/signin')
-  }
+  router.push('/pruning')
+}
 
+const startTutorial = () => {
+  router.push('/Tutorial')
 }
 
 async function refreshImages(option) { //推理之后才提交的, 刷新右边的结果
@@ -477,7 +481,7 @@ async function refreshCifar(){  //懒得改名字了~
   // last_id.value == 666
 }
 
-realRefreshImages("getPool");
+// realRefreshImages("getPool");
 
 const selectChange = (index) => {
   selectList[index] ^= 1;
@@ -1249,8 +1253,8 @@ ul {
 /*}*/
 
 .home .home-content .title {
-  font-size: 75px;
-  font-weight: 900;
+  font-size: 50px;
+  font-weight: 500;
   color: white;
 }
 
@@ -1283,7 +1287,7 @@ ul {
 }
 
 .f-16 {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .my-4 {
@@ -1303,7 +1307,7 @@ ul {
 .btn {
   padding: 12px 30px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 550;
   letter-spacing: 0.5px;
   transition: all 0.5s;
   border: 1px solid #7371ec;
@@ -1315,13 +1319,20 @@ ul {
   padding: 11px 28px;
   font-size: 16px;
   letter-spacing: 0.9px;
-  font-weight: 600;
+  font-weight: 550;
   text-transform: uppercase;
 }
 
 .btn-primary {
   background: #20ad96;
   border-color: #20ad96 !important;
+  color: white;
+}
+
+.btn-tutorial {
+  background: #BA4021;
+  border-color: #BA4021 !important;
+  color: white;
 }
 
 .btn-docs {
@@ -1331,7 +1342,7 @@ ul {
 }
 
 .service-image{
-  width: 35%;
+  width: 100%;
 }
 
 .bg-home5 .home-content {

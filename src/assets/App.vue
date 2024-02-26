@@ -66,7 +66,8 @@ function notImplemented(){
 function login_out(){
   console.log("login out")
   store.commit("loginOut")
-  Cookies.remove("userTicket")
+  // Cookies.remove("userTicket")
+  localStorage.removeItem("userTicket")
   // try
   // router.push('/')
   // router.go(0)

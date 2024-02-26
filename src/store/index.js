@@ -21,6 +21,7 @@ const store = createStore({
             state.access=-1
             localStorage.removeItem("access")
             localStorage.removeItem("phone")
+            localStorage.removeItem("userTicket")
         },
         getAut(state){
             // console.log("getAut", state.isAut)
@@ -52,6 +53,19 @@ const store = createStore({
             state.access = access
             console.log('setAccess', state.access)
             localStorage.setItem('access', access)
+        },
+        getAccess(state){
+            console.log('getAccess', state.access)
+            return state.access
+        },
+        getUserTicket(state){
+            console.log("getUserTicket", state.userTicket)
+            return state.userTicket
+        },
+        setUserTicket(state, userTicket){
+            state.userTicket = userTicket
+            console.log('setUserTicket', state.userTicket)
+            localStorage.setItem('userTicket', userTicket)
         },
         setTableData(state, Data) {
             state.tableData = Data
@@ -89,6 +103,7 @@ const store = createStore({
             showHistory3DModelPath: '',
             tableData:[],
             pictures:[],
+            userTicket:''
             // isCollapse:true,
         }
     },

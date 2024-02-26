@@ -1,5 +1,5 @@
 <template>
-  <div>
+<!--  <div>-->
 <!--    <b-row align-h="start" v-show="!isEditing" :style="style.down">-->
 <!--    </b-row>-->
 <!--    <b-row v-show="isEditing" align-h="end" :style="style.down">-->
@@ -46,12 +46,14 @@
 
 
 
+<!--  <div style="display: flex;">-->
 
+<!--    <div>-->
 
     <div class="mb-2 flex items-center text-sm">
       <el-radio-group v-model="type" class="ml-4" @change="resetForm">
         <el-radio label="QualitativeComparison" size="large">Published result</el-radio>
-        <el-radio label="QuantitativeLeaderBoard" size="large">DepGraph leaderboard</el-radio>
+        <el-radio label="QuantitativeLeaderBoard" size="large">Leaderboard</el-radio>
       </el-radio-group>
     </div>
 
@@ -118,6 +120,17 @@
 
 
     </div>
+<!--    </div>-->
+
+<!--    <div v-if="type==='QuantitativeLeaderBoard'" style="display: flex; margin-left: 20px">-->
+<!--      <div style="display: flex; flex-direction: column;">-->
+<!--        <text>Importance</text>-->
+<!--        <text>Importance</text>-->
+<!--        <text>Importance</text>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
 
 
 
@@ -163,7 +176,8 @@
         {{data.index+1}}
       </template>
       <template v-slot:cell(name)="data">
-        <a :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+        <a v-if="data.value.split('_split_')[0]!=='Hessian'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+        <a v-else :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}*</a>
       </template>
 
       <template v-slot:cell(accChange)="data">
@@ -182,7 +196,8 @@
       </template>
 
       <template v-slot:cell(regularizer)="data">
-        <a v-if="data.value!=='N/A'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+        <a v-if="data.value!=='N/A' && data.value.split('_split_')[0]!=='GroupLASSO'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}</a>
+        <a v-else-if="data.value.split('_split_')[0]==='GroupLASSO'" :href="data.value.split('_split_')[1]" target="_blank">{{data.value.split('_split_')[0]}}*</a>
         <text v-else>N/A</text>
       </template>
 
@@ -212,24 +227,28 @@
         v-else
     ></b-pagination>
 
+<!--    </div>-->
+
+<!--  </div>-->
 
 
 
 
-    <b-modal
-        title="算力机管理"
-        no-close-on-esc
-        no-close-on-backdrop
-        ok-only
-        :visible="is_dialog_open"
-        ok-title="确定"
-        @close="closeDialog"
-        @ok="closeDialog"
-        :title-class="{style: {fontSize:'50px'}}"
-    >
-      <div class="text-center">{{dialog_content}}</div>
-    </b-modal>
-  </div>
+
+<!--    <b-modal-->
+<!--        title="算力机管理"-->
+<!--        no-close-on-esc-->
+<!--        no-close-on-backdrop-->
+<!--        ok-only-->
+<!--        :visible="is_dialog_open"-->
+<!--        ok-title="确定"-->
+<!--        @close="closeDialog"-->
+<!--        @ok="closeDialog"-->
+<!--        :title-class="{style: {fontSize:'50px'}}"-->
+<!--    >-->
+<!--      <div class="text-center">{{dialog_content}}</div>-->
+<!--    </b-modal>-->
+<!--  </div>-->
 </template>
 
 <script>
@@ -241,6 +260,30 @@ import {
 } from '@/utils/index'
 import {Search} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
+
+function parseParamsChange(change) {
+  console.log("change.split(' ')", change.split(' '))
+  const [numStr, MM, percentStr] = change.split(' ');
+  const num = parseFloat(numStr);
+  // const [tool1, tool2] = percentStr.split('(');
+  // const [percent_start, percent_end] = tool2.split('(');
+  // console.log("percentStr.slice(1, -2): ", percentStr.slice(1, -2))
+  console.log("percent: ", percentStr.split('(')[1].split('%')[0])
+  const percent = parseFloat(percentStr.split('(')[1].split('%')[0]);
+  return [num, percent];
+}
+function buildParamsChange(num, percent) {
+  return `${num.toFixed(2)} M (${percent.toFixed(2)}%)`;
+}
+
+function getAverageParamsChange(change1, change2, change3) {
+  const [num1, percent1] = parseParamsChange(change1);
+  const [num2, percent2] = parseParamsChange(change2);
+  const [num3, percent3] = parseParamsChange(change3);
+  const averageNum = (num1 + num2 + num3) / 3;
+  const averagePercent = (percent1 + percent2 + percent3) / 3;
+  return buildParamsChange(averageNum, averagePercent);
+}
 
 export default {
   name: 'ManageServer',
@@ -427,7 +470,7 @@ export default {
           "dataset": "CIFAR100",
           "model": "ResNet-18"
         },
-        "CIFAR100 - VGG-19": {
+        "CIFAR100 - VGG19": {
           "dataset": "CIFAR100",
           "model": "VGG19"
         }
@@ -435,7 +478,7 @@ export default {
       ListLeaderboard: [
         {
           value: "ImageNet - ResNet-18",
-          label: "ImageNet - ResNet-18 (11.69 M)",
+          label: "ImageNet - ResNet18 (11.69 M)",
           disabled: true
         },
         {
@@ -455,31 +498,45 @@ export default {
         },
         {
           value: "CIFAR100 - ResNet-18",
-          label: "CIFAR100 - ResNet-18 (11.22 M)"
+          label: "CIFAR100 - ResNet18-Without collapse protection (11.22 M)"
         },
         {
-          value: "CIFAR100 - ResNet-18-All local prune",
-          label: "CIFAR100 - ResNet-18-All local prune (11.22 M)",
+          value: "CIFAR100 - ResNet-18-Local prune",
+          label: "CIFAR100 - ResNet18-Local prune (11.22 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - ResNet-18-Real",
+          label: "CIFAR100 - ResNet18 (11.22 M)",
           disabled: true
         },
         {
           value: "CIFAR100 - VGG19",
+          label: "CIFAR100 - VGG19-Without collapse protection (20.09 M)",
+        },
+        {
+          value: "CIFAR100 - VGG19-Local prune",
+          label: "CIFAR100 - VGG19-Local prune (20.09 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - VGG19-Real",
           label: "CIFAR100 - VGG19 (20.09 M)",
           disabled: true
         },
         {
-          value: "CIFAR100 - VGG19-All local prune",
-          label: "CIFAR100 - VGG19-All local prune (20.09 M)",
-          disabled: true
-        },
-        {
           value: "CIFAR100 - ResNet-50",
-          label: "CIFAR100 - ResNet-50 (25.16 M)",
+          label: "CIFAR100 - ResNet-50-Without collapse protection (25.16 M)",
           disabled: true
         },
         {
-          value: "CIFAR100 - ResNet-50-All local prune",
-          label: "CIFAR100 - ResNet-50-All local prune (25.16 M)",
+          value: "CIFAR100 - ResNet-50-Local prune",
+          label: "CIFAR100 - ResNet-50-Local prune (25.16 M)",
+          disabled: true
+        },
+        {
+          value: "CIFAR100 - ResNet-50-Real",
+          label: "CIFAR100 - ResNet-50 (25.16 M)",
           disabled: true
         },
         {
@@ -570,7 +627,7 @@ export default {
         ...item,
         pruned: this.speed === 'Average' ? ((parseFloat(item.pruned2) + parseFloat(item.pruned4) + parseFloat(item.pruned6)) / 3).toFixed(2) :
             this.speed === '4X' ? item.pruned4 : this.speed === '8X' ? item.pruned6 : item.pruned2,
-        paramsChange: this.speed === '4X' ? item.paramsChange4 : this.speed === '8X' ? item.paramsChange6 : item.paramsChange2,
+        paramsChange: this.speed === '4X' ? item.paramsChange4 : this.speed === '8X' ? item.paramsChange6 : this.speed === 'Average'? getAverageParamsChange(item.paramsChange2, item.paramsChange4, item.paramsChange6) : item.paramsChange2,
         regularizer: item.regularizer===null?'N/A':item.regularizer + "_split_" + item.regularizerLink,
         name: item.name + "_split_" + item.prunerLink,
         accChange: this.speed === 'Average' ? (((parseFloat(item.pruned2) - parseFloat(item.base)) + (parseFloat(item.pruned4) - parseFloat(item.base)) + (parseFloat(item.pruned6) - parseFloat(item.base))) / 3).toFixed(2) :
