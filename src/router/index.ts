@@ -4,10 +4,10 @@ import history from '@/pages/history/App.vue'
 import docDescription from '@/pages/doc/docDescription.vue'
 import damModel from '@/pages/dam3d/damModel.vue'
 import login from "@/pages/loginIn/login.vue";
-import cifar from "@/pages/Cifar/cifar.vue";
+import submission from "@/pages/Cifar/submission.vue";
 import cifarsebow from "@/pages/CifarSeboW/cifarsebow.vue";
 import voc from "@/pages/VOC/voc.vue"
-import coco from "@/pages/COCO/coco.vue"
+import pruning from "@/pages/COCO/pruning.vue"
 import cub from "@/pages/cub/cub.vue"
 import cars from "@/pages/cars/cars.vue"
 import UserQuery from "@/pages/UserQuery/UserQuery.vue"
@@ -15,7 +15,7 @@ import imagenet from "@/pages/ImageNet/imagenet.vue";
 import datasetPreview from "@/pages/datasetPreview/index.vue";
 import datasetInDetail from "@/pages/datasetInDetail/index.vue";
 import user from '@/pages/user/AdminInfo.vue'
-import Algorithm from '@/pages/algorithmIntro/Algorithm.vue'
+import Tutorial from '@/pages/algorithmIntro/tutorial.vue'
 
 import Admin from '@/pages/admin/index.vue'
 import ManageServer from '@/pages/admin/manage_server/index.vue'
@@ -57,16 +57,26 @@ const routes = [
         component: history
     },
     {
+        path: '/admin/manage_server',
+        alias: '/benchmark',
+        name: 'ManageServer',
+        component: ManageServer,
+        meta: {
+            title: 'benchmark'
+        }
+    },
+    {
         path: '/admin',
         name: 'Admin',
         component: Admin,
         redirect: { name: 'ManageServer' },
+        alias: '/',
         meta: {
-            title: '平台管理',
+            title: 'benchmark',
             roles: ['staff']
         },
         children: [
-            { path: 'manage_server', name: 'ManageServer', component: ManageServer, meta: { title: '算力机管理' } },
+            { path: 'manage_server', alias: '/benchmark', name: 'ManageServer', component: ManageServer, meta: { title: 'benchmark' } },
         ]
     },
     {
@@ -115,9 +125,9 @@ const routes = [
         component: labelPage
     },
     {
-        path: '/cifar',
-        name:'cifar',
-        component: cifar,
+        path: '/submission',
+        name:'submission',
+        component: submission,
         meta:{
             noCache: true,
         }
@@ -141,9 +151,9 @@ const routes = [
         component: voc,
     },
     {
-        path: '/coco',
-        name:'coco',
-        component: coco,
+        path: '/pruning',
+        name:'pruning',
+        component: pruning,
     },
     {
         path: '/UserQuery',
@@ -176,9 +186,9 @@ const routes = [
         component: cars,
     },
     {
-        path: '/Algorithm',
-        name:'Algorithm',
-        component: Algorithm,
+        path: '/Tutorial',
+        name:'Tutorial',
+        component: Tutorial,
     },
     {
         path: '/task',
@@ -273,16 +283,18 @@ const router1 = createRouter({
 // 以下守卫判断未登录后执行loginOut, 修改store.state.isAut的状态
 router1.beforeEach(
     (to, from, next) => {
-        if (to.path === '/signin' || to.path === '/homepage') {
+        if (to.path === '/signin' || to.path === '/homepage' || to.path === '/Tutorial' || to.path === '/pruning' || to.path === '/benchmark') {
             next();
         } else {
-            const token = Cookies.get('userTicket')
+            // const token = Cookies.get('userTicket')
+            const token = store.state.userTicket
             console.log("-> token", token);
             if (token === undefined || token === '' || token === null) {
                 // login_out();
-                ElMessage.warning("Your login has expired, please log in again.")
+                ElMessage.error("Router error: You are not logged in or your login has expired.")
                 store.commit("loginOut")
-                Cookies.remove("userTicket")
+                // Cookies.remove("userTicket")
+                localStorage.removeItem("userTicket")
                 next('/homepage');
             } else {
                 next();

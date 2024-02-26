@@ -24,16 +24,29 @@
     <el-form-item label="University/Institute" prop="institute">
       <el-input v-model="ruleForm.institute"/>
     </el-form-item>
-<!--    <el-form-item label="权限等级" prop="Authority">-->
-<!--      <el-select v-model="ruleForm.authority" class="m-2" placeholder="user" size="large" >-->
-<!--        <el-option-->
-<!--          v-for="item in options"-->
-<!--          :key="item.value"-->
-<!--          :label="item.label"-->
-<!--          :value="item.value"-->
-<!--        />-->
-<!--      </el-select>-->
-<!--    </el-form-item>-->
+
+
+    <el-form-item label="Authority" prop="Authority">
+      <el-select v-model="ruleForm.authority" class="m-2" placeholder="user" size="large" >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+
+<!--    rules-->
+    <el-form-item v-if="ruleForm.authority===0" label="Admin registration code">
+      <el-input
+          v-model="adminRegisterCode"
+          type="password"
+      />
+    </el-form-item>
+
+
+
     <el-form-item label="Verification" >
 <!--      <el-input v-model="ruleForm.verificationCode" />-->
       <verification-code ref="verificationCode"></verification-code>
@@ -58,6 +71,7 @@ import {ElMessage, UploadInstance, UploadProps} from "element-plus";
 import axios from "axios";
 const verificationCode=ref()
 const register = ref<FormInstance>();
+const adminRegisterCode = ref('');
 
 // const props = defineProps({
 //   isShow1: Boolean,
@@ -131,12 +145,12 @@ const checkVerificationCode =(rule:any,value:any,callback:any)=>{
 }
 const options=[
   {
-    value: 0,
-    label: '用户',
+    value: 1,
+    label: 'user',
   },
   {
-    value: 1,
-    label: '管理员',
+    value: 0,
+    label: 'admin',
   }
   // ,
   // {
@@ -151,7 +165,7 @@ const ruleForm = reactive({
   phoneNumber: "",
   verificationCode:"",
   institute:"",
-  authority:0
+  authority:1
 });
 
 const rules = reactive({
@@ -167,12 +181,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
     console.log("直接返回")
     return;
   }
+  if(ruleForm.authority===0 && adminRegisterCode.value!=='fzz6C2OIeVZHZnMLLiV/tULIVsHs1AiLpu0LxeWp18lyyUTtgU2F5ReA65YJpMIxZ922Br2winu49BuZJs2ie3XWxrI31hUgzyMSc2kkpVT0hq1'){
+    ElMessage.error("Admin registration code is incorrect. Verify the code or register as a user.")
+    return;
+  }
   if(!verificationCode.value.verificateFlag()){
     let formInstance = new FormData()
     formInstance.append('authority','214')
     console.log(formInstance)
     console.log(formInstance.get('authority'))
-    alert("验证码错误！")
+    alert("The verification code is wrong!")
     return false
   }
   formEl.validate((valid) => {
@@ -198,12 +216,15 @@ const submitForm = (formEl: FormInstance | undefined) => {
             console.log(res)
             updateParentShow(true, false);
             // router.push('/login')
-            if (res.status === 200) {
+            if (res.status === 200 && res.data.msg === "Success") {
               console.log("yes");
               ElMessage.success('Register successfully, now you can log in.')
-            }else{
+            }else if (res.data.msg === "User already exist!"){
               console.log("no");
-              ElMessage.success('Register failed.')
+              ElMessage.error('Register failed since the user already exists.')
+            }else if (res.data.msg === "User name is null!"){
+              console.log("no");
+              ElMessage.error('Register failed since the user name is null.')
             }
           })
           .catch(err=>{

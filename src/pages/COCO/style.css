@@ -46,10 +46,14 @@ body{
     stroke-width: 3px;
   }
 
+/*表示具有类名 ghostCircle 并且还有类名 show 的元素。*/
   .ghostCircle.show{
       display:block;
   }
-
+/*表示具有类名 ghostCircle 的元素，或者它是具有 ghostCircle 类，且是 .activeDrag 类的后代元素的元素*/
+/*在选择器中使用逗号可以将多个选择器组合在一起，表示选择这些选择器所对应的所有元素。*/
+/*在选择器中使用空格表示选择某个元素的后代元素*/
+/*例如，.activeDrag .ghostCircle 表示选择具有 .ghostCircle 类的元素，但仅当它是 .activeDrag 类的后代元素时才生效。*/
   .ghostCircle, .activeDrag .ghostCircle{
        display: none;
   }

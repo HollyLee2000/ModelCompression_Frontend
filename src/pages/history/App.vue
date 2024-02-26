@@ -38,8 +38,8 @@
         <el-date-picker v-model="createTimes"
                         type="daterange"
                         range-separator="To"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间"
+                        start-placeholder="Begin time"
+                        end-placeholder="End time"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
                         @change="getTableData"
@@ -109,7 +109,17 @@
         </template>
       </el-table-column>
       <el-table-column min-width="100" prop="taskType" label="task type" />
-      <el-table-column min-width="80" prop="submitTime" label="submit time" />
+      <el-table-column min-width="80" prop="submitTime" label="submit time">
+        <template #default="props">
+          {{props.row.submitTime.split(' ')[0]}}<br>{{props.row.submitTime.split(' ')[1]}}
+        </template>
+      </el-table-column>
+      <el-table-column min-width="80" prop="finishTime" label="finish time">
+        <template #default="props">
+          <text v-if="props.row.finishTime==='2000-01-14 00:00:00'">N/A</text>
+          <text v-else>{{props.row.finishTime.split(' ')[0]}}<br>{{props.row.finishTime.split(' ')[1]}}</text>
+        </template>
+      </el-table-column>
       <el-table-column min-width="60" prop="client" label="client" />
       <el-table-column min-width="50" label="details" type="expand">
         <template #default="props">
@@ -168,10 +178,10 @@
       </el-table-column>
       <el-table-column label="status" min-width="130">
         <template #default="props">
-          <div v-if="props.row.status==='Sparse Learning...'||props.row.status==='Pruned, Fine-tuning...'||props.row.status==='Waiting'">
+          <div v-if="props.row.status==='Sparse Learning...'||props.row.status==='Pruned, Fine-tuning...'||props.row.status==='Waiting'||props.row.status==='Need Approval'">
             <el-text class="mx-1" type="warning" style="color: #C0C0C0; font-weight: bold">{{props.row.status}}</el-text>
           </div>
-          <div v-else-if="props.row.status==='Failed'">
+          <div v-else-if="props.row.status==='Failed'||props.row.status==='Rejected'">
             <el-text class="mx-1" type="danger" style="color: #AB140C; font-weight: bold">{{props.row.status}}</el-text>
           </div>
           <div v-else-if="props.row.status==='Pruned(completed)'||props.row.status==='Fine-tuned(completed)'||props.row.status==='Uploaded(completed)'">
@@ -317,7 +327,7 @@ const getTableData = async () => {
     type: type.value,
     createTimeBegin: createTimeBegin.value,
     createTimeEnd: createTimeEnd.value,
-    client: client.value
+    client: client.value,
   })
       .then((response)=>{
         console.log(response)

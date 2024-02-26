@@ -17,7 +17,7 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: 'src/main.ts',
-      title: 'DepGraph | Towards Any Structural Pruning'
+      title: 'XXXX | Benchmark Towards Any Structural Pruning'
     }
     
   },

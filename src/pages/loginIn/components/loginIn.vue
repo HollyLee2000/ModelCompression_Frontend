@@ -31,6 +31,7 @@ import {router} from "@/router";
 import {useStore} from "vuex";
 import VerificationCode from "./verificationCode.vue";
 import request from "@/api";
+import {ElMessage} from "element-plus";
 
 // const props = defineProps({
 //   isShow1: Boolean,
@@ -69,8 +70,11 @@ function loginIn() {
           if (res.data.msg === "登陆成功") {
             console.log("登陆成功")
             const userInfo = res.data.data.userInfo
+            const userTicket = res.data.data.token
             let access = userInfo.authority
             store.commit("loginIn");
+            store.commit("setUserTicket", userTicket);
+            console.log("store.state.userTicket: ", store.state.userTicket)
             store.commit("setAccount", user.username)
             store.commit('setAccess', access)
             store.commit('setPhone', userInfo.telephone)
@@ -82,11 +86,13 @@ function loginIn() {
             router.push('homepage')
             // }
           } else if (res.data.msg==="用户不存在"){
-            alert("用户不存在！")
+            ElMessage.error("User does not exist.")
+            // alert("User does not exist.")
             verificationCode.value.getCode()
             console.log(res);
           }else if(res.data.msg==="用户名或密码错误"){
-            alert("用户名或密码错误!")
+            ElMessage.error("Username/Password is incorrect.")
+            // alert("用户名或密码错误!")
             verificationCode.value.getCode()
           }
         })
@@ -94,7 +100,8 @@ function loginIn() {
           console.log((err));
         });
   } else {
-    alert("验证码错误");
+    ElMessage.error("Verification code is wrong!")
+    // alert("验证码错误");
   }
 }
 </script>
