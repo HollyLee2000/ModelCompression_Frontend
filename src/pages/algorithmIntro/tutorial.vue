@@ -7,16 +7,27 @@
     <!-- 一个Unit代码一个块，包括小标题，代码，图片，具体代码以下样例 -->
     <!-- 替换图片路径就行,其他不用动 -->
     <div class="unit">
-      <div class="unit-title jiange" style="font-size: 25px">Network Pruning Process in SPFA</div>
+      <div class="unit-title jiange" style="font-size: 25px">Network Pruning Framework in PruningBench</div>
       <!-- 替换图片路径就行,其他不用动 -->
-      <div class="unit-img-box-holly">
-        <img src="./static/image/main.svg" class="unit-img-holly" style="margin-bottom: 20px;">
+      <div class="unit-img-box-holly" >
+        <img src="./static/image/intro.svg" class="unit-img-holly" style="margin-bottom: 20px; width: 90%">
       </div>
       <div class="unit-text">
-        In the <code>unified pruning framework</code>, the model undergoes an initial stage of sparse training,
-        which aims to sparsify the network parameters with a <code>regularizer</code>. Then, the <code>DepGraph</code>
-        is utilized to group  coupled parameters within the network. Next, a chosen <code>importance metric</code> is
-        employed to prune the model. Finally, we fine-tuned the pruned model to restore its accuracy.
+        The framework of the proposed PruningBench consists of four stages. <code>Sparsifying:</code> given a pretrained model
+        to be compressed, PruningBench first employs a sparsity regularizer to sparsify model parameters. This
+        stage is skipped when benchmarking methods on importance criteria. <code>Grouping:</code> DepGraph is employed to model
+        layer interdependencies and cluster coupled layers into groups. The following pruning is carried out at the group
+        level. <code>Pruning:</code> PruningBench adopts iterative pruning to precisely control the model complexity of the
+        pruned model to the predefined value. Before pruning, an importance criterion is selected for calculating the
+        importance scores for the group parameters. At each iteration, a part of the parameters are pruned by thresholding
+        the importance score. <code>Finetuning:</code> after pruning, PruningBench finetunes the pruned model, of which the
+        accuracy is used for benchmark comparisons. Grouping stage and the finetuning stage are fixed the same for
+        benchmarking all pruning methods.
+<!--        In the <code>unified pruning framework</code>, the model undergoes an initial stage of sparse training,-->
+<!--        which aims to sparsify the network parameters with a <code>regularizer</code>. Then, the <code>DepGraph</code>-->
+<!--        is utilized to group  coupled parameters within the network. Next, a chosen <code>importance metric</code> is-->
+<!--        employed to prune the model. Finally, we fine-tuned the pruned model to restore its accuracy.-->
+
         <!--        The schematic diagram of attribution~(I) and evaluation~(II and III).<br>-->
 
 <!--        (I) <code>AM</code> represents the attribution method. The dashed arrow means the process of attribution. A higher attribution value is associated with a darker color of the small square in <code>Saliency Map</code>.<br>-->
@@ -58,16 +69,16 @@
     </div>
 
     <div class="unit">
-      <div class="unit-title jiange" style="font-size: 25px">Structural Pruning Benchmarks</div>
+      <div class="unit-title jiange" style="font-size: 25px">Leaderboards</div>
       <div class="unit-img-box">
         <img src="./static/image/2.gif" class="unit-img" style="margin-bottom: 20px;">
       </div>
 
       <div class="unit-text">
-        Within the <code>unified framework</code>, we designed fair experiments to compare the performance of different
-        pruning techniques <code>across diverse tasks and scenarios</code>. We separately discussed <code>sparse regularizers</code>
-        and <code>importance metrics</code>.
-
+        Within the <code>unified framework</code>, PruningBench systematically evaluates 16 existing structural pruning methods,
+        encompassing a wide array of models (ResNet18, ResNet50, VGG19, ViT, YOLOv8) and tasks (classification on CIFAR
+        and ImageNet, detection on COCO). PruningBench has now yielded 13 leaderboards. PruningBench can separately
+        compare <code>sparse regularizers</code> and <code>importance criteria</code>.
       </div>
     </div>
 
@@ -86,7 +97,8 @@
       <div class="unit-text">
         The pruning tasks submitted by users provide <code>real-time feedback</code>, including a progress bar and detailed
         information about model parameters, FLOPs, accuracy and loss. Users can download checkpoints and structures before
-        and after pruning, along with training logs. Additionally, the system supports <code>efficient querying</code> of tasks.
+        and after pruning, along with training logs. Additionally, the system provides various filtering and calculation
+        features for <code>efficient querying</code> of tasks.
       </div>
     </div>
 
@@ -101,11 +113,12 @@
 
 
       <div class="unit-text">
-        To participate in our leaderboards, kindly implement the interface for your pruning algorithm using our Python library -
-        Torch-Pruning (TP):
+        To participate in our leaderboards, kindly implement the interface for your pruning algorithm using our Python library:
+
+<!--        - Torch-Pruning (TP):-->
 
         <el-link style="font-size: 20px" type="primary" target="_blank" href="https://github.com/VainF/Torch-Pruning" :underline="false">
-          https://github.com/VainF/Torch-Pruning
+          https://github.com/HollyLee2000/PruningBench
         </el-link>
 
         , and submit a pull request to the project.
@@ -122,7 +135,7 @@
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>SPFA TEAM</h2>
+              <h2>PruningBench TEAM</h2>
             </div>
           </div>
           <div class="row2">
@@ -145,7 +158,7 @@
 
 
           <div class="col  mb-5  text-muted" style="margin-top: 20px">
-            Copyright© 2023 ZJU VIPA All Rights Reserved
+            Copyright© 2024 ZJU VIPA All Rights Reserved
           </div>
         </div>
       </div>

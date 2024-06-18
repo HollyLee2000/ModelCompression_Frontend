@@ -6,12 +6,12 @@
           <div class="row align-items-center">
             <div class="col-lg-6">
               <h2 class="title mt-5 mt-lg-0">
-                SPFA
+                PruningBench
               </h2>
-              <p class="f-16 my-4 text-muted benchmark">Unified Benchmark of Structural Pruning</p>
+              <p class="f-16 my-4 text-muted benchmark">Comprehensive Benchmark of Structural Pruning</p>
               <button @click="startTutorial" class="btn btn-tutorial" style="margin-right: 10px">Tutorial</button>
               <button @click="startCompression" class="btn btn-primary" style="margin-right: 10px">Get Started</button>
-              <button class="btn btn-docs"><a href="https://github.com/VainF/Torch-Pruning" target="_blank" style="color: white">Docs</a></button>
+              <button class="btn btn-docs"><a href="https://github.com/HollyLee2000/PruningBench" target="_blank" style="color: white">Docs</a></button>
 
 
 
@@ -80,10 +80,19 @@
           </div>
           <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">
             <h6 class="text-muted fw-normal">INTRODUCTION</h6>
-            <h1 class="fw-bold mt-2">SPFA</h1>
+            <h1 class="fw-bold mt-2">PruningBench</h1>
+<!--            Structural pruning has emerged as a promising approach for producing more efficient models.-->
+<!--            Nevertheless, the community suffers from a lack of standardized benchmarks and metrics,-->
+<!--            leaving the progress in this area not fully comprehended. To fill this gap, we present-->
             <p class="mt-3">
-              SPFA is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.
+              <b>PruningBench</b> is the first
+              comprehensive benchmark of structural pruning. PruningBench employs a unified and consistent framework
+              for evaluating the effectiveness of diverse structural pruning techniques, and systematically evaluates
+              existing pruning methods, encompassing a wide array of models and tasks.
             </p>
+<!--            3) PruningBench provides easily implementable interfaces to-->
+<!--            facilitate the implementation of future pruning methods, and enables the subsequent researchers-->
+<!--            to incorporate their work into our leaderboards.-->
 
           </div>
         </div>
@@ -113,10 +122,11 @@
           <div class="heading text-center">
             <!-- <h6 class="text-muted f-16 fw-normal">Learning to Write as a Professional</h6> -->
             <h2 class="mb-3">Evaluate <span class="text-primary fw-normal"> Structural Pruning </span>
-              <br> with SPFA
+              <br> with PruningBench
 
             </h2>
-            <p class="text-muted para-p mx-auto mb-0">SPFA can help researchers to efficiently compress deep models and evaluate structural pruning methods on various tasks.</p>
+            <p class="text-muted para-p mx-auto mb-0">PruningBench can help researchers to efficiently compress deep
+              models and evaluate structural pruning methods.</p>
           </div>
         </div>
       </div>
@@ -125,13 +135,13 @@
         <div class="col-lg-4 mt-4 pt-2">
           <div class="service-box text-center text-lg-start">
             <div class="service-image">
-              <img src="./assets/1.png" alt="img-fluid">
+              <img src="./assets/img-1.png" style="width: 50%" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Group Coupled Parameters</h5>
-            <p><span class="text-gray">The most prominent obstacle towards any structural pruning lies in the
-              structural coupling. It forces different layers to be pruned simultaneously and
-              expects all removed parameters to be consistently unimportant. In this benchmark, we employ DepGraph to explicitly
-              model the dependency between layers and group coupled parameters for pruning.</span></p>
+            <h5 class="fw-bold mt-4 mb-3">Unified Evaluation Framework</h5>
+            <p><span class="text-gray">PruningBench employs a unified framework to evaluate existing diverse structural
+              pruning techniques. Specially, PruningBench employs DepGraph to automatically group the network parameters, and adopt
+              iterative pruning where a portion of parameters are removed per iteration until the controlled variable
+              (e.g.,FLOPS) is reached. This framework ensures more equitable and comprehensible comparisons.</span></p>
           </div>
         </div>
 
@@ -141,24 +151,26 @@
         <div class="col-lg-4 mt-4 pt-2">
           <div class="service-box text-center text-lg-start">
             <div class="service-image">
-              <img src="./assets/3.png" alt="img-fluid">
+              <img src="./assets/img-2.png" style="width: 50%" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Fair Comparison</h5>
-            <p><span class="text-gray">We compare different pruning methods by controlling the degree of FLOPs acceleration consistently.
-              For fairness, we separately evaluate importance criteria and sparsity regularizers, and extensively investigate the impact of different acceleration degrees,
-              pruning strategies (global or local), model size, and other conditions on the pruning effectiveness.</span></p>
+            <h5 class="fw-bold mt-4 mb-3">Leaderboards</h5>
+            <p><span class="text-gray">PruningBench systematically evaluates 16 existing structural pruning methods,
+              encompassing a wide array of models (ResNet18, ResNet50, VGG19, ViT, YOLOv8) and tasks (classification on CIFAR
+              and ImageNet, detection on COCO). PruningBench has now yielded 13 leaderboards and a handful of interesting
+              findings which are not explored previously.</span></p>
           </div>
         </div>
 
         <div class="col-lg-4 mt-4 pt-2">
           <div class="service-box text-center text-lg-start">
             <div class="service-image">
-              <img src="./assets/2.png" alt="img-fluid">
+              <img src="./assets/img-3.png" style="width: 50%" alt="img-fluid">
             </div>
-            <h5 class="fw-bold mt-4 mb-3">Extensive Exploration</h5>
-            <p><span class="text-gray">Based on a unified grouping approach and experimental setting, Our benchmark is
-              able to tackle general structural pruning of arbitrary architecture like CNNs, RNNs, GNNs, YOLOs and Transformers,
-              thereby enabling comprehensive evaluation of different structured pruning methods under various tasks and conditions.</span>
+            <h5 class="fw-bold mt-4 mb-3">Interfaces</h5>
+            <p><span class="text-gray">PruningBench is designed as an expandable package that standardizes experimental
+              settings and eases the integration of new algorithmic implementations. PruningBench provides straightforward
+              interfaces for implementing importance criteria methods and sparsity regularizers, facilitating the development
+              and evaluation of future pruning algorithms.</span>
               </p>
           </div>
         </div>
@@ -180,7 +192,7 @@
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>SPFA TEAM</h2>
+              <h2>PruningBench TEAM</h2>
             </div>
           </div>
           <div class="row2">
@@ -203,7 +215,7 @@
 
 
             <div class="col  mb-5  text-muted" style="margin-top: 20px">
-              Copyright© 2023 ZJU VIPA All Rights Reserved
+              Copyright© 2024 ZJU VIPA All Rights Reserved
             </div>
         </div>
       </div>

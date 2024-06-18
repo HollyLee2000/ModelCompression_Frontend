@@ -118,22 +118,24 @@
               alt="react"
           />
         </div>
+
         <div style="padding: 0 10px">
                 <span style="display: block; margin-bottom: 10px; color: white"
-                >Torch prune is now also available for diffusion and LLM models!
+                >PruningBench is continually benchmarking more models!
                 </span>
-          <div style="margin-bottom: 15px">
-            <img
-                alt="preview badge"
-                src="https://img.shields.io/github/stars/VainF/Torch-Pruning?style=social"
-            />
-          </div>
+<!--          <div style="margin-bottom: 15px">-->
+<!--            <img-->
+<!--                alt="preview badge"-->
+<!--                src="https://img.shields.io/github/stars/VainF/Torch-Pruning?style=social"-->
+<!--            />-->
+<!--          </div>-->
           <div>
-            <a href="https://github.com/VainF/Torch-Pruning" target="_blank"
+            <a href="https://github.com/HollyLee2000/PruningBench" target="_blank"
             >Check it out!</a
             >
           </div>
         </div>
+
       </div>
     </div>
 
@@ -376,6 +378,8 @@
             style="margin-left: 50px; border: 0; color: black; width: 8%"
         />
       </div>
+
+
 <!--      the choice of whether to employ sparse learning will determine the available pruner-->
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner, i.e., importance criterion + sparsity regularizer (if sparse learning is employed).</label>
@@ -396,10 +400,15 @@
           <el-radio label="random" size="large" border>Random</el-radio>
           <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
           <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="fpgm" size="large" border>FPGM</el-radio>
+          <el-radio label="obdc" size="large" border>OBD-C</el-radio>
+          <el-radio label="cp" size="large" border>CP</el-radio>
+          <el-radio label="thinet" size="large" border>ThiNet</el-radio>
+          <el-radio label="hrank" size="large" border>HRank</el-radio>
           <el-radio label="lamp" size="large" border>LAMP</el-radio>
           <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
           <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
-          <el-radio label="hessian" size="large" border>Hessian</el-radio>
+          <el-radio label="hessian" size="large" border>OBD-Hessian</el-radio>
         </el-radio-group>
       </div>
 
@@ -654,35 +663,217 @@
 
 
 
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Select the importance criterion,-->
+<!--          Yolo models only support L2Norm importance.</label>-->
+<!--      </div>-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">-->
+<!--          <el-radio label="l2" size="large" border>L2Norm Importance</el-radio>-->
+
+<!--        </el-radio-group>-->
+<!--      </div>-->
+
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Select the importance criterion,
-          Yolo models only support L2Norm importance.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning. Sparse learning is often time-consuming and does not guarantee benefits.</label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
+          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="wosl" size="large" border>Without Sparse Learning (Recommended)</el-radio>
+        </el-radio-group>
+      </div>
+
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Input the number of epochs for sparse learning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+      </div>
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="sl_total_epochs"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
+
+
+
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner, i.e., importance criterion + sparsity regularizer (if sparse learning is employed).</label>
+      </div>
+      <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l2" size="large" border>L2Norm Importance</el-radio>
+          <el-radio label="slim" size="large" border>BNScale + BNScale</el-radio>
+          <el-radio label="group_slim" size="large" border>BNScale + GroupLASSO</el-radio>
+          <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
+          <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
+          <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
 
         </el-radio-group>
       </div>
 
-
-
-
-      <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-          Step2: Choose batch size for evaluation and finetuning. Fine-tuning the YOLO models requires significant GPU memory
-          consumption, so we recommend selecting a small batch size.</label>
+      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="random" size="large" border>Random</el-radio>
+          <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
+          <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="fpgm" size="large" border>FPGM</el-radio>
+          <el-radio label="cp" size="large" border>CP</el-radio>
+          <el-radio label="thinet" size="large" border>ThiNet</el-radio>
+          <el-radio label="hrank" size="large" border>HRank</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP</el-radio>
+          <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
+          <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
+          <el-radio label="hessian" size="large" border>OBD-Hessian</el-radio>
+        </el-radio-group>
       </div>
+
+      <div v-show="radio1!='wosl' && radio1!='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap; color: #800E25">Complete Step1 first.</label>
+      </div>
+
+
+
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">-->
+<!--          Step2: Choose batch size for evaluation and finetuning. Fine-tuning the YOLO models requires significant GPU memory-->
+<!--          consumption, so we recommend selecting a small batch size.</label>-->
+<!--      </div>-->
 <!--      It is recommended to choose 128, but if the task fails, you could choose a smaller one.-->
 
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">-->
+<!--          <el-radio label=32 size="large" border>4</el-radio>-->
+<!--          <el-radio label=32 size="large" border>8</el-radio>-->
+<!--          <el-radio label=64 size="large" border>16</el-radio>-->
+<!--          <el-radio label=128 size="large" border>32</el-radio>-->
+<!--        </el-radio-group>-->
+<!--      </div>-->
+
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step4: Enter the minimum desired-->
+<!--          speedup for the pruned model in terms of FLOPs. This must be a number greater than 1 but not exceeding 10.</label>-->
+<!--      </div>-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-input-->
+<!--            v-model="speedup"-->
+<!--            placeholder="Please input"-->
+<!--            style="margin-left: 50px; border: 0; color: black; width: 8%"-->
+<!--        />-->
+<!--      </div>-->
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.-->
+<!--          Fine-tuning the YOLO models requires extremely long training time.</label>-->
+<!--      </div>-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">-->
+<!--          <el-radio label="True" size="large" border>fine-tune</el-radio>-->
+<!--          <el-radio label="False" size="large" border>not fine-tune</el-radio>-->
+<!--        </el-radio-group>-->
+<!--      </div>-->
+
+<!--    <div v-show="finetune==='True'">-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose experimental environment.</label>-->
+<!--      </div>-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">-->
+<!--          <el-radio label="single" size="large" border>Single GPU</el-radio>-->
+<!--          <el-radio label="DDP" size="large" border>DDP (Recommended)</el-radio>-->
+<!--        </el-radio-group>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--      <div v-show="finetune==='True'">-->
+<!--        <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>-->
+<!--        </div>-->
+<!--        <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--          <el-input-->
+<!--              v-model="epoch"-->
+<!--              placeholder="Please input"-->
+<!--              style="margin-left: 50px; border: 0; color: black; width: 8%"-->
+<!--          />-->
+<!--        </div>-->
+
+<!--        <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>-->
+<!--        </div>-->
+<!--        <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">-->
+<!--          <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">-->
+<!--            <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+<!--            <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+<!--          </el-radio-group>-->
+<!--          <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">-->
+<!--            <div style="display: flex; flex-direction: column; width: 40%">-->
+<!--              <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>-->
+<!--              <el-table-->
+<!--                  :data="gpuInfos"-->
+<!--                  style="width: 90%"-->
+<!--                  :border="false"-->
+<!--              >-->
+<!--                <el-table-column min-width="80" fixed prop="name" label="GPU" />-->
+<!--                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">-->
+<!--                  <template #default="props">-->
+<!--                    {{props.row.tot_memory}} MiB-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">-->
+<!--                  <template #default="props">-->
+<!--                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />-->
+<!--                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </div>-->
+<!--            <div style="display: flex; flex-direction: column; width: 40%">-->
+<!--              &lt;!&ndash;              <el-radio-group style="border: 0; color: black;" v-model="client155_2_form">&ndash;&gt;-->
+<!--              &lt;!&ndash;                <el-radio label="Bar" size="large">Bar charts</el-radio>&ndash;&gt;-->
+<!--              &lt;!&ndash;                <el-radio label="Pie" size="large">Pie charts</el-radio>&ndash;&gt;-->
+<!--              &lt;!&ndash;              </el-radio-group>&ndash;&gt;-->
+<!--              <el-radio style="width:33%" label="vipa155_client2" size="large" border>vipa155_client2</el-radio>-->
+<!--              <el-table-->
+<!--                  :data="gpuInfos"-->
+<!--                  style="width: 90%"-->
+<!--                  :border="false"-->
+<!--              >-->
+<!--                <el-table-column min-width="80" fixed prop="name" label="GPU" />-->
+<!--                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">-->
+<!--                  <template #default="props">-->
+<!--                    {{props.row.tot_memory}} MiB-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">-->
+<!--                  <template #default="props">-->
+<!--                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />-->
+<!--                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </div>-->
+
+<!--            <el-radio label="Random" size="large" border>Random</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </div>-->
+<!--      </div>-->
+
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step3: Choose batch size for
+          sparse learning, evaluation and finetuning. It is recommended to choose 128, but if the task fails, you could choose a smaller one.</label>
+      </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">
-          <el-radio label=32 size="large" border>4</el-radio>
-          <el-radio label=32 size="large" border>8</el-radio>
-          <el-radio label=64 size="large" border>16</el-radio>
-          <el-radio label=128 size="large" border>32</el-radio>
+          <el-radio label=32 size="large" border>32</el-radio>
+          <el-radio label=64 size="large" border>64</el-radio>
+          <el-radio label=128 size="large" border>128</el-radio>
         </el-radio-group>
       </div>
+
+
 
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -698,8 +889,25 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
-          Fine-tuning the YOLO models requires extremely long training time.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Set the number of iterations for pruning, and 400 is recommended. Increasing the number
+          of pruning iterations facilitates precise acceleration to the target speed in terms of Flops and improve pruning
+          performance. However, for models and methods that are particularly slow
+          in pruning (such as mobileNet and Inception with group convolutions; Taylor and Hessian importance that
+          rely on gradients), you can lower this value accordingly.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="iterative_steps"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
+
+
+
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose whether to fine-tune. </label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -708,21 +916,24 @@
         </el-radio-group>
       </div>
 
-    <div v-show="finetune==='True'">
-      <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose experimental environment.</label>
-      </div>
-      <div style="margin: 0 0 20px 0; text-align: left;">
-        <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
-          <el-radio label="single" size="large" border>Single GPU</el-radio>
-          <el-radio label="DDP" size="large" border>DDP (Recommended)</el-radio>
-        </el-radio-group>
-      </div>
-    </div>
-
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Choose experimental environment (COCO experiments do not support DDP acceleration yet).</label>
+        </div>
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
+            <el-radio label="single" size="large" border>Single GPU</el-radio>
+            <el-radio label="DDP" size="large" border disabled>DDP (Recommended)</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+
+
+
+      <div v-show="finetune==='True'">
+
+        <div style="margin: 0 0 20px 0; text-align: left;">
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Input the number of epochs for finetuning (Integer required and 90 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -732,8 +943,10 @@
           />
         </div>
 
+        <!--        gpuChartRef-->
+
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step9: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -791,6 +1004,8 @@
             <el-radio label="Random" size="large" border>Random</el-radio>
           </el-radio-group>
         </div>
+
+
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: center">
@@ -821,10 +1036,11 @@
 
 
 
-
-
-
-
+<!--  Complete the-->
+<!--  following information and generate the script. If you don't require sparse Learning and fine-tuning,-->
+<!--  click "online pruning" to obtain pruning results immediately. If you need sparse Learning or fine-tuning, you'll need-->
+<!--  to submit a task and wait for training, which is not yet implemented on this server. All models trained on the ImageNet dataset-->
+<!--  adopt a learning rate of 0.01 during sparse Learning and fine-tuning phases.-->
 
 
   <!--      imagenet-vgg19_bn-->
@@ -834,10 +1050,7 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; word-wrap: break-word; white-space: pre-wrap; color: #000096">ImageNet Tips: Complete the
-          following information and generate the script. If you don't require sparse Learning and fine-tuning,
-          click "online pruning" to obtain pruning results immediately. If you need sparse Learning or fine-tuning, you'll need
-          to submit a task and wait for training, which is not yet implemented on this server. All models trained on the ImageNet dataset
-          adopt a learning rate of 0.01 during sparse Learning and fine-tuning phases.</label>
+          following information and submit a pruning task.</label>
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
@@ -855,93 +1068,116 @@
         </label>
       </div>
       <!--      click(-->
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning. Sparse learning is often time-consuming and does not guarantee benefits.</label>
+      </div>
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.-->
+<!--          Without sparse learning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>-->
+<!--      </div>-->
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step1: Choose whether to employ sparse learning.
-          Without sparse learning, online pruning can be made immediately at a slight sacrifice in accuracy (&lt;1%).</label>
-      </div>
-      <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="radio1">
-          <el-radio label="sl" size="large" border v-if="INtype==='cnn'">With Sparse Learning</el-radio>
-          <el-radio label="wosl" size="large" border>Without Sparse Learning</el-radio>
+<!--          v-if="INtype==='cnn'"-->
+          <el-radio label="sl" size="large" border>With Sparse Learning</el-radio>
+          <el-radio label="wosl" size="large" border>Without Sparse Learning (Recommended)</el-radio>
         </el-radio-group>
       </div>
 
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Input the number of epochs for sparse learning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+      </div>
+      <div v-if="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="sl_total_epochs"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
+
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,-->
+<!--          the choice of whether to employ sparse learning will determine the available pruner.</label>-->
+<!--      </div>-->
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner,
-          the choice of whether to employ sparse learning will determine the available pruner.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step2: Select the pruner, i.e., importance criterion + sparsity regularizer (if sparse learning is employed).</label>
       </div>
       <!-- 添加imagenet的sparse learning -->
-      <div v-show="radio1==='sl'" style="margin: 0 0 20px 0; text-align: left;">
+      <div v-show="radio1==='sl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="slim" size="large" border>BNScale + BNScale</el-radio>
           <el-radio label="group_slim" size="large" border>BNScale + GroupLASSO</el-radio>
           <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
           <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
           <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
-
         </el-radio-group>
       </div>
 
-      <div v-show="radio1==='wosl'" style="margin: 0 0 20px 0; text-align: left;">
+      <div v-show="radio1==='sl' && INtype!=='cnn'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="group_sl" size="large" border>MagnitudeL2 + GroupNorm</el-radio>
+          <el-radio label="growing_reg" size="large" border>MagnitudeL2 + GrowingReg</el-radio>
+          <el-radio label="l2_lasso" size="large" border>MagnitudeL2 + GroupLASSO</el-radio>
+        </el-radio-group>
+      </div>
+
+      <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
           <el-radio label="random" size="large" border>Random</el-radio>
           <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
           <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="fpgm" size="large" border>FPGM</el-radio>
+          <el-radio label="obdc" size="large" border>OBD-C</el-radio>
+          <el-radio label="cp" size="large" border>CP</el-radio>
+          <el-radio label="thinet" size="large" border>ThiNet</el-radio>
+          <el-radio label="hrank" size="large" border>HRank</el-radio>
           <el-radio label="lamp" size="large" border>LAMP</el-radio>
           <el-radio label="bnscale_only" size="large" border>BNScale</el-radio>
           <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
-          <el-radio label="hessian" size="large" border>Hessian</el-radio>
-        </el-radio-group>
-      </div>
-      
-      
-
-      <!-- 这里的pruner注释掉 -->
-      <!-- <div v-show="radio1==='wosl' && INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
-        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l1" size="large" border>Magnitude Pruner</el-radio>
-          <el-radio label="random" size="large" border>Magnitude Pruner(random)</el-radio>
-          <el-radio label="lamp" size="large" border>BNScale Pruner</el-radio>
-          <el-radio label="group_norm" size="large" border>GroupNormPruner</el-radio>
-
-        </el-radio-group>
-      </div> -->
-
-
-
-
-      <!-- <div v-show="INtype==='cnn'" style="margin: 0 0 20px 0; text-align: left;">
-        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="slim" size="large" border>BNScale Pruner</el-radio>
-
-          <el-radio label="group_sl" size="large" border>GroupNorm Pruner</el-radio>
-          <el-radio label="group_greg" size="large" border>GrowingReg Pruner</el-radio>
-
-        </el-radio-group>
-      </div> -->
-
-      <div v-show="radio1==='wosl' && INtype==='hf'" style="margin: 0 0 20px 0; text-align: left;">
-        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>
-          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>
-          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>
-
-
+          <el-radio label="hessian" size="large" border>OBD-Hessian</el-radio>
         </el-radio-group>
       </div>
 
-      <div v-show="radio1==='wosl' && INtype==='timm'" style="margin: 0 0 20px 0; text-align: left;">
-        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
-          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>
-          <el-radio label="l2" size="large" border>L2 Pruner</el-radio>
-          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>
-          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>
-          <el-radio label="hessian" size="large" border>Hessian Pruner</el-radio>
 
+      <div v-show="radio1==='wosl' && INtype!=='cnn'" style="margin: 0 0 20px 0; text-align: left;">
+        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">
+          <el-radio label="random" size="large" border>Random</el-radio>
+          <el-radio label="l1" size="large" border>MagnitudeL1</el-radio>
+          <el-radio label="l2" size="large" border>MagnitudeL2</el-radio>
+          <el-radio label="fpgm" size="large" border>FPGM</el-radio>
+          <el-radio label="cp" size="large" border>CP</el-radio>
+          <el-radio label="thinet" size="large" border>ThiNet</el-radio>
+          <el-radio label="lamp" size="large" border>LAMP</el-radio>
+          <el-radio label="taylor" size="large" border>TaylorFO</el-radio>
+          <el-radio label="hessian" size="large" border>OBD-Hessian</el-radio>
         </el-radio-group>
       </div>
+
+
+
+<!--      <div v-show="radio1==='wosl' && INtype==='hf'" style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">-->
+<!--          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>-->
+<!--          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>-->
+<!--          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>-->
+
+
+<!--        </el-radio-group>-->
+<!--      </div>-->
+
+<!--      <div v-show="radio1==='wosl' && INtype==='timm'" style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="criterion">-->
+<!--          <el-radio label="l1" size="large" border>L1 Pruner</el-radio>-->
+<!--          <el-radio label="l2" size="large" border>L2 Pruner</el-radio>-->
+<!--          <el-radio label="random" size="large" border>Random Pruner(random)</el-radio>-->
+<!--          <el-radio label="taylor" size="large" border>Taylor Pruner</el-radio>-->
+<!--          <el-radio label="hessian" size="large" border>Hessian Pruner</el-radio>-->
+
+<!--        </el-radio-group>-->
+<!--      </div>-->
 
       <div v-show="radio1!='wosl' && radio1!='sl'" style="margin: 0 0 20px 0; text-align: left;">
         <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap; color: #800E25">Complete Step1 first.</label>
@@ -955,10 +1191,10 @@
 
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="batchsize">
-          <el-radio label=4 size="large" border>4</el-radio>
-          <el-radio label=8 size="large" border>8</el-radio>
-          <el-radio label=16 size="large" border>16</el-radio>
-          <el-radio label=32 size="large" border>32</el-radio>
+          <el-radio label=4 size="large" border>16</el-radio>
+          <el-radio label=8 size="large" border>32</el-radio>
+          <el-radio label=16 size="large" border>64</el-radio>
+          <el-radio label=32 size="large" border>128</el-radio>
         </el-radio-group>
       </div>
 
@@ -975,8 +1211,37 @@
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: left;">
-        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.
-          Fine-tuning the Vit models requires extremely long training time.</label>
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Set the number of iterations for pruning, and 400 is recommended. Increasing the number
+          of pruning iterations facilitates precise acceleration to the target speed in terms of Flops and improve pruning
+          performance. However, for models and methods that are particularly slow
+          in pruning (such as mobileNet and Inception with group convolutions; Taylor and Hessian importance that
+          rely on gradients), you can lower this value accordingly.</label>
+      </div>
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <el-input
+            v-model="iterative_steps"
+            placeholder="Please input"
+            style="margin-left: 50px; border: 0; color: black; width: 8%"
+        />
+      </div>
+
+
+
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step5: Choose whether to fine-tune.-->
+<!--          Fine-tuning the Vit models requires extremely long training time.</label>-->
+<!--      </div>-->
+<!--      <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--        <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">-->
+<!--          <el-radio label="True" size="large" border>fine-tune</el-radio>-->
+<!--          <el-radio label="False" size="large" border>not fine-tune</el-radio>-->
+<!--        </el-radio-group>-->
+<!--      </div>-->
+
+
+
+      <div style="margin: 0 0 20px 0; text-align: left;">
+        <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose whether to fine-tune. </label>
       </div>
       <div style="margin: 0 0 20px 0; text-align: left;">
         <el-radio-group style="margin-left: 50px; border: 0; color: black; " v-model="finetune">
@@ -985,9 +1250,11 @@
         </el-radio-group>
       </div>
 
+
+
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step6: Choose experimental environment.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Choose experimental environment.</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-radio-group @click="criterion=''" style="margin-left: 50px; border: 0; color: black; " v-model="finetunemode">
@@ -999,7 +1266,7 @@
 
       <div v-show="finetune==='True'">
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step7: Input the number of epochs for finetuning (Integer required and 100 is recommend, other hyperparameters have been set to optimal).</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Input the number of epochs for finetuning (Integer required and 90 is recommend, other hyperparameters have been set to optimal).</label>
         </div>
         <div style="margin: 0 0 20px 0; text-align: left;">
           <el-input
@@ -1009,8 +1276,71 @@
           />
         </div>
 
+
+
+<!--        <div style="margin: 0 0 20px 0; text-align: left;">-->
+<!--          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step9: Select the client and submit the pruning task that needs fine-tuning.</label>-->
+<!--        </div>-->
+<!--        <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">-->
+<!--          <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">-->
+<!--            <el-radio label="Bar" size="large">Bar charts</el-radio>-->
+<!--            <el-radio label="Pie" size="large">Pie charts</el-radio>-->
+<!--          </el-radio-group>-->
+<!--          <el-radio-group style="margin-left: 50px; border: 0; color: black; width: 100%; display: flex; align-items: flex-start" v-model="client">-->
+<!--            <div style="display: flex; flex-direction: column; width: 40%">-->
+<!--              <el-radio style="width:33%"  label="vipa155_client1" size="large" border>vipa155_client1</el-radio>-->
+<!--              <el-table-->
+<!--                  :data="gpuInfos"-->
+<!--                  style="width: 90%"-->
+<!--                  :border="false"-->
+<!--              >-->
+<!--                <el-table-column min-width="80" fixed prop="name" label="GPU" />-->
+<!--                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">-->
+<!--                  <template #default="props">-->
+<!--                    {{props.row.tot_memory}} MiB-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">-->
+<!--                  <template #default="props">-->
+<!--                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />-->
+<!--                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef_' + props.$index"></div>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </div>-->
+<!--            <div style="display: flex; flex-direction: column; width: 40%">-->
+<!--              &lt;!&ndash;              <el-radio-group style="border: 0; color: black;" v-model="client155_2_form">&ndash;&gt;-->
+<!--              &lt;!&ndash;                <el-radio label="Bar" size="large">Bar charts</el-radio>&ndash;&gt;-->
+<!--              &lt;!&ndash;                <el-radio label="Pie" size="large">Pie charts</el-radio>&ndash;&gt;-->
+<!--              &lt;!&ndash;              </el-radio-group>&ndash;&gt;-->
+<!--              <el-radio style="width:33%" label="vipa155_client2" size="large" border>vipa155_client2</el-radio>-->
+<!--              <el-table-->
+<!--                  :data="gpuInfos"-->
+<!--                  style="width: 90%"-->
+<!--                  :border="false"-->
+<!--              >-->
+<!--                <el-table-column min-width="80" fixed prop="name" label="GPU" />-->
+<!--                <el-table-column min-width="80" prop="tot_memory" label="Total Memory">-->
+<!--                  <template #default="props">-->
+<!--                    {{props.row.tot_memory}} MiB-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column label="Memory Usage" min-width="160" style="min-height: 180px">-->
+<!--                  <template #default="props">-->
+<!--                    <el-progress v-if="client155_form==='Bar'" :text-inside="true"  class="m-2" :stroke-width="26" :percentage="(100*(props.row.tot_memory - props.row.remain_memory)/props.row.tot_memory).toFixed(1)" :color="colors"  />-->
+<!--                    <div v-else-if="client155_form==='Pie'" :id="'gpuChart2_' + props.$index" style="width: 100%; height: 160%; text-align: left; overflow: visible" :ref="'gpuChartRef2_' + props.$index"></div>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </div>-->
+
+<!--            <el-radio label="Random" size="large" border>Random</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </div>-->
+
+
         <div style="margin: 0 0 20px 0; text-align: left;">
-          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step8: Select the client and submit the pruning task that needs fine-tuning.</label>
+          <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">Step9: Select the client and submit the pruning task that needs fine-tuning.</label>
         </div>
         <div style="margin: 0 0 30px 0; text-align: left; width: 100%;">
           <el-radio-group style="margin-left: 60px; border: 0; color: black;" v-model="client155_form">
@@ -1068,6 +1398,7 @@
             <el-radio label="Random" size="large" border>Random</el-radio>
           </el-radio-group>
         </div>
+
       </div>
 
       <div style="margin: 0 0 20px 0; text-align: center">
@@ -3368,8 +3699,22 @@ function update(source) {
   nodeEnter.append("circle")
       .attr('class', 'nodeCircle')
       .attr("r", 0)
-      .style("stroke", "black")
-      .style("stroke-width", "1.5px")
+      .style("stroke", function(d) {
+        let currenAccess = store.state.access
+        if (d.name==='Model Zoo'||(d.parent.name!=='COCO'&&d.parent.name!=='CIFAR10'&&d.parent.name!=='CIFAR100'&&d.parent.name!=='ImageNet'&&d.parent.name!=='PowerGrid'))
+          return "black";
+        else if (currenAccess===0||(d.name==='ViT_S_16(timm)'||d.name==='YOLOv8'||((d.name==='ResNet18'||d.name==='ResNet50')&&(d.parent.name=='CIFAR100'||d.parent.name=='ImageNet'))||(d.name==='VGG19'&&d.parent.name==='CIFAR100')))
+          return "green";
+        else
+          return "gray";
+      })
+      // .style("stroke", "black")
+      .style("stroke-width", function(d) {
+        if (d.name==='Model Zoo'||(d.parent.name!=='COCO'&&d.parent.name!=='CIFAR10'&&d.parent.name!=='CIFAR100'&&d.parent.name!=='ImageNet'&&d.parent.name!=='PowerGrid'))
+          return "1.5px";
+        else
+          return "5px";
+      })
       .style("fill", function(d) {
         return d._children ? "lightsteelblue" : "#fff";
       });
@@ -3671,6 +4016,20 @@ var cascaderModel;
 
 // cascader
 async function click(d) {
+  console.log("store.state.access: ", store.state.access)
+  let currenAccess = store.state.access
+  if(currenAccess!==0){
+    if (d.name==='Model Zoo'||(d.parent.name!=='COCO'&&d.parent.name!=='CIFAR10'&&d.parent.name!=='CIFAR100'&&d.parent.name!=='ImageNet'&&d.parent.name!=='PowerGrid'))
+      console.log("OK")
+    else if (d.name==='ViT_S_16(timm)'||d.name==='YOLOv8'||((d.name==='ResNet18'||d.name==='ResNet50')&&(d.parent.name=='CIFAR100'||d.parent.name=='ImageNet'))||(d.name==='VGG19'&&d.parent.name==='CIFAR100'))
+      console.log("OK")
+    else{
+      ElMessage.error("For regular users, we only provide access to tasks corresponding to the published leaderboards.")
+      return;
+    }
+  }
+
+
   if(d.name!='Model Zoo' && (d.parent.name=='CIFAR100' || d.parent.name=='CIFAR10' || d.parent.name=='COCO' || d.parent.name=='ImageNet' || d.parent.name=='PowerGrid')){
 
     // ElMessage.warning("This should be a terminate node......")

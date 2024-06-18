@@ -19,11 +19,12 @@
 <!--      </p>-->
 <!--    </div>-->
 
+<!--    - Torch-Pruning (TP):-->
 
     <div>
       <p style="margin: 0 30px; font-size: 17px; border: 0; word-wrap: break-word; color: black; text-align: left">
-        Confirm that you have implemented the interface for your pruning algorithm using our Python library - Torch-Pruning
-        (TP): <a :href="'https://github.com/VainF/Torch-Pruning'" target="_blank">https://github.com/VainF/Torch-Pruning</a>,
+        Confirm that you have implemented the interface for your pruning algorithm using our Python library:
+        <a :href="'https://github.com/HollyLee2000/PruningBench'" target="_blank">https://github.com/HollyLee2000/PruningBench</a>,
         and have submitted a pull request to the project. Only after these can we include your algorithm in our leaderboard.
         Due to the necessary experimental validation for your algorithm, your request may take some time to receive a response.
         You can contact us via email at hollylee@zju.edu.cn.
