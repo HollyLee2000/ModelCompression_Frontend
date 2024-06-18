@@ -7,7 +7,7 @@ import {router} from "@/router";
 
 const request = axios.create({
     baseURL:'/api',
-    // baseURL:'http://10.214.242.155:7996',
+    // baseURL:'http://pruning.vipazoo.cn/api',
     timeout:2000000,
     headers:{'Content-Type':'application/json;charset=utf-8'}
 })

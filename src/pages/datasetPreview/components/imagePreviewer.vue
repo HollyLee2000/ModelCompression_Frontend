@@ -104,7 +104,7 @@ const modifyDatasetName = () => {
   margin-bottom: 100px;
 }
 .demo-image{
-  /*background: url("http://10.214.242.155:7996/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
+  /*background: url("http://pruning.vipazoo.cn/api/img/background/background_preview.jpg") no-repeat 0% 20%/ cover;*/
   background: linear-gradient(transparent,#F4AFAF 100%);
 }
 .demo-image .userblock {

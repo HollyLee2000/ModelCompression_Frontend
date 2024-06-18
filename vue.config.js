@@ -8,7 +8,8 @@ module.exports = defineConfig({
   devServer:{
     proxy:{
       '/api': {
-        target: 'http://10.214.242.155:7996',  //部署的时候, 记得更改服务器上的后端端口
+        target: 'http://pruning.vipazoo.cn/api',  //外网环境使用
+        // http://10.214.242.155:7996  //内网环境使用
         //target: 'http://localhost:8888',
         changeOrigin:true,
         pathRewrite:{'^/api':''},
@@ -17,7 +18,7 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: 'src/main.ts',
-      title: 'XXXX | Benchmark Towards Any Structural Pruning'
+      title: 'SPFA | Unified Benchmark of Structural Pruning'
     }
     
   },

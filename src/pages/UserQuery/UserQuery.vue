@@ -66,11 +66,11 @@
 
 
 <!--        <div style="margin: 20px 0 40px 0;">-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
 <!--          <label style="font-size:40px; color: white; border: 0; margin: 0 0 0 60px; font-family: 'FZShuTi'">请选择一张要解释的图像</label>-->
 <!--          &lt;!&ndash;          <el-button plain size="large" style="text-align: center; background-color: #545c64;&ndash;&gt;-->
 <!--          &lt;!&ndash;          color: white; align-items: center; border: 0;">请选择你要解释的图像</el-button>&ndash;&gt;-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
 <!--        </div>-->
         <el-row>
           <el-col v-for="(item,index) in showList2" :span="6" :key="index">

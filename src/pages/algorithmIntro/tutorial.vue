@@ -7,7 +7,7 @@
     <!-- 一个Unit代码一个块，包括小标题，代码，图片，具体代码以下样例 -->
     <!-- 替换图片路径就行,其他不用动 -->
     <div class="unit">
-      <div class="unit-title jiange" style="font-size: 25px">Network Pruning Process in XXXX</div>
+      <div class="unit-title jiange" style="font-size: 25px">Network Pruning Process in SPFA</div>
       <!-- 替换图片路径就行,其他不用动 -->
       <div class="unit-img-box-holly">
         <img src="./static/image/main.svg" class="unit-img-holly" style="margin-bottom: 20px;">
@@ -122,7 +122,7 @@
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>XXXX TEAM</h2>
+              <h2>SPFA TEAM</h2>
             </div>
           </div>
           <div class="row2">

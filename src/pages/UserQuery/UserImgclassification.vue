@@ -8,11 +8,11 @@
           <label style="font-size:35px; color: black; border: 0;">1. Select a Dataset Visible to You</label>
         </div>
 <!--        <div style="margin: 20px 0 40px 0;">-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
 <!--          <label style="font-size:40px; color: white; border: 0; margin: 0 0 0 30px; font-family: 'FZShuTi'">请选择一个你可见的数据集</label>-->
 <!--          &lt;!&ndash;          <el-button plain size="large" style="text-align: center; background-color: #545c64;&ndash;&gt;-->
 <!--          &lt;!&ndash;          color: white; align-items: center; border: 0;">请选择你要解释的图像</el-button>&ndash;&gt;-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
 <!--        </div>-->
         <div class="search">
           <el-select v-model="searchOption" class="forSearch" placeholder="Select" size="large">
@@ -55,11 +55,11 @@
 
       <div v-else>
 <!--        <div style="margin: 20px 0 40px 0;">-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_1.gif" style="width: 50px; height: 50px; float: left"/>-->
 <!--          <label style="font-size:40px; color: white; border: 0; margin: 0 0 0 60px; font-family: 'FZShuTi'">请选择一张要解释的图像</label>-->
 <!--          &lt;!&ndash;          <el-button plain size="large" style="text-align: center; background-color: #545c64;&ndash;&gt;-->
 <!--          &lt;!&ndash;          color: white; align-items: center; border: 0;">请选择你要解释的图像</el-button>&ndash;&gt;-->
-<!--          <el-image src="http://10.214.242.155:7996/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
+<!--          <el-image src="http://pruning.vipazoo.cn/api/img/background/cifar_3.gif" style="width: 50px; height: 50px; float: right"/>-->
 <!--        </div>-->
         <div style="margin: 20px 0 40px 0; text-align: center; ">
           <label style="font-size:35px; color: black; border: 0;">2. Select an Image to Explore</label>

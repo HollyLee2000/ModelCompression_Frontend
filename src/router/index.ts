@@ -295,7 +295,8 @@ router1.beforeEach(
                 store.commit("loginOut")
                 // Cookies.remove("userTicket")
                 localStorage.removeItem("userTicket")
-                next('/homepage');
+                next('/signin');
+                // next('/homepage');
             } else {
                 next();
             }
