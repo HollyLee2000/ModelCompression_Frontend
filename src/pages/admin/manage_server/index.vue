@@ -294,7 +294,7 @@ export default {
         password: '',
         password2: ''
       },
-      perPage: 12,
+      perPage: 20,
       currentPage: 1,
       updateDialogTitle: '新建算力机',
       fields: [

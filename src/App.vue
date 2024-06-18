@@ -19,9 +19,9 @@
           <el-menu-item index="Tutorial">TUTORIAL</el-menu-item>
           <el-menu-item index="pruning" >PRUNING</el-menu-item>
           <el-menu-item index="benchmark" >BENCHMARK</el-menu-item>
-          <el-menu-item index="history" v-if="store.state.isAut">TASK</el-menu-item>
-          <el-menu-item index="submission" v-if="store.state.isAut">SUBMISSION</el-menu-item>
-          <el-menu-item index="voc" v-if="store.state.isAut">SUB-HISTORY</el-menu-item>
+          <el-menu-item index="history">TASK</el-menu-item>
+          <el-menu-item index="submission">SUBMISSION</el-menu-item>
+          <el-menu-item index="voc">SUB-HISTORY</el-menu-item>
           <el-menu-item index="cub" style="color: #AB140C;" v-if="store.state.isAut && store.state.access===0">APPROVAL</el-menu-item>
           <div class="flex-grow" />
           <el-menu-item v-if="!store.state.isAut" class="right" index="signin">log in / register</el-menu-item>
@@ -206,7 +206,7 @@ login_init()
   padding: 0;
   margin: 0;
   background-color: white;
-  /*background-image: linear-gradient(transparent,#fff 100%), url("http://10.214.242.155:7996/img/background/background_purple.jpg");*/
+  /*background-image: linear-gradient(transparent,#fff 100%), url("http://pruning.vipazoo.cn/api/img/background/background_purple.jpg");*/
 }
 .right{
   /*position: absolute;*/

@@ -6,9 +6,9 @@
           <div class="row align-items-center">
             <div class="col-lg-6">
               <h2 class="title mt-5 mt-lg-0">
-                XXXX
+                SPFA
               </h2>
-              <p class="f-16 my-4 text-muted benchmark">Benchmark Towards Any Structural Pruning</p>
+              <p class="f-16 my-4 text-muted benchmark">Unified Benchmark of Structural Pruning</p>
               <button @click="startTutorial" class="btn btn-tutorial" style="margin-right: 10px">Tutorial</button>
               <button @click="startCompression" class="btn btn-primary" style="margin-right: 10px">Get Started</button>
               <button class="btn btn-docs"><a href="https://github.com/VainF/Torch-Pruning" target="_blank" style="color: white">Docs</a></button>
@@ -80,9 +80,9 @@
           </div>
           <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">
             <h6 class="text-muted fw-normal">INTRODUCTION</h6>
-            <h1 class="fw-bold mt-2">XXXX</h1>
+            <h1 class="fw-bold mt-2">SPFA</h1>
             <p class="mt-3">
-              XXXX is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.
+              SPFA is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.
             </p>
 
           </div>
@@ -113,10 +113,10 @@
           <div class="heading text-center">
             <!-- <h6 class="text-muted f-16 fw-normal">Learning to Write as a Professional</h6> -->
             <h2 class="mb-3">Evaluate <span class="text-primary fw-normal"> Structural Pruning </span>
-              <br> with XXXX
+              <br> with SPFA
 
             </h2>
-            <p class="text-muted para-p mx-auto mb-0">XXXX can help researchers to efficiently compress deep models and evaluate structural pruning methods on various tasks.</p>
+            <p class="text-muted para-p mx-auto mb-0">SPFA can help researchers to efficiently compress deep models and evaluate structural pruning methods on various tasks.</p>
           </div>
         </div>
       </div>
@@ -180,7 +180,7 @@
         <div class="container text-center">
           <div class="row2">
             <div class="col footer-team">
-              <h2>XXXX TEAM</h2>
+              <h2>SPFA TEAM</h2>
             </div>
           </div>
           <div class="row2">
@@ -669,7 +669,7 @@ async function startRecognize() {
 /*  transform: rotate(90deg);*/
 /*}*/
 .holly{
-  /*background-image: url('http://10.214.242.155:7996/img/background/algorithm2.jpg');*/
+  /*background-image: url('http://pruning.vipazoo.cn/api/img/background/algorithm2.jpg');*/
   display: flex;
   background-color: white;
   /*justify-content: space-around;*/

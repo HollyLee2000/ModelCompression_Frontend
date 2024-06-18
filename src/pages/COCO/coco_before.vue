@@ -764,7 +764,7 @@
             </div>
             <div style="margin: 0 0 20px 0; text-align: left;">
               <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-                Checkpoint(pruned): <el-link v-if="PrunedPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+PrunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Checkpoint(pruned): <el-link v-if="PrunedPath!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+PrunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="success" plain>Download</el-button></el-link>
                 <text v-else>
                   N/A
@@ -773,7 +773,7 @@
             </div>
             <div style="margin: 0 0 20px 0; text-align: left;">
               <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-                Model structure(pruned): <el-link v-if="structureAfterPruned!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Model structure(pruned): <el-link v-if="structureAfterPruned!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button></el-link>
                 <text v-else>
                   N/A
@@ -782,7 +782,7 @@
             </div>
             <div style="margin: 0 0 20px 0; text-align: left;">
               <label style="margin-left: 50px; font-size:18px; border: 0; color: black; word-wrap: break-word; white-space: pre-wrap;">
-                Log file: <el-link v-if="logPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Log file: <el-link v-if="logPath!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button></el-link>
                 <text v-else>
                   N/A
@@ -816,9 +816,9 @@
                 Acc: {{modelAcc}}<br>
                 Params: {{modelParams}}<br>
                 Flops: {{modelFlops}}<br>
-                Checkpoint: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace'+modelPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Checkpoint: <el-link target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace'+modelPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="success" plain>Download</el-button></el-link><br>
-                Model structure: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Model structure: <el-link target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button></el-link>
               </label>
             </div>
@@ -944,9 +944,9 @@
                 Acc: {{modelAcc}}<br>
                 Params: {{modelParams}}<br>
                 Flops: {{modelFlops}}<br>
-                Checkpoint: <el-link target="_blank" :href="'http://10.214.242.155:7996/ckpt'+modelPath.split('checkpoints').slice(-1)[0]" :underline="false">
+                Checkpoint: <el-link target="_blank" :href="'http://pruning.vipazoo.cn/api/ckpt'+modelPath.split('checkpoints').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="success" plain>Download</el-button></el-link><br>
-                Model structure: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+                Model structure: <el-link target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button></el-link>
               </label>
             </div>
@@ -2874,7 +2874,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/tool2.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/tool2.jpg")
       .attr("x", -10)
       .attr("y", -14)
       .attr("width", 60)
@@ -2886,7 +2886,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/grid.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/grid.png")
       .attr("x", -10)
       .attr("y", -14)
       .attr("width", 60)
@@ -2898,7 +2898,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/local2.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/local2.jpg")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", 40)
@@ -2910,7 +2910,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/post-hoc.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/post-hoc.png")
       .attr("x", 0)
       .attr("y", 1)
       .attr("width", 40)
@@ -2922,7 +2922,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/ad-hoc.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/ad-hoc.png")
       .attr("x", 0)
       .attr("y", -9)
       .attr("width", 60)
@@ -2934,7 +2934,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/attention2.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/attention2.jpg")
       .attr("x", -5)
       .attr("y", -13)
       .attr("width", 60)
@@ -2946,7 +2946,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/prototype.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/prototype.jpg")
       .attr("x", 0)
       .attr("y", -13)
       .attr("width", 60)
@@ -2958,7 +2958,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/concept.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/concept.png")
       .attr("x", 2)
       .attr("y", 0)
       .attr("width", 40)
@@ -2970,7 +2970,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/classification.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/classification.jpg")
       .attr("x", 0)
       .attr("y", -10)
       .attr("width", 60)
@@ -2982,7 +2982,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/upload.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/upload.png")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", 40)
@@ -2994,7 +2994,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/pre.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/pre.png")
       .attr("x", 2)
       .attr("y", 0)
       .attr("width", 40)
@@ -3006,7 +3006,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/usr.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/usr.png")
       .attr("x", 3)
       .attr("y", 0)
       .attr("width", 40)
@@ -3018,7 +3018,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/conv.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/conv.png")
       .attr("x", -4)
       .attr("y", -2)
       .attr("width", 49)
@@ -3030,7 +3030,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/vgg.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/vgg.png")
       .attr("x", 2)
       .attr("y", 1)
       .attr("width", 45)
@@ -3042,7 +3042,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/ResNet.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/ResNet.png")
       .attr("x", -10)
       .attr("y", 0)
       .attr("width", 60)
@@ -3054,7 +3054,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/Transformer.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/Transformer.jpg")
       .attr("x", -4)
       .attr("y", -4)
       .attr("width", 49)
@@ -3066,7 +3066,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/yolo.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/yolo.jpg")
       .attr("x", -4)
       .attr("y", -2)
       .attr("width", 49)
@@ -3078,7 +3078,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/cifar.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/cifar.jpg")
       .attr("x", 0)
       .attr("y", -5)
       .attr("width", 60)
@@ -3090,7 +3090,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/imgnet.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/imgnet.jpg")
       .attr("x", -10)
       .attr("y", -5)
       .attr("width", 60)
@@ -3102,7 +3102,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/coco.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/coco.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -3114,7 +3114,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/proxy.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/proxy.png")
       .attr("x", -8)
       .attr("y", -10)
       .attr("width", 60)
@@ -3126,7 +3126,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/disturb.png")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/disturb.png")
       .attr("x", 3)
       .attr("y", 4)
       .attr("width", 35)
@@ -3140,7 +3140,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/zebra.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/zebra.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -3152,7 +3152,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/gradient2.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/gradient2.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -3165,7 +3165,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/saliency.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/saliency.jpg")
       .attr("x", -10)
       .attr("y", -5)
       .attr("width", 60)
@@ -3177,7 +3177,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/tcav.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/tcav.jpg")
       .attr("x", -12)
       .attr("y", -3)
       .attr("width", 60)
@@ -3189,7 +3189,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/tree.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/tree.jpg")
       .attr("x", 0)
       .attr("y", -8)
       .attr("width", 60)
@@ -3201,7 +3201,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/global2.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/global2.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -3213,7 +3213,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/vision.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/vision.jpg")
       .attr("x", -10)
       .attr("y", -10)
       .attr("width", 60)
@@ -3225,7 +3225,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/xmq.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/xmq.jpg")
       .attr("x", -10)
       .attr("y", -14)
       .attr("width", 60)
@@ -3237,7 +3237,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/zhf.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/zhf.jpg")
       .attr("x", -10)
       .attr("y", -14)
       .attr("width", 60)
@@ -3249,7 +3249,7 @@ onMounted(async () => {
       .attr("width", "25")
       .attr("height", "25")
       .append("image")
-      .attr("xlink:href", "http://10.214.242.155:7996/img/background/hqh.jpg")
+      .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/hqh.jpg")
       .attr("x", 0)
       .attr("y", -10)
       .attr("width", 60)
@@ -3264,7 +3264,7 @@ onMounted(async () => {
   //     .attr("width", "100%") // 相对于用户坐标系，定义图像相对宽度为100%
   //     .attr("height", "100%") // 相对于用户坐标系，定义图像相对高度为100%
   //     .append("image")
-  //     .attr("xlink:href", "http://10.214.242.155:7996/img/background/tool.jpg")
+  //     .attr("xlink:href", "http://pruning.vipazoo.cn/api/img/background/tool.jpg")
   //     .attr("x", 0)
   //     .attr("y", 0)
   //     .attr("width", "100%") // 图片元素实际宽度为100%用户坐标系统的宽度
@@ -4610,7 +4610,7 @@ a {
 }
 
 .holly{
-  /*background-image: url('http://10.214.242.155:7996/img/background/algorithm2.jpg');*/
+  /*background-image: url('http://pruning.vipazoo.cn/api/img/background/algorithm2.jpg');*/
   /*background-repeat: no-repeat;*/
   /*background-size: contain;*/
   background-color: white;

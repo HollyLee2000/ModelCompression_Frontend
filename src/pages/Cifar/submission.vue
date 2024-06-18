@@ -37,9 +37,9 @@
 
 <!--    <div class="col-lg-4 offset-lg-1 mt-5 mt-lg-0">-->
 <!--      <h6 class="text-muted fw-normal">INTRODUCTION</h6>-->
-<!--      <h1 class="fw-bold mt-2">XXXX</h1>-->
+<!--      <h1 class="fw-bold mt-2">SPFA</h1>-->
 <!--      <p class="mt-3">-->
-<!--        XXXX is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.-->
+<!--        SPFA is a benchmark towards any structural pruning. It based on Torch-Pruning (TP), an open-source library for grouping model layers by dependency graph (DepGraph). It provides unified interface of popular structural pruning methods, including the importance criteria and sparsity regularizer.-->
 
 <!--      </p>-->
 

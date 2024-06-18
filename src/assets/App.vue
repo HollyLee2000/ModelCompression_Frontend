@@ -175,7 +175,7 @@ login_init()
   padding: 0;
   margin: 0;
   background-color: white;
-  /*background-image: linear-gradient(transparent,#fff 100%), url("http://10.214.242.155:7996/img/background/background_purple.jpg");*/
+  /*background-image: linear-gradient(transparent,#fff 100%), url("http://pruning.vipazoo.cn/api/img/background/background_purple.jpg");*/
 }
 .right{
   /*position: absolute;*/

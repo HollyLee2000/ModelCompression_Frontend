@@ -139,12 +139,12 @@
             <p m="t-0 b-2">{{props.row.accChange}}</p>
             <p m="t-0 b-2">{{props.row.lossChange}}</p>
             <p m="t-0 b-2">Unpruned model:
-              <el-link target="_blank" :href="props.row.checkpointPath.includes('Torch-Pruning') ? 'http://10.214.242.155:7996/WorkSpace/' + props.row.checkpointPath.split('Torch-Pruning').slice(-1)[0] : 'http://10.214.242.155:7996/ckpt' + props.row.checkpointPath.split('checkpoints').slice(-1)[0]" :underline="false">
+              <el-link target="_blank" :href="props.row.checkpointPath.includes('Torch-Pruning') ? 'http://pruning.vipazoo.cn/api/WorkSpace/' + props.row.checkpointPath.split('Torch-Pruning').slice(-1)[0] : 'http://pruning.vipazoo.cn/api/ckpt' + props.row.checkpointPath.split('checkpoints').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="success" plain>Download</el-button>
               </el-link>
             </p>
             <p m="t-0 b-2">Pruned model:
-              <el-link v-if="props.row.prunedPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.prunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+              <el-link v-if="props.row.prunedPath!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+props.row.prunedPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button  size="small" type="success" plain>Download</el-button>
               </el-link>
               <text v-else>
@@ -152,12 +152,12 @@
               </text>
             </p>
             <p m="t-0 b-2">
-              Structure before pruned: <el-link target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+              Structure before pruned: <el-link target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+props.row.structureBeforePruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button></el-link>
             </p>
             <p m="t-0 b-2">
               Structure after pruned:
-              <el-link v-if="props.row.structureAfterPruned!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+              <el-link v-if="props.row.structureAfterPruned!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+props.row.structureAfterPruned.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button>
               </el-link>
               <text v-else>
@@ -166,7 +166,7 @@
             </p>
             <p m="t-0 b-2">
               Log file:
-              <el-link v-if="props.row.logPath!=='N/A'" target="_blank" :href="'http://10.214.242.155:7996/WorkSpace/'+props.row.logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
+              <el-link v-if="props.row.logPath!=='N/A'" target="_blank" :href="'http://pruning.vipazoo.cn/api/WorkSpace/'+props.row.logPath.split('Torch-Pruning').slice(-1)[0]" :underline="false">
                 <el-button size="small" type="primary" plain>View</el-button>
               </el-link>
               <text v-else>
